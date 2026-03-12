@@ -13,9 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MOIZ - Arena de Maíz para Gatos",
+  title: "Möiz - Arena de Maíz para Gatos",
   description:
     "Arena ecológica biodegradable hecha de maíz para gatos. Control natural de olores.",
+  icons: {
+    icon: "/logo/logo.png",
+    apple: "/logo/logo.png",
+  },
 };
 
 export default function RootLayout({
