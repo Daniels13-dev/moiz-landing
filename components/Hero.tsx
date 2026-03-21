@@ -9,7 +9,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-[95vh] flex flex-col items-center justify-center overflow-hidden bg-white pt-24 pb-20"
+      className="relative min-h-[95vh] flex flex-col items-center justify-center overflow-hidden bg-white pt-20 pb-12 md:pt-24 md:pb-20"
     >
       {/* Background Ambience: Massive gradient blurry orbs */}
       <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-[var(--moiz-green)]/15 rounded-full blur-[120px] pointer-events-none mix-blend-multiply" />

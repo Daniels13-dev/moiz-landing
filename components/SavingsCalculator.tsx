@@ -1,109 +1,120 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Calculator } from "lucide-react";
 
 export default function SavingsCalculator() {
   const [cats, setCats] = useState<number>(2);
 
-  // Supuestos hiper-mínimos conservadores para no "vender humo"
+  // Supuestos hiper-mínimos conservadores
   const classicCostPerCat = 28000;
   const moizCostPerCat = 12000;
 
-  const totalClassic = cats * classicCostPerCat * 12; // Costo clásico al año por N gatos
-  const totalMoiz = cats * moizCostPerCat * 12; // Costo Möiz al año por N gatos
+  const totalClassic = cats * classicCostPerCat * 12;
+  const totalMoiz = cats * moizCostPerCat * 12;
   const totalSavings = totalClassic - totalMoiz;
 
   return (
-    <section className="py-24 bg-white relative overflow-hidden" id="calculadora">
-      <div className="max-w-5xl mx-auto px-6 relative">
-        {/* Estilos del fondo radiante - Movido fuera del contenedor principal para que overflow-hidden no lo corte */}
-        <div className="absolute top-[-15%] right-[-10%] w-[60vw] h-[60vw] bg-[var(--moiz-green)]/10 blur-[120px] rounded-full pointer-events-none -z-10" />
-        
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="bg-zinc-900 rounded-[3rem] shadow-2xl relative border border-zinc-800 overflow-hidden"
-        >
+    <section className="py-12 md:py-20 bg-white relative overflow-hidden" id="calculadora">
+      {/* Background elements */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--moiz-green)]/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
+      
+      <div className="max-w-4xl mx-auto px-6 relative">
+        <div className="text-center mb-12">
+          <span className="text-[var(--moiz-green)] font-black text-xs tracking-widest uppercase py-1 px-3 bg-[var(--moiz-green)]/10 rounded-full mb-4 inline-block">
+            Impacto Económico
+          </span>
+          <h2 className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tight">
+            Calcula tu <span className="text-[var(--moiz-green)]">Ahorro Anual</span>
+          </h2>
+          <p className="mt-4 text-zinc-500 font-medium max-w-lg mx-auto">
+            Por ser una arena de alto rendimiento, Möiz dura más y cuida tu bolsillo.
+          </p>
+        </div>
 
-          <div className="grid lg:grid-cols-2">
-            {/* Panel de Inputs */}
-            <div className="p-8 md:p-14 lg:p-16 relative z-10 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-white/10">
-              <div className="mb-10">
-                <span className="text-[var(--moiz-green)] font-bold text-sm tracking-[0.2em] uppercase mb-4 block">
-                  Herramienta de Ahorro
-                </span>
-                <h2 className="text-3xl md:text-5xl font-black tracking-tight text-white mb-2 flex items-center gap-4">
-                  <Calculator className="text-[var(--moiz-green)] hidden md:block" size={40} />
-                  Ahorro en Acción
-                </h2>
-                <p className="text-zinc-500 font-medium text-lg leading-relaxed mt-4">
-                  ¿Cuánto dinero gastas en arena tradicional? La fórmula natural de alto rendimiento de Möiz significa comprar menos kilos a largo plazo.
-                </p>
+        <div className="bg-zinc-950 rounded-[2.5rem] md:rounded-[4rem] shadow-2xl overflow-hidden border border-white/5">
+          <div className="p-8 md:p-16 flex flex-col gap-12">
+            
+            {/* Input Section */}
+            <div className="space-y-8 text-center max-w-xl mx-auto w-full">
+              <label className="text-white font-bold text-xl md:text-2xl block">
+                ¿Cuántos gatos tienes en casa?
+              </label>
+              
+              <div className="flex justify-center gap-3 h-10 items-center">
+                <AnimatePresence mode="popLayout">
+                  {Array.from({ length: cats }).map((_, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      className="text-3xl filter drop-shadow-[0_0_10px_rgba(106,142,42,0.5)]"
+                    >
+                      🐱
+                    </motion.span>
+                  ))}
+                </AnimatePresence>
+                <div className="ml-4 bg-[var(--moiz-green)]/20 text-[var(--moiz-green)] px-3 py-1 rounded-lg text-sm font-black">
+                  {cats} {cats === 1 ? 'Mericat' : 'Mericats'}
+                </div>
               </div>
 
-              <div className="bg-white/5 p-8 rounded-3xl border border-white/10">
-                <label className="block text-white font-bold mb-8 text-xl">
-                  ¿Cuántos michis conviven contigo?
-                  <div className="text-[var(--moiz-green)] text-6xl font-black mt-2 drop-shadow-sm">
-                    {cats} {cats === 1 ? "Gato" : "Gatos"}
-                  </div>
-                </label>
-                
-                <div className="relative">
-                  <input
-                    type="range"
-                    min="1"
-                    max="6"
-                    value={cats}
-                    onChange={(e) => setCats(parseInt(e.target.value))}
-                    className="w-full h-3 bg-zinc-800 rounded-lg appearance-none cursor-pointer focus:outline-none transition-all"
-                    style={{
-                      background: `linear-gradient(to right, var(--moiz-green) ${((cats - 1) / 5) * 100}%, #27272a ${((cats - 1) / 5) * 100}%)`,
-                    }}
-                    aria-label="Selecciona la cantidad de gatos"
-                  />
-                  {/* Puntero CSS Nativo sobreescrito sutilmente desde global.css si hace falta */}
-                </div>
-                <div className="flex justify-between mt-4 text-zinc-500 font-black text-xs uppercase tracking-widest px-1">
-                  <span>1 Michi</span>
-                  <span>+6 Manadas</span>
+              <div className="relative pt-6">
+                <input
+                  type="range"
+                  min="1"
+                  max="6"
+                  value={cats}
+                  onChange={(e) => setCats(parseInt(e.target.value))}
+                  className="w-full h-3 bg-zinc-800 rounded-full appearance-none cursor-pointer focus:outline-none"
+                  style={{
+                    background: `linear-gradient(to right, var(--moiz-green) ${((cats - 1) / 5) * 100}%, #27272a ${((cats - 1) / 5) * 100}%)`,
+                  }}
+                />
+                <div className="flex justify-between mt-4 text-white/30 font-bold text-[10px] uppercase tracking-widest px-1">
+                  <span>1 Gato</span>
+                  <span>+6 Gatos</span>
                 </div>
               </div>
             </div>
 
-            {/* Panel de Resultados */}
-            <div className="p-8 md:p-14 lg:p-16 flex flex-col justify-center items-center text-center relative z-10 bg-black/20">
-              <span className="text-white/60 font-black text-sm uppercase tracking-[0.2em] block mb-4 border border-white/10 px-4 py-2 rounded-full backdrop-blur-md">
-                Dinero Ahorrado (Al año)
+            {/* Result Section */}
+            <div className="bg-white/5 rounded-3xl p-8 md:p-12 text-center border border-white/10 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--moiz-green)]/10 to-transparent opacity-50" />
+              
+              <span className="relative z-10 text-white/50 text-xs font-black uppercase tracking-[0.2em] mb-4 block">
+                Ahorro estimado al año
               </span>
               
-              <div 
-                className="text-6xl sm:text-7xl lg:text-[5rem] font-black text-[var(--moiz-green)] mb-8 tracking-tighter drop-shadow-[0_0_40px_rgba(106,142,42,0.2)]"
+              <motion.div
+                key={cats}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="relative z-10 text-[var(--moiz-green)] text-5xl sm:text-7xl font-black tracking-tighter mb-8 drop-shadow-[0_0_40px_rgba(106,142,42,0.3)]"
               >
                 ${totalSavings.toLocaleString("es-CO")}
+              </motion.div>
+
+              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-sm mx-auto">
+                <div className="p-4 rounded-2xl bg-zinc-900 border border-white/5 flex flex-col items-center">
+                  <span className="text-[10px] text-zinc-500 font-bold uppercase mb-1">Tradicional</span>
+                  <span className="text-zinc-400 font-black line-through decoration-red-500/50">${totalClassic.toLocaleString("es-CO")}</span>
+                </div>
+                <div className="p-4 rounded-2xl bg-[var(--moiz-green)] flex flex-col items-center shadow-lg shadow-[var(--moiz-green)]/20">
+                  <span className="text-[10px] text-zinc-950/60 font-black uppercase mb-1">Con Möiz</span>
+                  <span className="text-zinc-950 font-black">${totalMoiz.toLocaleString("es-CO")}</span>
+                </div>
               </div>
               
-              <div className="w-full flex flex-col gap-3 font-medium">
-                <div className="flex justify-between items-center px-5 py-4 rounded-2xl bg-zinc-800/50 text-base">
-                  <span className="text-zinc-400">Gasto Clásico</span>
-                  <span className="text-red-400 line-through decoration-red-400/50 decoration-2">${totalClassic.toLocaleString("es-CO")}</span>
-                </div>
-                <div className="flex justify-between items-center px-5 py-4 rounded-2xl bg-[var(--moiz-green)] text-zinc-950 font-black text-base shadow-lg shadow-[var(--moiz-green)]/20">
-                  <span>Möiz de Alto Rendimiento</span>
-                  <span>${totalMoiz.toLocaleString("es-CO")}</span>
-                </div>
-              </div>
-              
-              <p className="mt-8 text-zinc-500 font-medium text-xs leading-relaxed max-w-sm">
-                *Cálculo visual basado en promedios conservadores de rendimiento contra marcas tradicionales de bentonita del mercado común que aglomeran ineficientemente consumiendo más kilogramos.
+              <p className="relative z-10 mt-8 text-zinc-500 text-[10px] font-medium max-w-xs mx-auto">
+                *Cálculo promediado basado en el rendimiento superior de aglomeración del maíz frente a la bentonita común.
               </p>
             </div>
+
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

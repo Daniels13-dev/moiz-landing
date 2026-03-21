@@ -35,9 +35,9 @@ const steps = [
 
 export default function TransitionGuide() {
   return (
-    <section id="transicion" className="py-24 bg-zinc-50 overflow-hidden">
+    <section id="transicion" className="py-16 md:py-24 bg-zinc-50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 md:mb-16">
           <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">
             El Cambio Perfecto
           </span>
