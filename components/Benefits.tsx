@@ -86,10 +86,10 @@ export default function Benefits() {
   return (
     <section
       id="beneficios"
-      className="py-24 bg-zinc-50 relative overflow-hidden"
+      className="py-16 md:py-24 bg-zinc-50 relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 md:mb-16">
           <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">
             Por qué elegir Möiz
           </span>
