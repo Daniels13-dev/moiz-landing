@@ -1,6 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export interface CartItem {
   id: string;
@@ -8,6 +10,12 @@ export interface CartItem {
   price: number;
   image: string;
   quantity: number;
+}
+
+export interface Product {
+  name: string;
+  price: string;
+  image: string;
 }
 
 interface CartContextType {
@@ -20,17 +28,12 @@ interface CartContextType {
   totalPrice: number;
 }
 
-interface Product {
-  name: string;
-  price: string;
-  image: string;
-}
-
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const router = typeof window !== 'undefined' ? useRouter() : null;
 
   // Initialize cart from localStorage on first client render
   useEffect(() => {
@@ -42,8 +45,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (e) {
       console.error("Error initializing cart", e);
     }
-    // We set this to true to know when it's safe to sync changes back
     setIsInitialized(true);
+
+    // Sync across multiple tabs in real time
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'moiz_cart' && e.newValue) {
+        setCart(JSON.parse(e.newValue));
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   // Save cart to localStorage on change, ONLY after initialization
@@ -61,15 +72,30 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           item.id === product.name ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
-      // Parse price string like "$24.000" to number 24000
       const numericPrice = parseInt(product.price.replace(/[^0-9]/g, ''), 10);
-      return [...prevCart, { 
-        id: product.name, 
-        name: product.name, 
-        price: numericPrice, 
-        image: product.image, 
-        quantity: 1 
+      return [...prevCart, {
+        id: product.name,
+        name: product.name,
+        price: numericPrice,
+        image: product.image,
+        quantity: 1
       }];
+    });
+
+    const formatName = (name: string) => /\d$/.test(name) ? `${name} Kg` : name;
+    
+    toast.success(`${formatName(product.name)} enganchado 🐈`, {
+      description: "¡Agregado exitosamente al carrito!",
+      action: {
+        label: "Ir al Carrito",
+        onClick: () => {
+          if (router) {
+            router.push("/carrito");
+          } else {
+            window.location.href = "/carrito";
+          }
+        }
+      }
     });
   };
 
@@ -85,7 +111,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (newQty >= 1) {
             acc.push({ ...item, quantity: newQty });
           }
-          // If < 1, we don't push anything (remove)
         } else {
           acc.push(item);
         }
@@ -104,7 +129,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       {children}
     </CartContext.Provider>
   );
-};
+}
 
 export const useCart = () => {
   const context = useContext(CartContext);
