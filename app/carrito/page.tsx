@@ -97,7 +97,7 @@ export default function CarritoPage() {
                             {item.name}
                           </h3>
                           <p className="text-[var(--moiz-green)] font-black text-sm md:text-lg">
-                            ${(item.price * item.quantity).toLocaleString("es-CO")}
+                            ${(item.price * item.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                           </p>
                         </div>
 
@@ -171,7 +171,9 @@ export default function CarritoPage() {
               <div className="space-y-6 pb-8 border-b border-white/10 mb-8">
                 <div className="flex justify-between text-white/60 font-medium">
                   <span>Productos ({totalItems})</span>
-                  <span>${totalPrice.toLocaleString("es-CO")}</span>
+                  <span>
+                    ${totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center text-sm font-medium">
                   <span className="text-white/60">Envío</span>
@@ -194,7 +196,10 @@ export default function CarritoPage() {
                   {totalPrice >= 400000 ? (
                     <span className="text-[var(--moiz-green)] flex items-center gap-1">¡Desbloqueado! 🎉</span>
                   ) : (
-                    <span className="text-white/50">Faltan ${(400000 - totalPrice).toLocaleString("es-CO")}</span>
+                    <span className="text-white/50">
+                      Faltan{" "}
+                      ${(400000 - totalPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                    </span>
                   )}
                 </div>
                 <div className="w-full bg-black/40 rounded-full h-3 overflow-hidden shadow-inner">
@@ -216,7 +221,7 @@ export default function CarritoPage() {
                   Total del pedido
                 </span>
                 <span className="text-3xl font-black text-white">
-                  ${totalPrice.toLocaleString("es-CO")}
+                  ${totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                 </span>
               </div>
 
@@ -255,7 +260,9 @@ export default function CarritoPage() {
             <div className="bg-zinc-900 text-white p-5 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/5 flex items-center justify-between gap-4">
               <div className="flex flex-col">
                 <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">Total</span>
-                <span className="text-xl font-black">${totalPrice.toLocaleString("es-CO")}</span>
+                <span className="text-xl font-black">
+                  ${totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                </span>
               </div>
               <button
                 onClick={handleWhatsAppCheckout}

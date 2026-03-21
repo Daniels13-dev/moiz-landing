@@ -80,7 +80,7 @@ export default function ProductCarousel() {
                 </p>
                 <div className="flex items-center gap-6 mt-auto pb-4">
                   <span className="text-3xl font-extrabold text-white">
-                    {activeProduct.price}
+                    ${activeProduct.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                   </span>
                   <div className="flex items-center gap-2">
                     <AnimatePresence>

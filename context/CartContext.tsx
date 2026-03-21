@@ -65,6 +65,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [cart, isInitialized]);
 
   const addToCart = (product: Product) => {
+    const numericPrice = typeof product.price === 'number' ? product.price : parseInt(product.price.replace(/[^0-9]/g, ''), 10);
+    
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.name);
       if (existingItem) {
@@ -72,7 +74,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
           item.id === product.name ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
-      const numericPrice = typeof product.price === 'number' ? product.price : parseInt(product.price.replace(/[^0-9]/g, ''), 10);
       return [...prevCart, {
         id: product.name,
         name: product.name,
@@ -100,7 +101,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 {formatName(product.name)} enganchado 🐈
               </p>
               <p className="mt-1 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
-                Agregado al Carrito
+                Agregado • ${numericPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
               </p>
             </div>
           </div>
