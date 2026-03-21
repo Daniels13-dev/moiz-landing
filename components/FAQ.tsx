@@ -4,37 +4,28 @@ import { ChevronDown, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-const faqData = [
-  {
-    question: "¿Se puede arrojar al inodoro?",
-    answer: "Sí, Möiz es 100% biodegradable y se disuelve en agua rápidamente. Sin embargo, recomendamos arrojar solo pequeñas cantidades a la vez y verificar que tu sistema de tuberías esté en buen estado."
-  },
-  {
-    question: "¿Es segura para gatitos cachorros?",
-    answer: "Totalmente. Al ser de origen natural y libre de polvo químico, es ideal para gatitos en crecimiento que suelen explorar y lamer sus patas. No hay riesgo de obstrucciones respiratorias ni digestivas."
-  },
-  {
-    question: "¿Cuánto rinde una bolsa de 10kg?",
-    answer: "En un hogar con un solo gato, una bolsa de 10kg puede durar entre 1 y 2 meses, dependiendo de los hábitos de limpieza. Rinde mucho más que la arena de arcilla tradicional."
-  },
-  {
-    question: "¿Cómo controla el olor sin fragancias?",
-    answer: "El maíz tiene una estructura porosa natural que atrapa las moléculas de amoníaco. No 'disfrazamos' el olor con químicos, lo neutralizamos de raíz."
-  },
-  {
-    question: "¿Funciona con areneros automáticos?",
-    answer: "Debido a su granulado ligero y aglomeración rápida, Möiz funciona muy bien con la mayoría de areneros automáticos. Verifica que el rastrillo o filtro sea apto para granos medianos."
-  }
-];
+import { faqData } from "@/data/faq";
 
-function FAQItem({ question, answer, isOpen, onClick }: { question: string; answer: string; isOpen: boolean; onClick: () => void }) {
+function FAQItem({
+  question,
+  answer,
+  isOpen,
+  onClick,
+}: {
+  question: string;
+  answer: string;
+  isOpen: boolean;
+  onClick: () => void;
+}) {
   return (
     <div className="border-b border-zinc-100 last:border-0">
       <button
         onClick={onClick}
         className="w-full py-6 flex items-center justify-between text-left group transition-all"
       >
-        <span className={`text-lg font-bold group-hover:text-[var(--moiz-green)] transition-colors ${isOpen ? "text-[var(--moiz-green)]" : "text-zinc-900"}`}>
+        <span
+          className={`text-lg font-bold group-hover:text-[var(--moiz-green)] transition-colors ${isOpen ? "text-[var(--moiz-green)]" : "text-zinc-900"}`}
+        >
           {question}
         </span>
         <motion.span
@@ -67,7 +58,31 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-24 bg-white overflow-hidden">
+    <motion.section 
+      id="faq" 
+      className="py-24 bg-white overflow-hidden"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqData.map((item) => ({
+              "@type": "Question",
+              name: item.question,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: item.answer,
+              },
+            })),
+          }),
+        }}
+      />
       <div className="max-w-4xl mx-auto px-6">
         <div className="text-center mb-16">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--moiz-green)]/10 text-[var(--moiz-green)] font-black text-xs uppercase tracking-widest mb-4">
@@ -78,7 +93,8 @@ export default function FAQ() {
             Todo lo que necesitas saber
           </h2>
           <p className="mt-4 text-lg text-zinc-500">
-            Resolvemos tus dudas para que tú y tu michi tengan la mejor experiencia posible.
+            Resolvemos tus dudas para que tú y tu michi tengan la mejor
+            experiencia posible.
           </p>
         </div>
 
@@ -95,18 +111,20 @@ export default function FAQ() {
         </div>
 
         <div className="mt-16 p-8 rounded-3xl bg-zinc-900 text-white flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="text-center md:text-left">
-                <h4 className="text-2xl font-black mb-2">¿Aún tienes dudas?</h4>
-                <p className="text-zinc-400 font-medium">Estamos listos para ayudarte vía WhatsApp.</p>
-            </div>
-            <a 
-                href="#contacto" 
-                className="px-8 py-4 bg-[var(--moiz-green)] hover:bg-[var(--moiz-green)]/90 text-white rounded-full font-bold transition-all hover:scale-105"
-            >
-                Hablar con un experto
-            </a>
+          <div className="text-center md:text-left">
+            <h4 className="text-2xl font-black mb-2">¿Aún tienes dudas?</h4>
+            <p className="text-zinc-400 font-medium">
+              Estamos listos para ayudarte vía WhatsApp.
+            </p>
+          </div>
+          <a
+            href="#contacto"
+            className="px-8 py-4 bg-[var(--moiz-green)] hover:bg-[var(--moiz-green)]/90 text-white rounded-full font-bold transition-all hover:scale-105"
+          >
+            Hablar con un experto
+          </a>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

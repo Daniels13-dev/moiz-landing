@@ -3,33 +3,33 @@
 import { motion } from "framer-motion";
 
 const steps = [
-  { 
-    day: "Días 1-3", 
-    percent: "25%", 
-    title: "Inicia la mezcla", 
+  {
+    day: "Días 1-3",
+    percent: "25%",
+    title: "Inicia la mezcla",
     desc: "Mezcla un 25% de Möiz con un 75% de tu arena anterior. Deja que tu gato se familiarice con la nueva textura.",
-    icon: "🌱"
+    icon: "🌱",
   },
-  { 
-    day: "Días 4-6", 
-    percent: "50%", 
-    title: "Mitad y mitad", 
+  {
+    day: "Días 4-6",
+    percent: "50%",
+    title: "Mitad y mitad",
     desc: "Aumenta la proporción a partes iguales. Ya notarás una mejora en el control de olores y menos polvo.",
-    icon: "⚖️"
+    icon: "⚖️",
   },
-  { 
-    day: "Días 7-9", 
-    percent: "75%", 
-    title: "Casi listo", 
+  {
+    day: "Días 7-9",
+    percent: "75%",
+    title: "Casi listo",
     desc: "Usa un 75% de Möiz. Tu gato ya debería estar totalmente cómodo con el cambio natural.",
-    icon: "✨"
+    icon: "✨",
   },
-  { 
-    day: "Día 10+", 
-    percent: "100%", 
-    title: "Cambio Total", 
+  {
+    day: "Día 10+",
+    percent: "100%",
+    title: "Cambio Total",
     desc: "¡Felicidades! Tu hogar ahora es 100% libre de químicos y totalmente sostenible.",
-    icon: "🐈"
+    icon: "🐈",
   },
 ];
 
@@ -38,12 +38,15 @@ export default function TransitionGuide() {
     <section id="transicion" className="py-24 bg-zinc-50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">El Cambio Perfecto</span>
+          <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">
+            El Cambio Perfecto
+          </span>
           <h2 className="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight">
             Cómo pasarse a Möiz
           </h2>
           <p className="mt-4 text-lg text-zinc-500 max-w-2xl mx-auto">
-            Para una transición exitosa y sin estrés para tu michi, te recomendamos seguir este plan de 10 días.
+            Para una transición exitosa y sin estrés para tu michi, te
+            recomendamos seguir este plan de 10 días.
           </p>
         </div>
 
@@ -63,16 +66,18 @@ export default function TransitionGuide() {
               <div className="w-20 h-20 rounded-full bg-zinc-50 border-4 border-white shadow-inner flex items-center justify-center text-4xl mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
                 {step.icon}
               </div>
-              
+
               <div className="inline-block px-4 py-1 rounded-full bg-[var(--moiz-green)]/10 text-[var(--moiz-green)] text-sm font-black mb-4">
                 {step.day}
               </div>
-              
-              <h3 className="font-extrabold text-2xl text-zinc-900 mb-4">{step.title}</h3>
-              
+
+              <h3 className="font-extrabold text-2xl text-zinc-900 mb-4">
+                {step.title}
+              </h3>
+
               <div className="flex items-center justify-center gap-2 mb-6">
                 <div className="h-2 w-24 bg-zinc-100 rounded-full overflow-hidden">
-                  <motion.div 
+                  <motion.div
                     initial={{ width: 0 }}
                     whileInView={{ width: step.percent }}
                     viewport={{ once: true }}
@@ -80,7 +85,9 @@ export default function TransitionGuide() {
                     className="h-full bg-[var(--moiz-green)]"
                   />
                 </div>
-                <span className="text-sm font-bold text-zinc-400">{step.percent}</span>
+                <span className="text-sm font-bold text-zinc-400">
+                  {step.percent}
+                </span>
               </div>
 
               <p className="text-zinc-500 font-medium text-sm leading-relaxed">
@@ -91,9 +98,10 @@ export default function TransitionGuide() {
         </div>
 
         <div className="mt-16 text-center">
-            <p className="text-zinc-400 font-medium italic">
-              * Recuerda limpiar el arenero antes de empezar con el día 10 para una frescura total.
-            </p>
+          <p className="text-zinc-400 font-medium italic">
+            * Recuerda limpiar el arenero antes de empezar con el día 10 para
+            una frescura total.
+          </p>
         </div>
       </div>
     </section>

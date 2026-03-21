@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@theme {
+  --color-moiz-green: #6A8E2A;
+  --color-moiz-footer: #86A93C;
+  --color-moiz-pink: #FFEAF3; /* Adapted for background */
+  --color-moiz-pink-text: #C2185B;
+  --color-moiz-yellow: #E6B800;
+  --color-moiz-bg: #FAFAF8;
+  --color-moiz-text: #2A2A2A;
+  --color-moiz-dark: #0A0E0A;
+}
+
+/* Fallback legacy vars just in case they are used strictly as var(--...) somewhere */
 :root {
   --moiz-green: #6A8E2A;
   --moiz-footer: #86A93C;
