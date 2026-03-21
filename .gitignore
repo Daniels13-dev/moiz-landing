@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Playwright visual test snapshots and results
+tests/**/*.spec.ts-snapshots/
+tests/**/snapshots/
+**/*-snapshots/
+test-results/
+.playwright/
