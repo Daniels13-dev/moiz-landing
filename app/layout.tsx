@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: `${siteConfig.name} | Arena Ecológica de Maíz para Gatos en Colombia`,
   description: siteConfig.description,
   keywords: siteConfig.keywords,
@@ -59,7 +60,11 @@ export const metadata: Metadata = {
     images: [siteConfig.ogImage],
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/logo/logo.png" },
+      { url: "/logo/logo.png", sizes: "32x32", type: "image/png" },
+    ],
+    shortcut: "/logo/logo.png",
     apple: "/logo/logo.png",
   },
 };

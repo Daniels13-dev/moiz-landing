@@ -53,9 +53,9 @@ export default function Comparison() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
   return (
-    <section id="comparativa" className="py-24 bg-white overflow-hidden">
+    <section id="comparativa" className="py-16 md:py-24 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 md:mb-16">
           <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">
             El Cambio Inteligente
           </span>
@@ -68,18 +68,19 @@ export default function Comparison() {
           </p>
         </div>
 
-        <div className="relative rounded-[2.5rem] border border-zinc-100 shadow-2xl bg-white">
+        {/* Desktop View (Table) */}
+        <div className="hidden md:block relative rounded-[2.5rem] border border-zinc-100 shadow-2xl bg-white">
           <div className="overflow-visible rounded-[2.5rem]">
             <table className="w-full text-left border-collapse overflow-visible">
               <thead>
                 <tr className="bg-zinc-50/50">
-                  <th className="p-6 md:p-8 text-zinc-500 font-bold text-sm uppercase tracking-wider border-b border-zinc-100 min-w-[200px]">
+                  <th className="p-8 text-zinc-500 font-bold text-sm uppercase tracking-wider border-b border-zinc-100 min-w-[200px]">
                     Característica
                   </th>
-                  <th className="p-6 md:p-8 text-[var(--moiz-green)] font-black text-xl md:text-2xl border-b border-zinc-100 bg-[var(--moiz-green)]/5">
+                  <th className="p-8 text-[var(--moiz-green)] font-black text-2xl border-b border-zinc-100 bg-[var(--moiz-green)]/5">
                     Möiz
                   </th>
-                  <th className="p-6 md:p-8 text-zinc-400 font-bold text-lg md:text-xl border-b border-zinc-100">
+                  <th className="p-8 text-zinc-400 font-bold text-xl border-b border-zinc-100">
                     Otras Arenas
                   </th>
                 </tr>
@@ -94,13 +95,13 @@ export default function Comparison() {
                     transition={{ delay: idx * 0.1 }}
                     className={`border-b border-zinc-50 last:border-0 hover:bg-zinc-50/30 transition-colors relative group`}
                   >
-                    <td className="p-6 md:p-8 relative">
+                    <td className="p-8 relative">
                       <div
                         className="flex items-center gap-2 relative"
                         onMouseEnter={() => setActiveIdx(idx)}
                         onMouseLeave={() => setActiveIdx(null)}
                       >
-                        <span className="font-bold text-zinc-900 md:text-lg">
+                        <span className="font-bold text-zinc-900 text-lg">
                           {item.feature}
                         </span>
                         <div
@@ -124,7 +125,7 @@ export default function Comparison() {
                                 y: idx > 3 ? -10 : 10,
                                 scale: 0.95,
                               }}
-                              className={`absolute left-0 z-[70] w-[280px] md:w-[320px] bg-zinc-900 text-white p-5 rounded-2xl shadow-2xl pointer-events-none 
+                              className={`absolute left-0 z-[70] w-[320px] bg-zinc-900 text-white p-5 rounded-2xl shadow-2xl pointer-events-none 
                                             ${idx > 3 ? "bottom-full mb-3" : "top-full mt-3"}`}
                             >
                               <div
@@ -138,22 +139,22 @@ export default function Comparison() {
                         </AnimatePresence>
                       </div>
                     </td>
-                    <td className="p-6 md:p-8 bg-[var(--moiz-green)]/5">
+                    <td className="p-8 bg-[var(--moiz-green)]/5">
                       <div className="flex items-center gap-3">
                         <div className="w-6 h-6 rounded-full bg-[var(--moiz-green)] flex items-center justify-center text-white shrink-0">
                           <Check size={14} strokeWidth={4} />
                         </div>
-                        <span className="font-extrabold text-zinc-900 md:text-lg">
+                        <span className="font-extrabold text-zinc-900 text-lg">
                           {item.moiz}
                         </span>
                       </div>
                     </td>
-                    <td className="p-6 md:p-8">
+                    <td className="p-8">
                       <div className="flex items-center gap-3 opacity-60">
                         <div className="w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center text-zinc-500 shrink-0">
                           <X size={14} strokeWidth={4} />
                         </div>
-                        <span className="font-medium text-zinc-500 md:text-lg">
+                        <span className="font-medium text-zinc-500 text-lg">
                           {item.others}
                         </span>
                       </div>
@@ -163,6 +164,70 @@ export default function Comparison() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Mobile View (Cards) */}
+        <div className="md:hidden space-y-8">
+          {comparisonData.map((item, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: idx * 0.1 }}
+              className="bg-white rounded-[2rem] p-8 border border-zinc-100 shadow-[0_20px_40px_rgba(0,0,0,0.05)] relative overflow-hidden"
+            >
+              {/* Feature Header */}
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-[var(--moiz-green)]/10 flex items-center justify-center text-[var(--moiz-green)] font-bold text-xl">
+                  {idx + 1}
+                </div>
+                <h3 className="text-xl font-black text-zinc-900 tracking-tight">
+                  {item.feature}
+                </h3>
+              </div>
+
+              {/* Comparison Blocks */}
+              <div className="grid grid-cols-1 gap-4">
+                {/* Möiz Block */}
+                <div className="bg-[var(--moiz-green)]/5 p-5 rounded-3xl border-2 border-[var(--moiz-green)]/20 relative">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[var(--moiz-green)] font-black text-[10px] uppercase tracking-[0.2em]">
+                      Möiz
+                    </span>
+                    <Check
+                      size={18}
+                      className="text-[var(--moiz-green)]"
+                      strokeWidth={3}
+                    />
+                  </div>
+                  <p className="text-zinc-900 font-extrabold text-lg">
+                    {item.moiz}
+                  </p>
+                </div>
+
+                {/* Others Block */}
+                <div className="bg-zinc-50 p-5 rounded-3xl border border-zinc-200/50 opacity-60">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-zinc-400 font-bold text-[10px] uppercase tracking-[0.2em]">
+                      Otras Arenas
+                    </span>
+                    <X size={18} className="text-zinc-300" strokeWidth={3} />
+                  </div>
+                  <p className="text-zinc-500 font-bold text-lg">
+                    {item.others}
+                  </p>
+                </div>
+              </div>
+
+              {/* Explanation (Now always visible and pretty on mobile) */}
+              <div className="mt-6 pt-6 border-t border-dashed border-zinc-100">
+                <p className="text-sm text-zinc-500 font-medium leading-relaxed italic">
+                  &quot;{item.explanation}&quot;
+                </p>
+              </div>
+            </motion.div>
+          ))}
         </div>
 
         <div className="mt-12 p-8 rounded-3xl bg-[var(--moiz-yellow)]/10 border border-[var(--moiz-yellow)]/20 flex flex-col md:flex-row items-center gap-6">

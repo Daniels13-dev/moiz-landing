@@ -14,7 +14,7 @@ export interface CartItem {
 
 export interface Product {
   name: string;
-  price: string;
+  price: number | string;
   image: string;
 }
 
@@ -65,6 +65,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [cart, isInitialized]);
 
   const addToCart = (product: Product) => {
+    const numericPrice = typeof product.price === 'number' ? product.price : parseInt(product.price.replace(/[^0-9]/g, ''), 10);
+    
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.name);
       if (existingItem) {
@@ -72,7 +74,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
           item.id === product.name ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
-      const numericPrice = parseInt(product.price.replace(/[^0-9]/g, ''), 10);
       return [...prevCart, {
         id: product.name,
         name: product.name,
@@ -84,19 +85,40 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     const formatName = (name: string) => /\d$/.test(name) ? `${name} Kg` : name;
     
-    toast.success(`${formatName(product.name)} enganchado 🐈`, {
-      description: "¡Agregado exitosamente al carrito!",
-      action: {
-        label: "Ir al Carrito",
-        onClick: () => {
-          if (router) {
-            router.push("/carrito");
-          } else {
-            window.location.href = "/carrito";
-          }
-        }
-      }
-    });
+    toast.custom((id) => (
+      <div className="max-w-md w-full bg-zinc-900 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-3xl pointer-events-auto flex overflow-hidden border border-white/10">
+        <div className="flex-1 w-0 p-4">
+          <div className="flex items-center">
+            <div className="flex-shrink-0 pt-0.5">
+              <img
+                className="h-12 w-12 rounded-xl object-contain bg-white/5 p-1"
+                src={product.image}
+                alt={product.name}
+              />
+            </div>
+            <div className="ml-4 flex-1">
+              <p className="text-sm font-black text-white">
+                {formatName(product.name)} enganchado 🐈
+              </p>
+              <p className="mt-1 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                Agregado • ${numericPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex border-l border-white/10">
+          <button
+            onClick={() => {
+              toast.dismiss(id);
+              if (router) router.push("/carrito");
+            }}
+            className="w-full border border-transparent rounded-none rounded-r-3xl p-4 flex items-center justify-center text-sm font-black text-[var(--moiz-green)] hover:bg-white/5 active:bg-white/10 transition-colors"
+          >
+            Pagar
+          </button>
+        </div>
+      </div>
+    ), { duration: 3000 });
   };
 
   const removeFromCart = (productId: string) => {

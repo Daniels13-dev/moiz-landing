@@ -2,6 +2,7 @@ import { FaWhatsapp, FaInstagram, FaTiktok, FaFacebook } from "react-icons/fa";
 import { siteConfig } from "@/config/site";
 
 import Link from "next/link";
+import { Home, ShoppingBag, Box, Calculator, Sparkles, Star, MessageCircle } from "lucide-react";
 
 const socials = [
   { platform: "WhatsApp", url: siteConfig.links.whatsapp, Icon: FaWhatsapp, hoverBgClass: "hover:bg-[#25D366]/10", hoverBorderClass: "hover:border-[#25D366]/30", hoverTextClass: "group-hover:text-[#25D366]" },
@@ -28,7 +29,8 @@ export default function Footer() {
         </div>
 
         <div className="max-w-7xl mx-auto px-6 md:px-16 pt-20 md:pt-32 pb-12 relative z-10">
-          <div className="flex flex-col lg:flex-row justify-between gap-16 lg:gap-8 border-b border-white/10 pb-16 md:pb-24">
+          {/* Desktop Footer (Hidden on Mobile) */}
+          <div className="hidden md:flex flex-col lg:flex-row justify-between gap-16 lg:gap-8 border-b border-white/10 pb-16 md:pb-24">
             {/* Massive Typography */}
             <div className="flex-1">
               <h2 className="text-5xl sm:text-7xl lg:text-[6rem] font-extrabold text-white tracking-tighter leading-[0.9] mb-8">
@@ -53,6 +55,7 @@ export default function Footer() {
                   { name: "Inicio", path: "/" },
                   { name: "Productos", path: "/#producto" },
                   { name: "Comparativa", path: "/#comparativa" },
+                  { name: "Impacto Económico", path: "/#calculadora" },
                   { name: "Beneficios", path: "/#beneficios" },
                   { name: "Transición", path: "/#transicion" },
                   { name: "Reseñas", path: "/#clientes" },
@@ -104,35 +107,101 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Bottom Bar */}
-          <div className="pt-10 flex flex-col md:flex-row items-center justify-between gap-6 text-sm md:text-base font-medium text-zinc-500">
-            <div className="flex flex-col md:flex-row items-center gap-4 w-full justify-between">
-              <div className="flex flex-wrap justify-center gap-6">
+          {/* Mobile Footer (Hidden on Desktop) */}
+          <div className="md:hidden flex flex-col items-center py-6">
+            {/* Restored Typography Header */}
+            <div className="mb-14 text-center">
+              <h2 className="text-5xl font-black text-white tracking-tighter leading-[0.9] mb-6">
+                Instinto <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--moiz-green)] to-[#E6B800]">
+                  Natural.
+                </span>
+              </h2>
+              <p className="text-zinc-400 text-base font-medium max-w-[280px] mx-auto leading-relaxed">
+                La alternativa 100% compostable que revoluciona el cuidado felino.
+              </p>
+            </div>
+
+            {/* Iconographic Grid Links */}
+            <div className="grid grid-cols-2 gap-3 w-full max-w-sm mb-16 px-2">
+              {[
+                { name: "Inicio", path: "/", icon: <Home size={16} /> },
+                { name: "Productos", path: "/#producto", icon: <ShoppingBag size={16} /> },
+                { name: "Comparativa", path: "/#comparativa", icon: <Box size={16} /> },
+                { name: "Ahorro", path: "/#calculadora", icon: <Calculator size={16} /> },
+                { name: "Beneficios", path: "/#beneficios", icon: <Sparkles size={16} /> },
+                { name: "Reseñas", path: "/#clientes", icon: <Star size={16} /> },
+                { name: "FAQ", path: "/#faq", icon: <MessageCircle size={16} /> },
+              ].map((link) => (
                 <Link
-                  href="/terminos"
-                  className="hover:text-[var(--moiz-green)] transition-colors"
+                  key={link.name}
+                  href={link.path}
+                  className="flex flex-col items-start gap-3 p-5 bg-white/[0.03] border border-white/5 rounded-[2rem] active:bg-[var(--moiz-green)]/10 active:border-[var(--moiz-green)]/30 transition-all group"
                 >
-                  Términos
+                  <div className="w-10 h-10 rounded-2xl bg-zinc-900 flex items-center justify-center text-zinc-500 group-active:text-[var(--moiz-green)] transition-colors border border-white/5">
+                    {link.icon}
+                  </div>
+                  <span className="text-zinc-300 font-bold text-xs tracking-tight">
+                    {link.name}
+                  </span>
                 </Link>
-                <Link
-                  href="/privacidad"
-                  className="hover:text-[var(--moiz-green)] transition-colors"
+              ))}
+              
+              <a
+                href={siteConfig.links.whatsapp}
+                target="_blank"
+                rel="noreferrer"
+                className="col-span-1 flex flex-col items-start gap-3 p-5 bg-white/[0.03] border border-white/5 rounded-[2rem] active:bg-[#25D366]/10 active:border-[#25D366]/30 transition-all group"
+              >
+                <div className="w-10 h-10 rounded-2xl bg-zinc-900 flex items-center justify-center text-zinc-500 group-active:text-[#25D366] transition-colors border border-white/5">
+                  <MessageCircle size={16} />
+                </div>
+                <span className="text-zinc-300 font-bold text-xs tracking-tight">
+                  Soporte
+                </span>
+              </a>
+            </div>
+
+            {/* Social Pills */}
+            <div className="flex justify-center gap-6 mb-8">
+              {socials.map((social) => (
+                <a
+                  key={social.platform}
+                  href={social.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 active:bg-[var(--moiz-green)] active:text-zinc-950 active:scale-110 active:shadow-[0_0_30px_rgba(106,142,42,0.4)] transition-all"
                 >
-                  Privacidad
-                </Link>
-                <Link
-                  href="/politicas"
-                  className="hover:text-[var(--moiz-green)] transition-colors"
-                >
-                  Politicas de Envío
-                </Link>
+                  <social.Icon size={24} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom Bar (Responsive) */}
+          <div className="pt-10 flex flex-col md:flex-row items-center justify-between gap-12 text-sm md:text-base font-medium text-zinc-500">
+            <div className="flex flex-col md:flex-row items-center gap-8 w-full justify-between">
+              <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 max-w-xs md:max-w-none">
+                {[
+                  { name: "Términos", path: "/terminos" },
+                  { name: "Privacidad", path: "/privacidad" },
+                  { name: "Políticas", path: "/politicas" },
+                ].map((link) => (
+                  <Link
+                    key={link.name}
+                    href={link.path}
+                    className="hover:text-[var(--moiz-green)] active:text-[var(--moiz-green)] transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                ))}
               </div>
 
-              <div className="flex items-center gap-2">
-                <span className="bg-zinc-900 rounded-lg px-3 py-1 font-mono text-xs tracking-widest text-[#25D366]">
+              <div className="flex flex-col md:flex-row items-center gap-4 text-center">
+                <span className="bg-zinc-900 rounded-lg px-3 py-1 font-mono text-[10px] tracking-widest text-[#25D366]">
                   EN LÍNEA
                 </span>
-                <span>© 2026 Möiz SAS.</span>
+                <span className="opacity-60">© 2026 Möiz SAS.</span>
               </div>
             </div>
           </div>

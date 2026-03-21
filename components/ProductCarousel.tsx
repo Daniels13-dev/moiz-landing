@@ -49,7 +49,7 @@ export default function ProductCarousel() {
   return (
     <section
       id="producto"
-      className="relative py-24 md:py-32 bg-[#0A0E0A] text-white overflow-hidden"
+      className="relative py-16 md:py-32 bg-[#0A0E0A] text-white overflow-hidden"
     >
       {/* Dynamic Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] bg-[var(--moiz-green)]/10 blur-[150px] rounded-full pointer-events-none" />
@@ -80,7 +80,7 @@ export default function ProductCarousel() {
                 </p>
                 <div className="flex items-center gap-6 mt-auto pb-4">
                   <span className="text-3xl font-extrabold text-white">
-                    {activeProduct.price}
+                    ${activeProduct.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                   </span>
                   <div className="flex items-center gap-2">
                     <AnimatePresence>
