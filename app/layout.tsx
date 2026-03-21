@@ -13,10 +13,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MOIZ - Arena de Maíz para Gatos",
+  title: "Möiz - Arena de Maíz para Gatos",
   description:
     "Arena ecológica biodegradable hecha de maíz para gatos. Control natural de olores.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/logo/logo.png",
+  },
 };
+
+import { CartProvider } from "@/context/CartContext";
 
 export default function RootLayout({
   children,
@@ -24,11 +30,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <CartProvider>
+          {children}
+        </CartProvider>
       </body>
     </html>
   );

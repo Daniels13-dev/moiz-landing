@@ -2,99 +2,180 @@
 
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { useCart } from "@/context/CartContext";
 
 const products = [
-  { name: "Arena 2kg", image: "/products/arena2kg.png" },
-  { name: "Arena 4kg", image: "/products/arena4kg.png" },
-  { name: "Arena 10kg", image: "/products/arena10kg.png" },
-  { name: "Arena 20kg", image: "/products/arena20kg.png" },
-  { name: "Arena 50kg", image: "/products/arena50kg.png" },
+  { name: "Arena 2", image: "/products/arena2kg-transparent.png", price: "$12.000", desc: "La presentación ideal para gatos pequeños o de un solo mes de prueba." },
+  { name: "Arena 4", image: "/products/arena4kg-transparent.png", price: "$24.000", desc: "Nuestra presentación estrella. Máximo equilibrio entre rendimiento y frescura constante." },
+  { name: "Arena 10", image: "/products/arena10kg-transparent.png", price: "$55.000", desc: "Mejor relación precio/uso. Perfecta para quienes buscan ahorro sin perder aglomeración." },
+  { name: "Arena 20", image: "/products/arena20kg-transparent.png", price: "$108.000", desc: "El formato de suministro constante. Diseñado para hogares con 2 a 3 encantadores felinos." },
+  { name: "Arena 50", image: "/products/arena50kg-transparent.png", price: "$237.000", desc: "El titán del soporte. Uso profesional, fundaciones o familias multiespecie gigantes." },
 ];
 
 export default function ProductCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, align: "start" },
-    [Autoplay({ delay: 4000, stopOnInteraction: false })]
+    { loop: false, align: "center", skipSnaps: false },
+    [Autoplay({ delay: 5000, stopOnInteraction: true })]
   );
 
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
+  const [selected, setSelected] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
+    emblaApi.on("select", onSelect);
+    onSelect();
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
   }, [emblaApi]);
 
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback((idx: number) => emblaApi && emblaApi.scrollTo(idx), [emblaApi]);
 
+  const activeProduct = products[selected];
+  const { cart, addToCart, updateQuantity } = useCart();
+
+  const activeQuantity = cart.find(item => item.id === activeProduct.name)?.quantity || 0;
+
+  // Removed mounted check to avoid SSR mismatch
+  
   return (
-    <section id="producto" className="py-24 bg-white">
+    <section id="producto" className="relative py-24 md:py-32 bg-[#0A0E0A] text-white overflow-hidden">
+      {/* Dynamic Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] bg-[var(--moiz-green)]/10 blur-[150px] rounded-full pointer-events-none" />
 
-      <h2 className="text-4xl text-center font-bold text-[var(--moiz-green)] mb-16">
-        Presentaciones
-      </h2>
-
-      <div className="relative max-w-6xl mx-auto px-6">
-
-        {/* viewport */}
-        <div className="overflow-hidden" ref={emblaRef}>
-
-          {/* container */}
-          <div className="flex">
-
-            {products.map((p, i) => (
-              <div
-                key={i}
-                className="flex-[0_0_100%] md:flex-[0_0_33.333%] px-4"
+      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-12 lg:gap-24 items-center relative z-10 min-h-[500px]">
+        
+        {/* Left: Dynamic Content with AnimatePresence */}
+        <div className="lg:col-span-5 flex flex-col justify-center h-full relative order-2 lg:order-1 pt-10 lg:pt-0">
+          <span className="text-[var(--moiz-green)] font-extrabold tracking-[0.2em] text-xs uppercase mb-6 block border border-[var(--moiz-green)]/30 w-max px-3 py-1 rounded-full">Explora la Colección</span>
+          
+          <div className="relative h-[250px] sm:h-[220px]">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={selected}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="absolute inset-0 flex flex-col justify-start"
               >
-                <div className="flex flex-col items-center bg-white border border-gray-100 shadow-md rounded-2xl p-8 hover:shadow-xl transition">
-
-                  {/* imagen producto */}
-                  <div className="w-52 h-72 mb-6 overflow-hidden rounded-xl bg-gray-50 flex items-center justify-center">
-
-                    <Image
-                      src={p.image}
-                      alt={p.name}
-                      width={208}
-                      height={288}
-                      className="w-full h-full object-contain"
-                    />
-
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter mb-4 leading-none">
+                  {activeProduct.name.replace('Arena ', '')}<span className="text-[var(--moiz-green)]">KG</span>
+                </h2>
+                <p className="text-lg text-zinc-400 mb-8 max-w-md leading-relaxed">
+                  {activeProduct.desc}
+                </p>
+                <div className="flex items-center gap-6 mt-auto pb-4">
+                  <span className="text-3xl font-extrabold text-white">{activeProduct.price}</span>
+                  <div className="flex items-center gap-2">
+                    <AnimatePresence>
+                      {activeQuantity > 0 && (
+                        <>
+                          <motion.button
+                            initial={{ scale: 0, opacity: 0, x: 20 }}
+                            animate={{ scale: 1, opacity: 1, x: 0 }}
+                            exit={{ scale: 0, opacity: 0, x: 20 }}
+                            onClick={() => updateQuantity(activeProduct.name, -1)}
+                            className="flex items-center justify-center w-10 h-10 bg-white/75 text-[#0A0E0A] rounded-full shadow-lg hover:scale-110 transition-transform active:scale-95"
+                          >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/></svg>
+                          </motion.button>
+                          
+                          <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            className="flex items-center justify-center min-w-[2.5rem] h-10 px-3 rounded-full bg-white text-[#0A0E0A] font-black text-base shadow-xl"
+                          >
+                            {activeQuantity}
+                          </motion.div>
+                        </>
+                      )}
+                    </AnimatePresence>
+                    <button 
+                      onClick={() => addToCart(activeProduct)}
+                      className="flex items-center justify-center w-10 h-10 bg-[var(--moiz-green)] text-[#0A0E0A] rounded-full shadow-lg hover:scale-110 transition-transform active:scale-95"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
                   </div>
-
-                  <h3 className="text-lg font-semibold mb-4">
-                    {p.name}
-                  </h3>
-
-                  <button className="bg-[var(--moiz-text)] text-white px-6 py-2 rounded-lg hover:opacity-90 transition">
-                    Comprar
-                  </button>
-
                 </div>
-              </div>
-            ))}
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
+          {/* Controls */}
+          <div className="flex items-center gap-4 mt-8 lg:mt-16 border-t border-white/10 pt-8">
+            <button onClick={scrollPrev} aria-label="Anterior" className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-[#0A0E0A] transition-colors duration-300">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+            </button>
+            <button onClick={scrollNext} aria-label="Siguiente" className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-[#0A0E0A] transition-colors duration-300">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+            </button>
+            
+            <div className="ml-4 flex gap-2">
+              {products.map((_, i) => (
+                <button 
+                  key={i} 
+                  aria-label={`Slide ${i}`}
+                  onClick={() => scrollTo(i)} 
+                  className={`h-1.5 rounded-full transition-all duration-500 ${selected === i ? "w-12 bg-[var(--moiz-green)]" : "w-3 bg-white/20 hover:bg-white/40"}`} 
+                />
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* botón izquierda */}
-        <button
-          onClick={scrollPrev}
-          className="absolute left-0 top-1/2 -translate-y-1/2 bg-white border shadow-md rounded-full w-11 h-11 flex items-center justify-center hover:scale-105 transition"
-        >
-          ←
-        </button>
+        {/* Right: Cover-flow style Carousel */}
+        <div className="lg:col-span-7 h-[400px] sm:h-[500px] md:h-[600px] w-full relative order-1 lg:order-2">
+          <div className="overflow-hidden w-[100vw] lg:w-full ml-[-20px] lg:ml-0 px-[20px] lg:px-0 h-full" ref={emblaRef}>
+            <div className="flex h-full items-center">
+              {products.map((p, i) => {
+                const isActive = selected === i;
 
-        {/* botón derecha */}
-        <button
-          onClick={scrollNext}
-          className="absolute right-0 top-1/2 -translate-y-1/2 bg-white border shadow-md rounded-full w-11 h-11 flex items-center justify-center hover:scale-105 transition"
-        >
-          →
-        </button>
+                return (
+                  <div key={i} className="flex-[0_0_100%] min-w-0 h-full flex items-center justify-center transition-all duration-700">
+                    <motion.div
+                      initial={false}
+                      animate={{
+                        scale: isActive ? 1.15 : 0.85,
+                        opacity: isActive ? 1 : 0,
+                        y: isActive ? 0 : 20,
+                      }}
+                      transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+                      className="relative w-full h-[80%] flex items-center justify-center select-none"
+                    >
+                      {/* No glow background as requested */}
+                      
+                      {/* Massive bg text decoration behind product */}
+                      {isActive && (
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] sm:text-[18rem] lg:text-[22rem] font-black text-white/[0.02] z-0 pointer-events-none select-none tracking-tighter">
+                          {p.name.replace('Arena', '').trim()}
+                        </div>
+                      )}
+                      
+                      <Image 
+                        src={p.image} 
+                        alt={p.name} 
+                        width={400} 
+                        height={600} 
+                        className="relative z-10 w-full h-full object-contain filter drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)]" 
+                      />
+                    </motion.div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
 
       </div>
-
     </section>
   );
 }
