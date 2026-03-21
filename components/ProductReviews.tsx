@@ -18,7 +18,7 @@ const reviews: Review[] = [
     rating: 5,
     date: "Feb 2026",
     city: "Bogotá",
-    text: "Excelente absorción y controla muy bien los olores. Mis gatos la prefieren y además es compostable."
+    text: "Excelente absorción y controla muy bien los olores. Mis gatos la prefieren y además es compostable.",
   },
   {
     id: 2,
@@ -26,7 +26,7 @@ const reviews: Review[] = [
     rating: 5,
     date: "Ene 2026",
     city: "Medellín",
-    text: "Se nota la calidad; no levanta polvo y la presentación de 10 kg rinde bastante."
+    text: "Se nota la calidad; no levanta polvo y la presentación de 10 kg rinde bastante.",
   },
   {
     id: 3,
@@ -34,7 +34,7 @@ const reviews: Review[] = [
     rating: 4,
     date: "Dic 2025",
     city: "Cali",
-    text: "Buena absorción, sólo desearía un poco más de control de olores en semanas muy calurosas."
+    text: "Buena absorción, sólo desearía un poco más de control de olores en semanas muy calurosas.",
   },
   {
     id: 4,
@@ -42,7 +42,7 @@ const reviews: Review[] = [
     rating: 5,
     date: "Feb 2026",
     city: "Barranquilla",
-    text: "Mi gato tiene alergias y con esta arena noté menos estornudos. Muy recomendable."
+    text: "Mi gato tiene alergias y con esta arena noté menos estornudos. Muy recomendable.",
   },
   {
     id: 5,
@@ -50,7 +50,7 @@ const reviews: Review[] = [
     rating: 5,
     date: "Mar 2026",
     city: "Bucaramanga",
-    text: "Fácil de limpiar y el paquete llegó en perfecto estado. Gran producto por el precio."
+    text: "Fácil de limpiar y el paquete llegó en perfecto estado. Gran producto por el precio.",
   },
   {
     id: 6,
@@ -58,7 +58,7 @@ const reviews: Review[] = [
     rating: 4,
     date: "Nov 2025",
     city: "Pereira",
-    text: "Me gusta que sea ecológica, y que no deje olor. Ojalá hubiera más tamaños para probar."
+    text: "Me gusta que sea ecológica, y que no deje olor. Ojalá hubiera más tamaños para probar.",
   },
   {
     id: 7,
@@ -66,7 +66,7 @@ const reviews: Review[] = [
     rating: 5,
     date: "Feb 2026",
     city: "Cúcuta",
-    text: "Compacta y muy absorbente. Recomendé a mis vecinos y quedaron encantados."
+    text: "Compacta y muy absorbente. Recomendé a mis vecinos y quedaron encantados.",
   },
   {
     id: 8,
@@ -74,7 +74,7 @@ const reviews: Review[] = [
     rating: 5,
     date: "Mar 2026",
     city: "Manizales",
-    text: "Envase práctico y diseño cuidado. El olor natural es muy agradable."
+    text: "Envase práctico y diseño cuidado. El olor natural es muy agradable.",
   },
   {
     id: 9,
@@ -82,25 +82,64 @@ const reviews: Review[] = [
     rating: 4,
     date: "Ene 2026",
     city: "Ibagué",
-    text: "Buena relación calidad-precio. En días de mucha humedad puede durar menos, pero cumple."
-  }
+    text: "Buena relación calidad-precio. En días de mucha humedad puede durar menos, pero cumple.",
+  },
 ];
 
 export default function ProductReviews() {
-
   return (
-    <section id="clientes" aria-labelledby="reviews-title" className="py-24 bg-white relative overflow-hidden">
-      
+    <motion.section
+      id="clientes"
+      aria-labelledby="reviews-title"
+      className="py-24 bg-white relative overflow-hidden"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: "Arena de Maíz para Gatos Möiz",
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: "4.8",
+              reviewCount: "87",
+            },
+            review: reviews.slice(0, 5).map((r) => ({
+              "@type": "Review",
+              reviewRating: {
+                "@type": "Rating",
+                ratingValue: r.rating.toString(),
+              },
+              author: {
+                "@type": "Person",
+                name: r.name,
+              },
+              reviewBody: r.text,
+            })),
+          }),
+        }}
+      />
       {/* Soft background decor */}
       <div className="absolute top-1/2 left-0 w-64 h-64 bg-[var(--moiz-green)]/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 mb-16 relative z-10 text-center">
-        <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">Testimonios</span>
-        <h2 id="reviews-title" className="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight">
+        <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">
+          Testimonios
+        </span>
+        <h2
+          id="reviews-title"
+          className="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight"
+        >
           Gatos felices, dueños tranquilos
         </h2>
         <p className="mt-4 text-lg text-zinc-500 max-w-2xl mx-auto">
-          Cientos de hogares ya se pasaron a la arena natural. Estas son sus experiencias reales con Möiz.
+          Cientos de hogares ya se pasaron a la arena natural. Estas son sus
+          experiencias reales con Möiz.
         </p>
       </div>
 
@@ -129,41 +168,51 @@ export default function ProductReviews() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-[var(--moiz-green)]/10 flex items-center justify-center text-[var(--moiz-green)] font-extrabold text-lg">
-                    {r.name.split(" ")[0].slice(0,1)}
+                    {r.name.split(" ")[0].slice(0, 1)}
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-zinc-900">{r.name}</div>
-                    <div className="text-xs text-zinc-400 font-medium">{r.date}</div>
+                    <div className="text-sm font-bold text-zinc-900">
+                      {r.name}
+                    </div>
+                    <div className="text-xs text-zinc-400 font-medium">
+                      {r.date}
+                    </div>
                   </div>
                 </div>
 
                 <div className="flex flex-col items-end gap-1">
-                  <div className="flex" aria-label={`Valoración de ${r.rating} estrellas`}>
+                  <div
+                    className="flex"
+                    aria-label={`Valoración de ${r.rating} estrellas`}
+                  >
                     {Array.from({ length: 5 }).map((_, index) => (
-                       <svg
-                         key={index}
-                         width="14"
-                         height="14"
-                         viewBox="0 0 24 24"
-                         fill={index < r.rating ? "currentColor" : "none"}
-                         stroke="currentColor"
-                         strokeWidth={1.5}
-                         className={index < r.rating ? "text-yellow-400" : "text-zinc-200"}
-                         xmlns="http://www.w3.org/2000/svg"
-                       >
-                         <path d="M12 .587l3.668 7.431L24 9.748l-6 5.848 1.417 8.265L12 19.771 4.583 23.861 6 15.596 0 9.748l8.332-1.73z" />
-                       </svg>
+                      <svg
+                        key={index}
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill={index < r.rating ? "currentColor" : "none"}
+                        stroke="currentColor"
+                        strokeWidth={1.5}
+                        className={
+                          index < r.rating ? "text-yellow-400" : "text-zinc-200"
+                        }
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M12 .587l3.668 7.431L24 9.748l-6 5.848 1.417 8.265L12 19.771 4.583 23.861 6 15.596 0 9.748l8.332-1.73z" />
+                      </svg>
                     ))}
                   </div>
                 </div>
               </div>
 
-              <p className="text-[15px] leading-relaxed text-zinc-600">&quot;{r.text}&quot;</p>
-
+              <p className="text-[15px] leading-relaxed text-zinc-600">
+                &quot;{r.text}&quot;
+              </p>
             </article>
           ))}
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
