@@ -5,12 +5,18 @@
   --moiz-footer: #86A93C;
   --moiz-pink: #C2185B;
   --moiz-yellow: #E6B800;
-  --moiz-bg: #F7F6F2;
-  --moiz-text: #686868;
+  --moiz-bg: #FAFAF8;
+  --moiz-text: #2A2A2A;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--moiz-bg);
+  color: var(--moiz-text);
+  overflow-x: hidden;
 }
 
 .embla__container {

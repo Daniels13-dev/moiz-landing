@@ -17,10 +17,12 @@ export const metadata: Metadata = {
   description:
     "Arena ecológica biodegradable hecha de maíz para gatos. Control natural de olores.",
   icons: {
-    icon: "/logo/logo.png",
+    icon: "/favicon.ico",
     apple: "/logo/logo.png",
   },
 };
+
+import { CartProvider } from "@/context/CartContext";
 
 export default function RootLayout({
   children,
@@ -28,11 +30,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <CartProvider>
+          {children}
+        </CartProvider>
       </body>
     </html>
   );

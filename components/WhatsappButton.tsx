@@ -8,35 +8,51 @@ type Props = {
   inline?: boolean;
 };
 
-export default function WhatsappButton({ phone = "573128515161", message = "Hola! Vengo desde la pagina web y quiero más información sobre la arena Möiz.", inline = false }: Props) {
-  const href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+const WhatsAppIcon = ({ className }: { className?: string }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    className={className}
+    fill="currentColor"
+  >
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+  </svg>
+);
 
-  // We'll animate the width with Framer Motion for a smooth, spring-like expansion.
+export default function WhatsappButton({ 
+  phone = "573218515161", 
+  message = "Hola! Vengo desde la página web y quiero más información sobre la arena Möiz.", 
+  inline = false 
+}: Props) {
+  const href = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
+
+  if (inline) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex items-center gap-2 px-6 py-2.5 bg-zinc-900 text-white rounded-full font-bold text-sm hover:bg-[var(--moiz-green)] transition-colors duration-300"
+      >
+        <WhatsAppIcon className="w-5 h-5" />
+        WhatsApp
+      </a>
+    );
+  }
+
   return (
     <motion.a
       href={href}
       target="_blank"
       rel="noreferrer"
-      aria-label="Abrir chat de WhatsApp"
-      initial={{ y: 12, opacity: 0, width: 48 }}
-      animate={{ y: 0, opacity: 1 }}
-      whileHover={{ width: 176 }}
-      transition={{ type: 'spring', stiffness: 260, damping: 28 }}
-      className={`${inline ? '' : 'fixed bottom-6 right-6'} z-50 group`}
-      style={{ display: 'inline-block' }}
+      aria-label="Contactar por WhatsApp"
+      initial={{ opacity: 0, scale: 0.8, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      whileHover={{ scale: 1.05, y: -2 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      className="fixed bottom-8 right-8 z-[60] w-14 h-14 flex items-center justify-center bg-white/80 backdrop-blur-xl border border-zinc-200/50 shadow-[0_10px_30px_rgba(0,0,0,0.06)] rounded-full text-[var(--moiz-green)] hover:text-white hover:bg-[var(--moiz-green)] hover:border-[var(--moiz-green)] transition-all duration-300 group"
     >
-      <div className="flex items-center overflow-hidden rounded-full shadow-lg bg-[#25D366] text-white" style={{ width: '100%' }}>
-        <div className="flex items-center justify-center flex-shrink-0 w-12 h-12">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="text-white" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-            <path d="M20.52 3.48A11.93 11.93 0 0012 0C5.373 0 .001 5.373 0 12c0 2.11.553 4.07 1.6 5.82L0 24l6.4-1.63A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12 0-1.95-.42-3.8-1.48-5.52z" />
-            <path d="M17.5 14.5c-.3-.15-1.79-.88-2.07-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.96 1.18-.17.2-.34.22-.64.08-.3-.15-1.28-.47-2.43-1.5-.9-.8-1.5-1.78-1.67-2.08-.17-.3-.02-.46.13-.61.13-.13.3-.34.45-.5.15-.17.2-.28.3-.46.1-.17.05-.32-.02-.46-.07-.13-.68-1.64-.93-2.24-.24-.59-.48-.51-.68-.52l-.58-.01c-.2 0-.52.07-.8.32-.28.26-1.07 1.04-1.07 2.52 0 1.48 1.1 2.9 1.25 3.1.15.2 2.16 3.49 5.23 4.89 3.07 1.4 3.07.93 3.62.87.55-.07 1.79-.73 2.04-1.44.25-.71.25-1.32.17-1.44-.07-.12-.26-.17-.55-.31z" />
-          </svg>
-        </div>
-
-        <div className="pl-2 pr-4 flex items-center">
-          <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out text-sm font-medium whitespace-nowrap">WhatsApp</span>
-        </div>
-      </div>
+      <WhatsAppIcon className="w-7 h-7 transition-transform duration-500 group-hover:rotate-[10deg] group-hover:scale-110" />
     </motion.a>
   );
 }

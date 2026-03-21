@@ -2,96 +2,114 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { ShoppingBag } from "lucide-react";
+import { useCart } from "@/context/CartContext";
+import { useFooterVisibility } from "@/hooks/useFooterVisibility";
+
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { totalItems } = useCart();
+  const isFooterIntersecting = useFooterVisibility();
+  const pathname = usePathname();
+  
+  // Only hide the navbar on the homepage where the dramatic footer takes over.
+  // On utility pages like carrito or productos, always keep it visible.
+  const isFooterVisible = pathname === "/" ? isFooterIntersecting : false;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50">
-      <div className="backdrop-blur-md bg-white/60 border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+    <>
+      <motion.nav
+        initial={{ y: 150, opacity: 0 }}
+        animate={{ y: isFooterVisible ? 150 : 0, opacity: isFooterVisible ? 0 : 1 }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
+        className="fixed bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-50 flex justify-center w-max"
+      >
+        <div className="flex items-center gap-1 sm:gap-2 p-2 sm:p-2.5 bg-white/70 backdrop-blur-2xl border border-white/50 shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-full">
+          
+          {/* Logo Button */}
+          <Link href="/" className="flex items-center justify-center px-3 hover:scale-110 hover:-rotate-3 transition-transform duration-300">
+            <Image src="/logo/logo.png" alt="Möiz" width={32} height={32} className="object-contain" />
+          </Link>
 
-          {/* logo */}
-          <a href="#" className="flex items-center gap-3">
-            <Image src="/logo/logo.png" alt="Möiz" width={44} height={40} className="rounded-md" loading="eager" style={{ width: 'auto', height: 'auto' }} />
-            <span className="font-bold text-lg text-[var(--moiz-pink)]">Möiz</span>
+          <div className="w-px h-8 bg-zinc-300/60 mx-1 sm:mx-2" />
+
+          {/* Cart Icon */}
+          <a
+            href="/carrito"
+            className="flex items-center justify-center p-3 relative group hover:scale-110 transition-transform duration-300"
+          >
+            <ShoppingBag size={24} className="text-zinc-700" />
+            <AnimatePresence>
+              {totalItems > 0 && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  className="absolute top-1 right-1 bg-[var(--moiz-green)] text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm"
+                >
+                  {totalItems}
+                </motion.span>
+              )}
+            </AnimatePresence>
           </a>
 
-          {/* desktop links */}
-          <div className="hidden md:flex items-center gap-8">
-            <div className="flex gap-6 font-medium text-zinc-700">
-              <a href="#producto" className="hover:text-[var(--moiz-text)] transition">Producto</a>
-              <a href="#beneficios" className="hover:text-[var(--moiz-text)] transition">Beneficios</a>
-              <a href="#contacto" className="hover:text-[var(--moiz-text)] transition">Contacto</a>
-            </div>
+          <div className="w-px h-8 bg-zinc-300/60 mx-1 sm:mx-2 md:hidden" />
 
-            <a href="#producto" className="ml-2 inline-flex items-center px-4 py-2 bg-[var(--moiz-text)] text-white rounded-lg shadow hover:opacity-95 transition">
-              Comprar
-            </a>
+          {/* Mobile hamburger trigger - kept for future links but simplified for now */}
+          <div className="md:hidden flex items-center px-2">
+             <button 
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="px-4 py-2 font-bold text-sm text-zinc-700 bg-white/50 rounded-full"
+             >
+                Menú
+             </button>
           </div>
 
-          {/* mobile hamburger */}
-          <div className="md:hidden">
-            <button
-              aria-label="Abrir menú"
-              aria-expanded={open}
-              onClick={() => setOpen((s) => !s)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-zinc-700 bg-white/30 hover:bg-white/40 transition"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <motion.path
-                  d={open ? "M6 18L18 6M6 6l12 12" : "M3 6h18M3 12h18M3 18h18"}
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
+          <div className="w-px h-8 bg-zinc-300/60 mx-1 sm:mx-2" />
 
-      {/* mobile menu overlay */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="md:hidden fixed inset-0 z-40 bg-black/40"
-            onClick={() => setOpen(false)}
+          {/* Call to Action - The Primary Interaction Point */}
+          <a 
+            href="/productos" 
+            className="group relative px-6 sm:px-10 py-3 bg-[var(--moiz-green)] text-white text-sm sm:text-base font-extrabold rounded-full shadow-[0_8px_20px_rgba(106,142,42,0.3)] hover:shadow-[0_12px_30px_rgba(106,142,42,0.5)] transition-all duration-300 hover:-translate-y-1 overflow-hidden"
           >
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="absolute right-0 top-0 w-3/4 max-w-xs h-full bg-white p-6 shadow-lg"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <Image src="/logo/logo.png" alt="Möiz" width={40} height={36} />
-                  <span className="font-semibold">Möiz</span>
-                </div>
-                <button aria-label="Cerrar" onClick={() => setOpen(false)} className="p-2">
-                  ✕
-                </button>
-              </div>
+            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-[shimmer_1s_infinite] ease-out" />
+            <span className="relative">Comprar</span>
+          </a>
+        </div>
+      </motion.nav>
 
-              <nav className="flex flex-col gap-4">
-                <a href="#producto" className="py-3 text-lg font-medium" onClick={() => setOpen(false)}>Producto</a>
-                <a href="#beneficios" className="py-3 text-lg font-medium" onClick={() => setOpen(false)}>Beneficios</a>
-                <a href="#contacto" className="py-3 text-lg font-medium" onClick={() => setOpen(false)}>Contacto</a>
+      {/* Mobile Overlay Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-40 bg-zinc-900/95 backdrop-blur-3xl flex flex-col items-center justify-center pointer-events-auto"
+          >
+             <button 
+                onClick={() => setMobileMenuOpen(false)}
+                className="absolute top-8 right-8 text-white/50 hover:text-white p-2 rounded-full bg-white/10"
+             >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+             </button>
 
-                <a href="#producto" className="mt-4 inline-flex items-center justify-center px-4 py-3 bg-[var(--moiz-text)] text-white rounded-lg">Comprar</a>
-              </nav>
-            </motion.div>
+             <div className="flex flex-col gap-6 text-center text-3xl font-black text-white">
+                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="hover:text-[var(--moiz-green)] transition-colors">Inicio</Link>
+                <Link href="/#comparativa" onClick={() => setMobileMenuOpen(false)} className="hover:text-[var(--moiz-green)] transition-colors text-2xl">Comparativa</Link>
+                <Link href="/#beneficios" onClick={() => setMobileMenuOpen(false)} className="hover:text-[var(--moiz-green)] transition-colors text-2xl">Beneficios</Link>
+                <Link href="/#transicion" onClick={() => setMobileMenuOpen(false)} className="hover:text-[var(--moiz-green)] transition-colors text-2xl">Transición</Link>
+                <Link href="/#faq" onClick={() => setMobileMenuOpen(false)} className="hover:text-[var(--moiz-green)] transition-colors text-2xl">Preguntas</Link>
+                <Link href="/productos" onClick={() => setMobileMenuOpen(false)} className="group mt-4 px-10 py-4 bg-[var(--moiz-green)] text-white rounded-full text-xl hover:scale-110 transition-transform">Comprar Ahora</Link>
+             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 }

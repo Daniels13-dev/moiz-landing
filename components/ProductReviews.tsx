@@ -86,77 +86,81 @@ const reviews: Review[] = [
   }
 ];
 
-function Stars({ count }: { count: number }) {
-  return (
-    <div className="flex items-center gap-1 text-yellow-400" aria-hidden>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg
-          key={i}
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill={i < count ? "currentColor" : "none"}
-          stroke="currentColor"
-          strokeWidth={1.2}
-          className={i < count ? "text-yellow-400" : "text-zinc-300"}
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M12 .587l3.668 7.431L24 9.748l-6 5.848 1.417 8.265L12 19.771 4.583 23.861 6 15.596 0 9.748l8.332-1.73z" />
-        </svg>
-      ))}
-    </div>
-  );
-}
-
 export default function ProductReviews() {
+
   return (
-    <section aria-labelledby="reviews-title" className="py-12">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="mb-8 text-center">
-          <h2 id="reviews-title" className="text-3xl font-extrabold text-[var(--moiz-text)]">Reseñas de clientes</h2>
-          <p className="mt-2 text-zinc-600">Opiniones reales de personas que ya probaron la arena Möiz</p>
-        </div>
+    <section id="clientes" aria-labelledby="reviews-title" className="py-24 bg-white relative overflow-hidden">
+      
+      {/* Soft background decor */}
+      <div className="absolute top-1/2 left-0 w-64 h-64 bg-[var(--moiz-green)]/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 mb-16 relative z-10 text-center">
+        <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">Testimonios</span>
+        <h2 id="reviews-title" className="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight">
+          Gatos felices, dueños tranquilos
+        </h2>
+        <p className="mt-4 text-lg text-zinc-500 max-w-2xl mx-auto">
+          Cientos de hogares ya se pasaron a la arena natural. Estas son sus experiencias reales con Möiz.
+        </p>
+      </div>
+
+      <div className="relative w-full flex overflow-x-hidden group pb-4">
+        {/* Left/Right Fade Masks */}
+        <div className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none fade-mask-l" />
+        <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none fade-mask-r" />
 
         <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.06 } }
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{
+            repeat: Infinity,
+            duration: 35,
+            ease: "linear",
           }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="flex gap-6 px-3"
+          style={{ width: "max-content" }}
         >
-          {reviews.map((r) => (
-            <motion.article
-              key={r.id}
-              className="bg-white rounded-2xl p-5 shadow-md border border-transparent hover:shadow-lg hover:border-[color:var(--moiz-green)]/10 transition transform hover:-translate-y-1"
-              variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
+          {/* Double the reviews array to create seamless loop */}
+          {[...reviews, ...reviews].map((r, i) => (
+            <article
+              key={`${r.id}-${i}`}
+              className="w-[320px] shrink-0 bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-zinc-100 hover:shadow-[0_12px_30px_rgba(0,0,0,0.06)] transition duration-300"
               aria-label={`Reseña de ${r.name}`}
             >
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-[var(--moiz-green)]/10 flex items-center justify-center text-[var(--moiz-green)] font-semibold">
+                  <div className="w-12 h-12 rounded-2xl bg-[var(--moiz-green)]/10 flex items-center justify-center text-[var(--moiz-green)] font-extrabold text-lg">
                     {r.name.split(" ")[0].slice(0,1)}
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-[var(--moiz-text)]">{r.name}</div>
-                    <div className="text-xs text-zinc-400">{r.city} • {r.date}</div>
+                    <div className="text-sm font-bold text-zinc-900">{r.name}</div>
+                    <div className="text-xs text-zinc-400 font-medium">{r.date}</div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Stars count={r.rating} />
+                <div className="flex flex-col items-end gap-1">
+                  <div className="flex" aria-label={`Valoración de ${r.rating} estrellas`}>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                       <svg
+                         key={index}
+                         width="14"
+                         height="14"
+                         viewBox="0 0 24 24"
+                         fill={index < r.rating ? "currentColor" : "none"}
+                         stroke="currentColor"
+                         strokeWidth={1.5}
+                         className={index < r.rating ? "text-yellow-400" : "text-zinc-200"}
+                         xmlns="http://www.w3.org/2000/svg"
+                       >
+                         <path d="M12 .587l3.668 7.431L24 9.748l-6 5.848 1.417 8.265L12 19.771 4.583 23.861 6 15.596 0 9.748l8.332-1.73z" />
+                       </svg>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <p className="mt-4 text-sm text-zinc-700">{r.text}</p>
+              <p className="text-[15px] leading-relaxed text-zinc-600">&quot;{r.text}&quot;</p>
 
-              <div className="mt-4 flex items-center gap-3">
-                <button className="text-xs text-[var(--moiz-green)] px-3 py-1 rounded-full border border-[var(--moiz-green)]/10 hover:bg-[var(--moiz-green)]/5 transition">Útil</button>
-                <button className="text-xs text-zinc-400">Denunciar</button>
-              </div>
-            </motion.article>
+            </article>
           ))}
         </motion.div>
       </div>
