@@ -96,7 +96,7 @@ export default function ProductosPage() {
                   <span
                     className={`text-2xl font-black ${p.darkText ? "text-white" : "text-[var(--moiz-green)]"}`}
                   >
-                    ${p.price.toLocaleString("es-CO")}
+                    ${p.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                   </span>
                 </div>
               </div>
