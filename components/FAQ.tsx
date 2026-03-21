@@ -60,7 +60,7 @@ export default function FAQ() {
   return (
     <motion.section 
       id="faq" 
-      className="py-24 bg-white overflow-hidden"
+      className="py-16 md:py-24 bg-white overflow-hidden"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
@@ -84,7 +84,7 @@ export default function FAQ() {
         }}
       />
       <div className="max-w-4xl mx-auto px-6">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 md:mb-16">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--moiz-green)]/10 text-[var(--moiz-green)] font-black text-xs uppercase tracking-widest mb-4">
             <HelpCircle size={14} />
             Soporte Möiz

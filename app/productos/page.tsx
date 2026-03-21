@@ -37,7 +37,7 @@ export default function ProductosPage() {
   return (
     <main className="bg-[#FAF9F6] min-h-screen flex flex-col selection:bg-[var(--moiz-green)] selection:text-white">
       <Navbar />
-      <div className="flex-1 pt-40 md:pt-48 pb-24 px-6 max-w-7xl mx-auto">
+      <div className="flex-1 pt-12 md:pt-48 pb-24 px-6 max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -56,8 +56,9 @@ export default function ProductosPage() {
             100% compostable y con el control de olores más limpio de Colombia.
           </p>
         </motion.div>
-        {/* Bento Grid layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[450px]">
+
+        {/* Primary Bento Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[400px] md:auto-rows-[450px]">
           {products.map((p, i) => (
             <motion.div
               key={i}
@@ -73,15 +74,16 @@ export default function ProductosPage() {
               >
                 {p.name.replace("Arena", "").trim()}
               </div>
+
               {/* Top Text Content */}
-              <div className="relative z-10">
-                <div className="flex items-start justify-between">
+              <div className="relative z-10 w-full">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-1">
                   <div>
                     <h2
-                      className={`text-4xl font-extrabold tracking-tight ${p.darkText ? "text-white" : "text-zinc-900"}`}
+                      className={`text-3xl md:text-4xl font-black md:font-extrabold tracking-tight leading-none ${p.darkText ? "text-white" : "text-zinc-900"}`}
                     >
                       {p.name}{" "}
-                      <span className="text-2xl text-[var(--moiz-green)]">
+                      <span className="text-xl md:text-2xl text-[var(--moiz-green)]">
                         KG
                       </span>
                     </h2>
@@ -94,12 +96,14 @@ export default function ProductosPage() {
                   <span
                     className={`text-2xl font-black ${p.darkText ? "text-white" : "text-[var(--moiz-green)]"}`}
                   >
-                    {p.price}
+                    ${p.price.toLocaleString("es-CO")}
                   </span>
                 </div>
               </div>
+
               {/* Abstract circular glow behind image */}
               <div className="absolute bottom-[-10%] sm:bottom-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-white/40 blur-[50px] rounded-full pointer-events-none z-0" />
+
               {/* Floating Product Image */}
               <div className="relative z-10 w-full h-[60%] flex items-end justify-center">
                 <motion.div
@@ -116,7 +120,8 @@ export default function ProductosPage() {
                   />
                 </motion.div>
               </div>
-              {/* Action Button */}
+
+              {/* Action Button (Responsive Picker) */}
               <div className="absolute bottom-8 right-8 z-20 flex items-center gap-2">
                 <AnimatePresence>
                   {getProductQuantity(p.name) > 0 && (
@@ -126,16 +131,16 @@ export default function ProductosPage() {
                         animate={{ scale: 1, opacity: 1, x: 0 }}
                         exit={{ scale: 0, opacity: 0, x: 20 }}
                         onClick={() => updateQuantity(p.name, -1)}
-                        className="w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95 bg-white/75 text-zinc-950 px-3"
+                        className="w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95 bg-white/75 text-zinc-950"
                       >
-                        <Minus size={20} strokeWidth={3} />
+                        <Minus className="w-5 h-5" strokeWidth={3} />
                       </motion.button>
 
                       <motion.div
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0, opacity: 0 }}
-                        className={`flex items-center justify-center min-w-[2.5rem] h-11 px-3 rounded-full font-black text-base shadow-xl border ${p.darkText ? "bg-white text-zinc-950 border-white" : "bg-zinc-100 border-zinc-200 text-zinc-900"}`}
+                        className={`flex items-center justify-center min-w-[2.5rem] h-11 px-3 rounded-full font-black text-base shadow-xl border ${p.darkText ? "bg-white text-zinc-950 border-white" : "bg-white border-zinc-200 text-zinc-900"}`}
                       >
                         {getProductQuantity(p.name)}
                       </motion.div>
@@ -147,7 +152,7 @@ export default function ProductosPage() {
                   onClick={() => addToCart(p)}
                   className="w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95 bg-[var(--moiz-green)] text-zinc-950"
                 >
-                  <Plus size={20} strokeWidth={3} />
+                  <Plus className="w-5 h-5" strokeWidth={3} />
                 </button>
               </div>
             </motion.div>

@@ -91,7 +91,7 @@ export default function ProductReviews() {
     <motion.section
       id="clientes"
       aria-labelledby="reviews-title"
-      className="py-24 bg-white relative overflow-hidden"
+      className="py-16 md:py-24 bg-white relative overflow-hidden"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
@@ -127,7 +127,7 @@ export default function ProductReviews() {
       {/* Soft background decor */}
       <div className="absolute top-1/2 left-0 w-64 h-64 bg-[var(--moiz-green)]/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 mb-16 relative z-10 text-center">
+      <div className="max-w-7xl mx-auto px-6 mb-12 md:mb-16 relative z-10 text-center">
         <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">
           Testimonios
         </span>
