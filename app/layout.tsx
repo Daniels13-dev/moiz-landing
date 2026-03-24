@@ -119,7 +119,7 @@ export default function RootLayout({
         </SmoothScroll>
         
         {/* Notificaciones Toaster Popups */}
-        <Toaster richColors position="bottom-right" />
+        <Toaster richColors position="bottom-right" visibleToasts={1} />
         
         {/* Google Analytics (Sustituye G-XYZ con tu ID oficial de GA4) */}
         <GoogleAnalytics gaId="G-XYZ" />
