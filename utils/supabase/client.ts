@@ -6,16 +6,25 @@ let client: SupabaseClient | undefined;
 export function createClient() {
   if (client) return client;
 
-  client = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // Build protection: If env vars are missing or we are on server during build, return mock
+  if (!url || !key) {
+    return {
       auth: {
-        // This prevents the "Lock was released because another request stole it" error
-        // by disabling the navigator lock which can be finicky in some local dev environments.
-        lock: (name, timeout, callback) => callback(),
+        getSession: async () => ({ data: { session: null }, error: null }),
+        onAuthStateChange: () => ({
+          data: { subscription: { unsubscribe: () => {} } },
+        }),
       },
+    } as any;
+  }
+
+  client = createBrowserClient(url, key, {
+    auth: {
+      lock: (name, timeout, callback) => callback(),
     },
-  );
+  });
   return client;
 }

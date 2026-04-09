@@ -1,12 +1,11 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { blogPosts } from "@/data/blog";
 import { Calendar, Clock, ChevronRight, BookOpen } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 
 export default function BlogPage() {
   return (
@@ -16,40 +15,21 @@ export default function BlogPage() {
       <div className="flex-1 pt-12 md:pt-20 px-6 max-w-7xl mx-auto w-full pb-24">
         {/* Header Section */}
         <div className="text-center mb-16 md:mb-24">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--moiz-green)]/10 text-[var(--moiz-green)] font-black text-xs uppercase tracking-widest mb-6"
-          >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--moiz-green)]/10 text-[var(--moiz-green)] font-black text-xs uppercase tracking-widest mb-6">
             <BookOpen size={14} />
             Universo Möiz
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-black text-zinc-900 tracking-tighter mb-6"
-          >
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black text-zinc-900 tracking-tighter mb-6">
             Blog & <span className="text-[var(--moiz-green)]">Bienestar</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto font-medium"
-          >
+          </h1>
+          <p className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto font-medium">
             Consejos de expertos, ciencia del cuidado felino y nuestra misión por un planeta más verde.
-          </motion.p>
+          </p>
         </div>
 
         {/* Featured Post (Highlighted) */}
         {blogPosts.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
-            className="relative group mb-12 md:mb-20 overflow-hidden rounded-[3rem] bg-white border border-zinc-100 shadow-xl shadow-zinc-200/50"
-          >
+          <div className="relative group mb-12 md:mb-20 overflow-hidden rounded-[3rem] bg-white border border-zinc-100 shadow-xl shadow-zinc-200/50">
             <Link href={`/blog/${blogPosts[0].slug}`} className="absolute inset-0 z-10" />
             <div className="grid grid-cols-1 lg:grid-cols-2">
               <div className="relative h-[300px] lg:h-[500px] overflow-hidden">
@@ -80,17 +60,14 @@ export default function BlogPage() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Post Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogPosts.slice(1).map((post, idx) => (
-            <motion.div
+            <div
               key={post.slug}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + idx * 0.1 }}
               className="group bg-white rounded-[2.5rem] border border-zinc-100 overflow-hidden hover:shadow-2xl hover:shadow-zinc-200/50 transition-all flex flex-col"
             >
               <div className="relative aspect-[16/10] overflow-hidden">
@@ -123,7 +100,7 @@ export default function BlogPage() {
                   Continuar leyendo <ChevronRight size={16} />
                 </Link>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
