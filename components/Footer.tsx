@@ -2,13 +2,41 @@ import { FaWhatsapp, FaInstagram, FaTiktok, FaFacebook } from "react-icons/fa";
 import { siteConfig } from "@/config/site";
 
 import Link from "next/link";
-import { Home, ShoppingBag, Box, Calculator, Sparkles, Star, MessageCircle } from "lucide-react";
+import { Home, ShoppingBag, Box, Star, MessageCircle } from "lucide-react";
 
 const socials = [
-  { platform: "WhatsApp", url: siteConfig.links.whatsapp, Icon: FaWhatsapp, hoverBgClass: "hover:bg-[#25D366]/10", hoverBorderClass: "hover:border-[#25D366]/30", hoverTextClass: "group-hover:text-[#25D366]" },
-  { platform: "Instagram", url: siteConfig.links.instagram, Icon: FaInstagram, hoverBgClass: "hover:bg-[#E1306C]/10", hoverBorderClass: "hover:border-[#E1306C]/30", hoverTextClass: "group-hover:text-[#E1306C]" },
-  { platform: "TikTok", url: siteConfig.links.tiktok, Icon: FaTiktok, hoverBgClass: "hover:bg-[#00F2FE]/10", hoverBorderClass: "hover:border-[#00F2FE]/30", hoverTextClass: "group-hover:text-[#00F2FE]" },
-  { platform: "Facebook", url: siteConfig.links.facebook, Icon: FaFacebook, hoverBgClass: "hover:bg-[#1877F2]/10", hoverBorderClass: "hover:border-[#1877F2]/30", hoverTextClass: "group-hover:text-[#1877F2]" },
+  {
+    platform: "WhatsApp",
+    url: siteConfig.links.whatsapp,
+    Icon: FaWhatsapp,
+    hoverBgClass: "hover:bg-[#25D366]/10",
+    hoverBorderClass: "hover:border-[#25D366]/30",
+    hoverTextClass: "group-hover:text-[#25D366]",
+  },
+  {
+    platform: "Instagram",
+    url: siteConfig.links.instagram,
+    Icon: FaInstagram,
+    hoverBgClass: "hover:bg-[#E1306C]/10",
+    hoverBorderClass: "hover:border-[#E1306C]/30",
+    hoverTextClass: "group-hover:text-[#E1306C]",
+  },
+  {
+    platform: "TikTok",
+    url: siteConfig.links.tiktok,
+    Icon: FaTiktok,
+    hoverBgClass: "hover:bg-[#00F2FE]/10",
+    hoverBorderClass: "hover:border-[#00F2FE]/30",
+    hoverTextClass: "group-hover:text-[#00F2FE]",
+  },
+  {
+    platform: "Facebook",
+    url: siteConfig.links.facebook,
+    Icon: FaFacebook,
+    hoverBgClass: "hover:bg-[#1877F2]/10",
+    hoverBorderClass: "hover:border-[#1877F2]/30",
+    hoverTextClass: "group-hover:text-[#1877F2]",
+  },
 ];
 
 export default function Footer() {
@@ -34,14 +62,13 @@ export default function Footer() {
             {/* Massive Typography */}
             <div className="flex-1">
               <h2 className="text-5xl sm:text-7xl lg:text-[6rem] font-extrabold text-white tracking-tighter leading-[0.9] mb-8">
-                Instinto <br />
+                {siteConfig.content.heroTitle} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--moiz-green)] to-[#E6B800]">
-                  Natural.
+                  {siteConfig.content.heroSubtitle}
                 </span>
               </h2>
               <p className="text-zinc-400 text-lg sm:text-xl max-w-md leading-relaxed font-medium">
-                La alternativa 100% compostable que revoluciona el cuidado
-                felino. Cero olores, cero polvo, pura naturaleza.
+                {siteConfig.description}
               </p>
             </div>
 
@@ -54,10 +81,7 @@ export default function Footer() {
                 {[
                   { name: "Inicio", path: "/" },
                   { name: "Productos", path: "/#producto" },
-                  { name: "Comparativa", path: "/#comparativa" },
-                  { name: "Impacto Económico", path: "/#calculadora" },
-                  { name: "Beneficios", path: "/#beneficios" },
-                  { name: "Transición", path: "/#transicion" },
+                  { name: "Comparativa", path: "/info/arena" },
                   { name: "Reseñas", path: "/#clientes" },
                   { name: "Preguntas", path: "/#faq" },
                 ].map((link) => (
@@ -101,7 +125,9 @@ export default function Footer() {
                   <span className="text-zinc-300 font-bold group-hover:text-white transition-colors">
                     {social.platform}
                   </span>
-                  <social.Icon className={`w-5 h-5 text-zinc-500 transition-colors ${social.hoverTextClass}`} />
+                  <social.Icon
+                    className={`w-5 h-5 text-zinc-500 transition-colors ${social.hoverTextClass}`}
+                  />
                 </a>
               ))}
             </div>
@@ -112,13 +138,13 @@ export default function Footer() {
             {/* Restored Typography Header */}
             <div className="mb-14 text-center">
               <h2 className="text-5xl font-black text-white tracking-tighter leading-[0.9] mb-6">
-                Instinto <br />
+                {siteConfig.content.heroTitle} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--moiz-green)] to-[#E6B800]">
-                  Natural.
+                  {siteConfig.content.heroSubtitle}
                 </span>
               </h2>
               <p className="text-zinc-400 text-base font-medium max-w-[280px] mx-auto leading-relaxed">
-                La alternativa 100% compostable que revoluciona el cuidado felino.
+                {siteConfig.description}
               </p>
             </div>
 
@@ -126,12 +152,26 @@ export default function Footer() {
             <div className="grid grid-cols-2 gap-3 w-full max-w-sm mb-16 px-2">
               {[
                 { name: "Inicio", path: "/", icon: <Home size={16} /> },
-                { name: "Productos", path: "/#producto", icon: <ShoppingBag size={16} /> },
-                { name: "Comparativa", path: "/#comparativa", icon: <Box size={16} /> },
-                { name: "Ahorro", path: "/#calculadora", icon: <Calculator size={16} /> },
-                { name: "Beneficios", path: "/#beneficios", icon: <Sparkles size={16} /> },
-                { name: "Reseñas", path: "/#clientes", icon: <Star size={16} /> },
-                { name: "FAQ", path: "/#faq", icon: <MessageCircle size={16} /> },
+                {
+                  name: "Productos",
+                  path: "/#producto",
+                  icon: <ShoppingBag size={16} />,
+                },
+                {
+                  name: "Comparativa",
+                  path: "/info/arena",
+                  icon: <Box size={16} />,
+                },
+                {
+                  name: "Reseñas",
+                  path: "/#clientes",
+                  icon: <Star size={16} />,
+                },
+                {
+                  name: "FAQ",
+                  path: "/#faq",
+                  icon: <MessageCircle size={16} />,
+                },
               ].map((link) => (
                 <Link
                   key={link.name}
@@ -146,7 +186,7 @@ export default function Footer() {
                   </span>
                 </Link>
               ))}
-              
+
               <a
                 href={siteConfig.links.whatsapp}
                 target="_blank"

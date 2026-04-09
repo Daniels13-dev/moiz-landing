@@ -1,31 +1,32 @@
+import { getAllProducts, getAllCategories } from "@/services/products";
+
+export const dynamic = "force-dynamic";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ProductCarousel from "@/components/ProductCarousel";
+import CategoriesSection from "@/components/CategoriesSection";
 import ProductReviews from "@/components/ProductReviews";
-import Benefits from "@/components/Benefits";
 import Footer from "@/components/Footer";
 import WhatsappButton from "@/components/WhatsappButton";
-import Comparison from "@/components/Comparison";
-import SavingsCalculator from "@/components/SavingsCalculator";
-import TransitionGuide from "@/components/TransitionGuide";
 import FAQ from "@/components/FAQ";
 
-export default function Home() {
+export default async function Home() {
+  const [allProducts, categoriesDb] = await Promise.all([
+    getAllProducts(),
+    getAllCategories(),
+  ]);
+
+  const featuredProducts = (allProducts as any[]).filter((p) => p.isFeatured).slice(0, 5);
+
   return (
     <main>
       <Navbar />
 
       <Hero />
 
-      <ProductCarousel />
+      <ProductCarousel products={featuredProducts} />
 
-      <Comparison />
-
-      <SavingsCalculator />
-
-      <Benefits />
-
-      <TransitionGuide />
+      <CategoriesSection dbCategories={categoriesDb} />
 
       <ProductReviews />
 

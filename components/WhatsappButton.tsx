@@ -18,7 +18,7 @@ export const WhatsAppIcon = ({ className }: { className?: string }) => (
 
 export default function WhatsappButton({
   phone = siteConfig.links.whatsappNumber,
-  message = "Hola! Vengo desde la página web y quiero más información sobre la arena Möiz.",
+  message = siteConfig.content.whatsappDefaultMessage,
   inline = false,
 }: Props) {
   const href = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
@@ -48,7 +48,7 @@ export default function WhatsappButton({
       whileHover={{ scale: 1.05, y: -2 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className="hidden md:flex fixed bottom-8 right-8 z-[60] w-14 h-14 items-center justify-center bg-white/80 backdrop-blur-xl border border-zinc-200/50 shadow-[0_10px_30px_rgba(0,0,0,0.06)] rounded-full text-[var(--moiz-green)] hover:text-white hover:bg-[var(--moiz-green)] hover:border-[var(--moiz-green)] transition-all duration-300 group"
+      className="flex fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[60] w-14 h-14 items-center justify-center bg-[#25D366] md:bg-white/80 backdrop-blur-xl border border-transparent md:border-zinc-200/50 shadow-xl rounded-full text-white md:text-[var(--moiz-green)] hover:text-white hover:bg-[#128C7E] md:hover:bg-[var(--moiz-green)] md:hover:border-[var(--moiz-green)] transition-all duration-300 group"
     >
       <WhatsAppIcon className="w-7 h-7 transition-transform duration-500 group-hover:rotate-[10deg] group-hover:scale-110" />
     </motion.a>

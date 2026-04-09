@@ -1,162 +1,85 @@
-"use client";
+import { getAllProducts } from "@/services/products";
+
+export const dynamic = "force-dynamic";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsappButton from "@/components/WhatsappButton";
-import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { useCart } from "@/context/CartContext";
-import { Plus, Minus } from "lucide-react";
-import { productsData } from "@/data/products";
+import ProductsHeader from "@/components/ProductsHeader";
+import PetShopCatalog from "@/components/PetShopCatalog";
 
-// Configuración de interfaz 100% visual y UI (Bento Grid)
-const layoutConfig: Record<string, { colSpan: string; bgColor: string; darkText?: boolean }> = {
-  "Arena 4": { colSpan: "lg:col-span-2", bgColor: "bg-[#F4F9F1]" },
-  "Arena 20": { colSpan: "lg:col-span-1", bgColor: "bg-[#FFF9EA]" },
-  "Arena 2": { colSpan: "lg:col-span-1", bgColor: "bg-white border border-zinc-200" },
-  "Arena 10": { colSpan: "lg:col-span-1", bgColor: "bg-zinc-100" },
-  "Arena 25": { colSpan: "lg:col-span-1", bgColor: "bg-white border border-zinc-200" },
-  "Arena 50": { colSpan: "lg:col-span-3", bgColor: "bg-[#0A0E0A] text-white", darkText: true },
-};
+export default async function ProductosPage() {
+  const initialProducts = await getAllProducts();
 
-// Orden psicológico diseñado para favorecer productos de alto margen
-const visualOrder = ["Arena 4", "Arena 20", "Arena 2", "Arena 10", "Arena 25", "Arena 50"];
-
-// Fusionar los datos comerciales centralizados con la configuración UI
-const products = visualOrder.map((name) => {
-  const productInfo = productsData.find((p) => p.name === name)!;
-  const layoutInfo = layoutConfig[name];
-  return { ...productInfo, ...layoutInfo };
-});
-
-export default function ProductosPage() {
-  const { cart, addToCart, updateQuantity } = useCart();
-
-  const getProductQuantity = (productName: string) => {
-    return cart.find((item) => item.id === productName)?.quantity || 0;
-  };
   return (
     <main className="bg-[#FAF9F6] min-h-screen flex flex-col selection:bg-[var(--moiz-green)] selection:text-white">
       <Navbar />
-      <div className="flex-1 pt-12 md:pt-48 pb-24 px-6 max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="mb-20 text-center"
-        >
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-zinc-900 tracking-tighter mb-6 leading-none">
-            Elige tu <br className="md:hidden" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--moiz-green)] to-[var(--moiz-yellow)]">
-              Presentación
-            </span>
-          </h1>
-          <p className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto font-medium leading-relaxed">
-            Descubre la arena de maíz perfecta para ti. Absorción ultrasónica,
-            100% compostable y con el control de olores más limpio de Colombia.
-          </p>
-        </motion.div>
+      <div className="flex-1 pt-8 md:pt-12">
+        <ProductsHeader />
 
-        {/* Primary Bento Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[400px] md:auto-rows-[450px]">
-          {products.map((p, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className={`group relative rounded-[2.5rem] p-8 md:p-10 overflow-hidden flex flex-col justify-between transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] ${p.colSpan} ${p.bgColor}`}
-            >
-              {/* Massive background text decoration */}
-              <div
-                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] lg:text-[16rem] font-black pointer-events-none select-none tracking-tighter transition-all duration-700 group-hover:scale-110 ${p.darkText ? "text-white/[0.03]" : "text-black/[0.03]"}`}
-              >
-                {p.name.replace("Arena", "").trim()}
-              </div>
+        {/* Dynamic Catalog Section */}
+        <PetShopCatalog initialProducts={initialProducts} />
 
-              {/* Top Text Content */}
-              <div className="relative z-10 w-full">
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-1">
-                  <div>
-                    <h2
-                      className={`text-3xl md:text-4xl font-black md:font-extrabold tracking-tight leading-none ${p.darkText ? "text-white" : "text-zinc-900"}`}
-                    >
-                      {p.name}{" "}
-                      <span className="text-xl md:text-2xl text-[var(--moiz-green)]">
-                        KG
-                      </span>
-                    </h2>
-                    <p
-                      className={`mt-3 text-sm font-medium leading-relaxed max-w-sm ${p.darkText ? "text-zinc-400" : "text-zinc-500"}`}
-                    >
-                      {p.desc}
-                    </p>
-                  </div>
-                  <span
-                    className={`text-2xl font-black ${p.darkText ? "text-white" : "text-[var(--moiz-green)]"}`}
-                  >
-                    ${p.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-                  </span>
-                </div>
-              </div>
-
-              {/* Abstract circular glow behind image */}
-              <div className="absolute bottom-[-10%] sm:bottom-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-white/40 blur-[50px] rounded-full pointer-events-none z-0" />
-
-              {/* Floating Product Image */}
-              <div className="relative z-10 w-full h-[60%] flex items-end justify-center">
-                <motion.div
-                  whileHover={{ scale: 1.05, y: -10 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="w-full h-full flex items-end justify-center"
+        {/* Informational Section */}
+        <div className="max-w-7xl mx-auto px-6 py-24">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white p-10 rounded-[3rem] border border-zinc-100">
+              <div className="w-14 h-14 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center mb-6">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
                 >
-                  <Image
-                    src={p.image}
-                    alt={p.name}
-                    width={300}
-                    height={400}
-                    className="object-contain h-full max-h-[120%] drop-shadow-[0_20px_30px_rgba(0,0,0,0.25)]"
-                  />
-                </motion.div>
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
               </div>
-
-              {/* Action Button (Responsive Picker) */}
-              <div className="absolute bottom-8 right-8 z-20 flex items-center gap-2">
-                <AnimatePresence>
-                  {getProductQuantity(p.name) > 0 && (
-                    <>
-                      <motion.button
-                        initial={{ scale: 0, opacity: 0, x: 20 }}
-                        animate={{ scale: 1, opacity: 1, x: 0 }}
-                        exit={{ scale: 0, opacity: 0, x: 20 }}
-                        onClick={() => updateQuantity(p.name, -1)}
-                        className="w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95 bg-white/75 text-zinc-950"
-                      >
-                        <Minus className="w-5 h-5" strokeWidth={3} />
-                      </motion.button>
-
-                      <motion.div
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        className={`flex items-center justify-center min-w-[2.5rem] h-11 px-3 rounded-full font-black text-base shadow-xl border ${p.darkText ? "bg-white text-zinc-950 border-white" : "bg-white border-zinc-200 text-zinc-900"}`}
-                      >
-                        {getProductQuantity(p.name)}
-                      </motion.div>
-                    </>
-                  )}
-                </AnimatePresence>
-
-                <button
-                  onClick={() => addToCart(p)}
-                  className="w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95 bg-[var(--moiz-green)] text-zinc-950"
+              <h3 className="text-xl font-bold mb-3">Envíos Rápidos</h3>
+              <p className="text-zinc-500 text-sm leading-relaxed">
+                Entregas en tiempo récord para que tu mascota nunca se quede sin
+                lo que necesita.
+              </p>
+            </div>
+            <div className="bg-white p-10 rounded-[3rem] border border-zinc-100">
+              <div className="w-14 h-14 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center mb-6">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
                 >
-                  <Plus className="w-5 h-5" strokeWidth={3} />
-                </button>
+                  <path d="M12 2v20M2 12h20" />
+                </svg>
               </div>
-            </motion.div>
-          ))}
+              <h3 className="text-xl font-bold mb-3">Calidad Premium</h3>
+              <p className="text-zinc-500 text-sm leading-relaxed">
+                Solo seleccionamos productos de la más alta calidad, priorizando
+                ingredientes naturales.
+              </p>
+            </div>
+            <div className="bg-white p-10 rounded-[3rem] border border-zinc-100">
+              <div className="w-14 h-14 bg-green-50 text-green-500 rounded-2xl flex items-center justify-center mb-6">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 11-7.6-10.4 8.38 8.38 0 013.8.9L21 11.5z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-3">Soporte Experto</h3>
+              <p className="text-zinc-500 text-sm leading-relaxed">
+                Nuestro equipo está listo para asesorarte en la mejor elección
+                para tu mascota.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
       <Footer />

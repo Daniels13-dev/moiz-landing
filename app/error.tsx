@@ -26,18 +26,23 @@ export default function Error({
         >
           <AlertOctagon size={48} strokeWidth={2.5} />
         </motion.div>
-        
+
         <h1 className="text-4xl md:text-6xl font-black text-zinc-900 mb-6 tracking-tight leading-none">
           ¡Agh! Tuvimos un <br /> desliz técnico.
         </h1>
-        
+
         <p className="text-lg md:text-xl text-zinc-500 font-medium max-w-lg mb-10 leading-relaxed">
-          Parece que hemos tropezado con un error inesperado dentro de la aplicación. No te preocupes, puedes resetear la tienda y volver a la normalidad de inmediato.
+          Parece que hemos tropezado con un error inesperado dentro de la
+          aplicación. No te preocupes, puedes resetear la tienda y volver a la
+          normalidad de inmediato.
         </p>
 
         <button
           onClick={() => reset()}
-          className={cn(buttonVariants({ variant: "default", size: "lg" }), "flex items-center gap-3 shadow-xl hover:-translate-y-1")}
+          className={cn(
+            buttonVariants({ variant: "default", size: "lg" }),
+            "flex items-center gap-3 shadow-xl hover:-translate-y-1",
+          )}
         >
           <RotateCcw size={20} strokeWidth={3} />
           Reiniciar Aplicación
