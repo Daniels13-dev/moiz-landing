@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     prisma.category.findMany({ select: { name: true } }),
   ]);
 
-  const productUrls = products.map((product) => {
+  const productUrls = (products as any[]).map((product) => {
     const slug = product.name
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  const categoryUrls = categories.map((category) => ({
+  const categoryUrls = (categories as any[]).map((category) => ({
     url: `${siteConfig.url}/productos?categoria=${encodeURIComponent(category.name)}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,

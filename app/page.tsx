@@ -14,7 +14,7 @@ export default async function Home() {
     getAllCategories(),
   ]);
 
-  const featuredProducts = allProducts.filter((p) => p.isFeatured).slice(0, 5);
+  const featuredProducts = (allProducts as any[]).filter((p) => p.isFeatured).slice(0, 5);
 
   return (
     <main>

@@ -41,7 +41,7 @@ export default async function ProductDetailPage({
 
   // Fetch related products (same category)
   const allProducts = await getAllProducts();
-  const relatedProducts = allProducts
+  const relatedProducts = (allProducts as any[])
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
