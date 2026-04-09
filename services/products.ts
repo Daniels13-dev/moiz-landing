@@ -14,7 +14,10 @@ export interface ProductData {
   oldPrice?: number | null;
   image: string;
   rating: number;
-  category?: string;
+  category: string;
+  petType: string;
+  isFeatured?: boolean;
+  isNew?: boolean;
 }
 
 /**
@@ -35,6 +38,8 @@ export function formatProduct(product: any): ProductData {
     ...product,
     image,
     description: product.description || product.desc || "", // Normalización de nombres de campos
+    category: product.category || "General",
+    petType: product.petType || "Gato",
   };
 }
 
@@ -85,4 +90,16 @@ export async function getProductBySlug(slug: string) {
   });
 
   return matched || null;
+}
+
+/**
+ * Obtiene todas las categorías disponibles.
+ */
+export async function getAllCategories() {
+  return await prisma.category.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });
 }

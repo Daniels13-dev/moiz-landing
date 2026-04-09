@@ -1,4 +1,4 @@
-import { getAllProducts } from "@/services/products";
+import { getAllProducts, getAllCategories } from "@/services/products";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ProductCarousel from "@/components/ProductCarousel";
@@ -11,12 +11,7 @@ import FAQ from "@/components/FAQ";
 export default async function Home() {
   const [allProducts, categoriesDb] = await Promise.all([
     getAllProducts(),
-    prisma.category.findMany({
-      select: {
-        id: true,
-        name: true,
-      },
-    }),
+    getAllCategories(),
   ]);
 
   const featuredProducts = allProducts.filter((p) => p.isFeatured).slice(0, 5);

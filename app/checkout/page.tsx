@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, type ReactNode } from "react";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import type { UseFormRegisterReturn, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
