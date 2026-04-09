@@ -68,7 +68,7 @@ export default function CheckoutModal({
 
   useEffect(() => {
     const client = createClient();
-    client.auth.getUser().then(({ data: { user } }) => {
+    client.auth.getUser().then(({ data: { user } }: any) => {
       setUser(user);
     });
   }, []);
