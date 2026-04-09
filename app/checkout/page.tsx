@@ -117,11 +117,11 @@ export default function CheckoutPage() {
   useEffect(() => {
     // Create client inside the effect to avoid referencing outer `supabase` and satisfy hook deps
     const client = createClient();
-    client.auth.getUser().then(({ data: { user } }) => {
+    client.auth.getUser().then(({ data: { user } }: any) => {
       setUser(user);
       if (user) {
         // Fetch profile data to auto-fill
-        getProfile().then((profile) => {
+        getProfile().then((profile: any) => {
           if (profile) {
             if (profile.fullName) {
               const names = profile.fullName.split(" ");
