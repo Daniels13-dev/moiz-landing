@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { formatProduct } from "@/services/products";
 
 export async function toggleFavorite(productId: string) {
   const supabase = await createClient();
@@ -98,10 +99,13 @@ export async function getUserFavorites() {
         createdAt: "desc",
       },
     });
-    return favorites.map((f) => ({
-      ...f.product,
-      category: f.product.category.name,
-    }));
+
+    return favorites.map((f) =>
+      formatProduct({
+        ...f.product,
+        category: f.product.category.name,
+      }),
+    );
   } catch (error) {
     console.error("Error fetching favorites:", error);
     return [];
