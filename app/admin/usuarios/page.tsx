@@ -12,7 +12,7 @@ export default async function AdminUsersPage() {
 
   // Prisma model returns camelCased `fullName`; the UserTable expects `full_name`.
   // Map the records to include the expected property to satisfy the component's prop type.
-  const normalizedUsers = users.map((u) => ({
+  const normalizedUsers = (users as any[]).map((u) => ({
     ...u,
     full_name: (u as unknown as { fullName?: string }).fullName ?? null,
   }));

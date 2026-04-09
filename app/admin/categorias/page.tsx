@@ -38,7 +38,7 @@ export default async function AdminCategorias() {
 
         {/* List */}
         <div className="md:col-span-8 space-y-3">
-          {categories.map((cat) => (
+          {(categories as any[]).map((cat) => (
             <CategoryItem
               key={cat.id}
               category={{

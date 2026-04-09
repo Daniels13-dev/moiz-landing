@@ -49,7 +49,7 @@ export default async function AdminProductos() {
 
         {/* List */}
         <div className="lg:col-span-8 flex flex-col gap-4">
-          {products.map((p) => (
+          {(products as any[]).map((p) => (
             <ProductItem key={p.id} product={p} categories={categories} />
           ))}
 

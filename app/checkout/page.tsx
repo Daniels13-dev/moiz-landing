@@ -132,7 +132,7 @@ export default function CheckoutPage() {
             if (profile.idNumber) setValue("customerNit", profile.idNumber);
 
             // Auto-fill Shipping Address
-            const shipping = profile.addresses.find(
+            const shipping = (profile.addresses as any[]).find(
               (a) => a.type === "SHIPPING",
             );
             if (shipping) {
@@ -142,7 +142,7 @@ export default function CheckoutPage() {
             }
 
             // Auto-fill Billing Address
-            const billing = profile.addresses.find((a) => a.type === "BILLING");
+            const billing = (profile.addresses as any[]).find((a) => a.type === "BILLING");
             if (billing) {
               setValue("billingName", billing.fullName?.split(" ")[0] || "");
               setValue(
