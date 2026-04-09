@@ -8,7 +8,7 @@ export function useFooterVisibility() {
   useEffect(() => {
     // Try to find the footer element by its unique ID
     const footerElement = document.getElementById("footer-marker");
-    
+
     if (!footerElement) return;
 
     const observer = new IntersectionObserver(
@@ -18,7 +18,7 @@ export function useFooterVisibility() {
       {
         root: null,
         threshold: 0, // Trigger as soon as the footer enters the screen
-      }
+      },
     );
 
     observer.observe(footerElement);
@@ -27,7 +27,7 @@ export function useFooterVisibility() {
       observer.unobserve(footerElement);
       observer.disconnect();
     };
-  }, []); 
+  }, []);
 
   return isFooterVisible;
 }
