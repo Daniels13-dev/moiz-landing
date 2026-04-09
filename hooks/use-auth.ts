@@ -35,7 +35,7 @@ export function useAuth() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event: any, session: any) => {
       if (session?.user) {
         const role = await getUserRole();
         setUser({ ...session.user, role });
