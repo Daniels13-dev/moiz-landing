@@ -100,7 +100,7 @@ export async function getUserFavorites() {
       },
     });
 
-    return favorites.map((f) =>
+    return (favorites as any[]).map((f) =>
       formatProduct({
         ...f.product,
         category: f.product.category.name,
