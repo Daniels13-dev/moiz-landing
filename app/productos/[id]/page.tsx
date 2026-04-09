@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+
+export const dynamic = "force-dynamic";
 import { getProductBySlug, getAllProducts } from "@/services/products";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";

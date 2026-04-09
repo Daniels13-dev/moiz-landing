@@ -1,5 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { logout } from "@/app/auth/actions";

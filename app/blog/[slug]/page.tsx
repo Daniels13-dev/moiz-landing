@@ -1,4 +1,6 @@
 import { Metadata, ResolvingMetadata } from "next";
+
+export const dynamic = "force-dynamic";
 import { blogPosts } from "@/data/blog";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
