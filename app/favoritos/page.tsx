@@ -1,4 +1,6 @@
 import { getUserFavorites } from "@/app/actions/favorites";
+
+export const dynamic = "force-dynamic";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FavoritesList from "@/components/FavoritesList";
