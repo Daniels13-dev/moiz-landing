@@ -1,31 +1,56 @@
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
+import prisma from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
- 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [products, categories] = await Promise.all([
+    prisma.product.findMany({ select: { id: true, updatedAt: true, name: true } }),
+    prisma.category.findMany({ select: { name: true } }),
+  ]);
+
+  const productUrls = products.map((product) => {
+    const slug = product.name
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
+    return {
+      url: `${siteConfig.url}/productos/${slug}`,
+      lastModified: product.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    };
+  });
+
+  const categoryUrls = categories.map((category) => ({
+    url: `${siteConfig.url}/productos?categoria=${encodeURIComponent(category.name)}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
+
+  const staticUrls = [
     {
       url: siteConfig.url,
       lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 1,
+      changeFrequency: "daily" as const,
+      priority: 1.0,
     },
     {
-      url: `${siteConfig.url}/terminos`,
+      url: `${siteConfig.url}/productos`,
       lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.5,
+      changeFrequency: "daily" as const,
+      priority: 0.9,
     },
     {
-      url: `${siteConfig.url}/privacidad`,
+      url: `${siteConfig.url}/info/arena`,
       lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.5,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     },
-    {
-      url: `${siteConfig.url}/politicas`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.5,
-    },
-  ]
+  ];
+
+  return [...staticUrls, ...productUrls, ...categoryUrls];
 }

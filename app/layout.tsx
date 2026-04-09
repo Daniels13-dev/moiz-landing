@@ -1,5 +1,4 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Toaster } from "sonner";
 import { siteConfig } from "@/config/site";
@@ -14,6 +13,13 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+});
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -71,6 +77,7 @@ export const metadata: Metadata = {
 
 import { CartProvider } from "@/context/CartContext";
 import SmoothScroll from "@/components/SmoothScroll";
+import TopBanner from "@/components/TopBanner";
 
 export default function RootLayout({
   children,
@@ -88,7 +95,8 @@ export default function RootLayout({
               "@type": "Product",
               name: `Arena de Maíz para Gatos ${siteConfig.name}`,
               image: siteConfig.ogImage,
-              description: "Arena ecológica biodegradable hecha de maíz para gatos. Control natural de olores y aglomeración instantánea.",
+              description:
+                "Arena ecológica biodegradable hecha de maíz para gatos. Control natural de olores y aglomeración instantánea.",
               brand: {
                 "@type": "Brand",
                 name: siteConfig.name,
@@ -110,17 +118,17 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}
+        suppressHydrationWarning
       >
+        <TopBanner />
         <SmoothScroll>
-          <CartProvider>
-            {children}
-          </CartProvider>
+          <CartProvider>{children}</CartProvider>
         </SmoothScroll>
-        
+
         {/* Notificaciones Toaster Popups */}
         <Toaster richColors position="bottom-right" visibleToasts={1} />
-        
+
         {/* Google Analytics (Sustituye G-XYZ con tu ID oficial de GA4) */}
         <GoogleAnalytics gaId="G-XYZ" />
       </body>

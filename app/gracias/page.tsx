@@ -19,11 +19,11 @@ export default function GraciasPage() {
     const randomInRange = (min: number, max: number) =>
       Math.random() * (max - min) + min;
 
-    const interval: any = setInterval(function () {
+    const intervalId: ReturnType<typeof setInterval> = setInterval(function () {
       const timeLeft = animationEnd - Date.now();
 
       if (timeLeft <= 0) {
-        return clearInterval(interval);
+        return clearInterval(intervalId);
       }
 
       const particleCount = 50 * (timeLeft / duration);
@@ -41,7 +41,7 @@ export default function GraciasPage() {
       });
     }, 250);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(intervalId as unknown as number);
   }, []);
 
   return (
@@ -80,7 +80,8 @@ export default function GraciasPage() {
             <br /> elegir Möiz.
           </h1>
           <p className="text-xl text-zinc-600 font-medium mb-12">
-            Hemos transferido tu pedido al chat de WhatsApp de nuestro asesor oficial.{" "}
+            Hemos transferido tu pedido al chat de WhatsApp de nuestro asesor
+            oficial.{" "}
           </p>
 
           <Link

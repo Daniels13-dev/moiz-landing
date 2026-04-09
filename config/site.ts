@@ -1,17 +1,57 @@
 export const siteConfig = {
   name: "Möiz",
-  fullName: "Möiz SAS",
-  url: "https://moizpets.vercel.app",
-  ogImage: "https://moizpets.vercel.app/logo/moiz.png",
-  description: "La alternativa 100% natural, compostable y biodegradable que revoluciona el cuidado felino. Máximo control de olores orgánico, 99.9% sin polvo y aglomeración instantánea.",
-  slogan: "Cero olores, cero polvo, pura naturaleza. Arena 100% biodegradable hecha de maíz.",
-  keywords: "arena para gatos, arena ecologica gatos, arena compostable, arena de maiz gatos, arena sin polvo, control de olores gatos, arena aglomerante natural, moiz arena, colombia",
-  links: {
-    instagram: "https://www.instagram.com/moizvilla/", 
-    facebook: "https://www.facebook.com/MOIZTD",
-    tiktok: "https://www.tiktok.com/@moiz.arena",
-    whatsapp: "https://api.whatsapp.com/send?phone=573218515161", // Auto-checkout URL
-    whatsappNumber: "573218515161", // Clean number for API logic
+  fullName: "Möiz Bienestar Animal SAS",
+  version: "1.0.0",
+  url: "https://moiz-bienestar.com",
+  ogImage: "https://moiz-bienestar.com/og-image.jpg",
+  description: "Bienestar Natural & Premium para tus Mascotas",
+  slogan: "El Cambio Inteligente en Arena para Gatos",
+  keywords: [
+    "arena para gatos",
+    "arena ecológica",
+    "maíz",
+    "mascotas",
+    "bienestar animal",
+    "Colombia",
+    "sustentable"
+  ],
+  navMain: [
+    { title: "Inicio", href: "/" },
+    { title: "Catálogo", href: "/productos" },
+    { title: "Comparativa", href: "/info/arena" },
+    { title: "Blog", href: "/blog" },
+  ],
+  footerLinks: {
+    empresa: [
+      { title: "Nosotros", href: "/sobre-moiz" },
+      { title: "Contacto", href: "/contacto" },
+    ],
+    legal: [
+      { title: "Términos y Condiciones", href: "/legal/terminos" },
+      { title: "Privacidad", href: "/legal/privacidad" },
+    ]
   },
-  themeColor: "#6A8E2A",
-}
+  links: {
+    instagram: "https://instagram.com/moiz_bienestar",
+    whatsapp: "https://wa.me/573218515161",
+    whatsappNumber: "573218515161",
+    tiktok: "https://tiktok.com/@moiz",
+    facebook: "https://facebook.com/moiz",
+  },
+  content: {
+    heroTitle: "Lleva el bienestar",
+    heroSubtitle: "a otro nivel",
+    heroTagline: "Sustentabilidad y Amor en cada gramo",
+    whatsappDefaultMessage: "¡Hola Möiz! Me interesa saber más sobre sus productos premium.",
+  },
+  stats: {
+    rating: "4.9",
+    happyPets: "+10,000",
+  },
+  theme: {
+    primary: "var(--moiz-green)",
+    accent: "var(--moiz-yellow)"
+  }
+};
+
+export type SiteConfig = typeof siteConfig;

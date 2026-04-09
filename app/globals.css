@@ -1,24 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --color-moiz-green: #6A8E2A;
-  --color-moiz-footer: #86A93C;
-  --color-moiz-pink: #FFEAF3; /* Adapted for background */
-  --color-moiz-pink-text: #C2185B;
-  --color-moiz-yellow: #E6B800;
-  --color-moiz-bg: #FAFAF8;
-  --color-moiz-text: #2A2A2A;
-  --color-moiz-dark: #0A0E0A;
+  --color-moiz-green: #6a8e2a;
+  --color-moiz-footer: #86a93c;
+  --color-moiz-pink: #ffeaf3; /* Adapted for background */
+  --color-moiz-pink-text: #c2185b;
+  --color-moiz-yellow: #e6b800;
+  --color-moiz-bg: #fafaf8;
+  --color-moiz-text: #2a2a2a;
+  --color-moiz-dark: #0a0e0a;
 }
 
 /* Fallback legacy vars just in case they are used strictly as var(--...) somewhere */
 :root {
-  --moiz-green: #6A8E2A;
-  --moiz-footer: #86A93C;
-  --moiz-pink: #C2185B;
-  --moiz-yellow: #E6B800;
-  --moiz-bg: #FAFAF8;
-  --moiz-text: #2A2A2A;
+  --moiz-green: #6a8e2a;
+  --moiz-footer: #86a93c;
+  --moiz-pink: #c2185b;
+  --moiz-yellow: #e6b800;
+  --moiz-bg: #fafaf8;
+  --moiz-text: #2a2a2a;
 }
 
 html {
@@ -37,4 +37,30 @@ body {
 
 .embla__slide {
   flex: 0 0 100%;
+}
+
+@utility btn-moiz {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 9999px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.65rem;
+  height: 3rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.btn-moiz:hover {
+  transform: scale(1.04);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+}
+
+.btn-moiz:active {
+  transform: scale(0.96);
 }

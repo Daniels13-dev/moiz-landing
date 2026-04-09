@@ -18,7 +18,7 @@ const reviews: Review[] = [
     rating: 5,
     date: "Feb 2026",
     city: "Bogotá",
-    text: "Excelente absorción y controla muy bien los olores. Mis gatos la prefieren y además es compostable.",
+    text: "Excelente calidad en todos sus productos. A mi mascota le encantó y además son amigables con el entorno.",
   },
   {
     id: 2,
@@ -26,7 +26,7 @@ const reviews: Review[] = [
     rating: 5,
     date: "Ene 2026",
     city: "Medellín",
-    text: "Se nota la calidad; no levanta polvo y la presentación de 10 kg rinde bastante.",
+    text: "Se nota la calidad y el cuidado que le ponen a cada detalle; todo rinde bastante y mis peluditos están felices.",
   },
   {
     id: 3,
@@ -34,7 +34,7 @@ const reviews: Review[] = [
     rating: 4,
     date: "Dic 2025",
     city: "Cali",
-    text: "Buena absorción, sólo desearía un poco más de control de olores en semanas muy calurosas.",
+    text: "Muy buena atención y los accesorios me parecieron espectaculares. ¡A mis mascotas les encantó su nuevo juguete!",
   },
   {
     id: 4,
@@ -42,7 +42,7 @@ const reviews: Review[] = [
     rating: 5,
     date: "Feb 2026",
     city: "Barranquilla",
-    text: "Mi gato tiene alergias y con esta arena noté menos estornudos. Muy recomendable.",
+    text: "Mi mascota es muy sensible y con estos productos naturales he notado una gran mejoría. Muy recomendable.",
   },
   {
     id: 5,
@@ -50,7 +50,7 @@ const reviews: Review[] = [
     rating: 5,
     date: "Mar 2026",
     city: "Bucaramanga",
-    text: "Fácil de limpiar y el paquete llegó en perfecto estado. Gran producto por el precio.",
+    text: "El pedido llegó en perfecto estado y súper rápido. Gran variedad de productos a un precio inmejorable.",
   },
   {
     id: 6,
@@ -58,7 +58,7 @@ const reviews: Review[] = [
     rating: 4,
     date: "Nov 2025",
     city: "Pereira",
-    text: "Me gusta que sea ecológica, y que no deje olor. Ojalá hubiera más tamaños para probar.",
+    text: "Me gusta mucho que ofrezcan opciones ecológicas y tan variadas. Ojalá traigan más productos para probar.",
   },
   {
     id: 7,
@@ -66,7 +66,7 @@ const reviews: Review[] = [
     rating: 5,
     date: "Feb 2026",
     city: "Cúcuta",
-    text: "Compacta y muy absorbente. Recomendé a mis vecinos y quedaron encantados.",
+    text: "Excelentes artículos. Recomendé la tienda a mis familiares para sus perritos y quedaron encantados.",
   },
   {
     id: 8,
@@ -74,7 +74,7 @@ const reviews: Review[] = [
     rating: 5,
     date: "Mar 2026",
     city: "Manizales",
-    text: "Envase práctico y diseño cuidado. El olor natural es muy agradable.",
+    text: "El diseño y empaque de cada cosa es sumamente cuidado. Todo se siente muy premium.",
   },
   {
     id: 9,
@@ -82,7 +82,7 @@ const reviews: Review[] = [
     rating: 4,
     date: "Ene 2026",
     city: "Ibagué",
-    text: "Buena relación calidad-precio. En días de mucha humedad puede durar menos, pero cumple.",
+    text: "Buena relación calidad-precio. A mis perritos les fascinan los snacks y juguetes que compramos acá.",
   },
 ];
 
@@ -103,7 +103,7 @@ export default function ProductReviews() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
-            name: "Arena de Maíz para Gatos Möiz",
+            name: "Productos para Mascotas Möiz",
             aggregateRating: {
               "@type": "AggregateRating",
               ratingValue: "4.8",
@@ -135,11 +135,11 @@ export default function ProductReviews() {
           id="reviews-title"
           className="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight"
         >
-          Gatos felices, dueños tranquilos
+          Mascotas felices, dueños tranquilos
         </h2>
         <p className="mt-4 text-lg text-zinc-500 max-w-2xl mx-auto">
-          Cientos de hogares ya se pasaron a la arena natural. Estas son sus
-          experiencias reales con Möiz.
+          Cientos de hogares confían en nuestros productos naturales e
+          innovadores. Estas son sus experiencias reales con Möiz.
         </p>
       </div>
 

@@ -58,8 +58,8 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <motion.section 
-      id="faq" 
+    <motion.section
+      id="faq"
       className="py-16 md:py-24 bg-white overflow-hidden"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -93,8 +93,8 @@ export default function FAQ() {
             Todo lo que necesitas saber
           </h2>
           <p className="mt-4 text-lg text-zinc-500">
-            Resolvemos tus dudas para que tú y tu michi tengan la mejor
-            experiencia posible.
+            Resolvemos tus dudas para que tú y tu mascota tengan la mejor
+            experiencia posible en nuestra tienda.
           </p>
         </div>
 

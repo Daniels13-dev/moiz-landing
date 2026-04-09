@@ -14,7 +14,7 @@ const comparisonData = [
   },
   {
     feature: "Polvo Suspendido",
-    moiz: "0% (Seguro)",
+    moiz: "100% (Seguro)",
     others: "Alto (Riesgo respiratorio)",
     explanation:
       "La bentonita libera partículas finas al verterla o excavar, lo que puede irritar los pulmones de gatos y humanos.",
@@ -49,24 +49,93 @@ const comparisonData = [
   },
 ];
 
-export default function Comparison() {
+interface ComparisonProps {
+  isBlog?: boolean;
+}
+
+export default function Comparison({ isBlog = false }: ComparisonProps) {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
+  if (isBlog) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-16">
+        {comparisonData.map((item, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.1 }}
+            className="group relative bg-white p-10 rounded-[3rem] border border-zinc-100 shadow-sm hover:shadow-2xl hover:shadow-zinc-200/50 transition-all duration-500 flex flex-col gap-8 overflow-hidden"
+          >
+            {/* Background Accent */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--moiz-green)]/5 rounded-bl-full -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-700" />
+            
+            <div className="relative">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--moiz-green)] mb-2 block">
+                Especificación {idx + 1}
+              </span>
+              <h3 className="font-playfair italic text-3xl font-black text-zinc-900 tracking-tight">
+                {item.feature}
+              </h3>
+            </div>
+
+            <div className="flex flex-col gap-6 relative">
+              {/* Möiz Value */}
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[var(--moiz-green)]" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">El Estándar Möiz</span>
+                </div>
+                <p className="text-xl font-black text-zinc-900 leading-tight">
+                  {item.moiz}
+                </p>
+              </div>
+
+              {/* Separator */}
+              <div className="h-px w-full bg-gradient-to-r from-zinc-100 via-zinc-50 to-transparent" />
+
+              {/* Others Value */}
+              <div className="flex flex-col gap-1 opacity-50 group-hover:opacity-80 transition-opacity">
+                <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-400">Arena Común</span>
+                <p className="text-sm font-medium text-zinc-500 italic">
+                  {item.others}
+                </p>
+              </div>
+            </div>
+
+            {/* Insight Text */}
+            <div className="mt-auto pt-6 border-t border-zinc-50">
+              <p className="text-xs text-zinc-400 leading-relaxed font-medium group-hover:text-zinc-600 transition-colors">
+                {item.explanation}
+              </p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <section id="comparativa" className="py-16 md:py-24 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-12 md:mb-16">
-          <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">
-            El Cambio Inteligente
-          </span>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight">
-            Möiz vs. Arena Tradicional
-          </h2>
-          <p className="mt-4 text-lg text-zinc-500 max-w-2xl mx-auto">
-            No es solo arena, es una mejora tecnológica para tu hogar y el
-            planeta.
-          </p>
-        </div>
+    <section
+      id="comparativa"
+      className={`${isBlog ? "py-8" : "py-16 md:py-24 bg-white"} overflow-hidden`}
+    >
+      <div className={isBlog ? "w-full" : "max-w-7xl mx-auto px-6"}>
+        {!isBlog && (
+          <div className="text-center mb-12 md:mb-16">
+            <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">
+              El Cambio Inteligente
+            </span>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight">
+              Möiz vs. Arena Tradicional
+            </h2>
+            <p className="mt-4 text-lg text-zinc-500 max-w-2xl mx-auto">
+              No es solo arena, es una mejora tecnológica para tu hogar y el
+              planeta.
+            </p>
+          </div>
+        )}
 
         {/* Desktop View (Table) */}
         <div className="hidden md:block relative rounded-[2.5rem] border border-zinc-100 shadow-2xl bg-white">
