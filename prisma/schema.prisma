@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  oldPrice    Float?
+  image       String
+  
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  
+  petType     String   // "Gato", "Perro", "Ambos"
+  productType String   // "Alimento", "Higiene", "Juguetes", etc.
+  
+  rating      Float    @default(5.0)
+  stock       Int      @default(0)
+  isFeatured  Boolean  @default(false)
+  isNew       Boolean  @default(false)
+
+  orderItems  OrderItem[]
+  favorites   Favorite[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([categoryId])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  user      Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+}
+
+model Order {
+  id              String               @id @default(cuid())
+  orderNumber     Int                  @unique @default(autoincrement())
+  profile         Profile?             @relation(fields: [userId], references: [id])
+  userId          String?
+  customerName    String
+  customerPhone   String
+  customerAddress String?
+  totalAmount     Float
+  currency        String               @default("COP")
+  status          String               @default("pendiente") // pendiente, pagado, enviado, entregado, cancelado
+  items           OrderItem[]
+  history         OrderStatusHistory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     String
+  product     Product  @relation(fields: [productId], references: [id])
+  productId   String
+  productName String? // Snapshot name at time of purchase
+  quantity    Int
+  price       Float // Price at the time of purchase
+}
+
+model OrderStatusHistory {
+  id        String   @id @default(cuid())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  status    String
+  changedAt DateTime @default(now())
+  comment   String?
+}
+
+model Profile {
+  id           String   @id // This matches the UUID from Supabase Auth
+  email        String   @unique
+  fullName     String?
+  phone        String?
+  phoneCountry String?  // Stores country code/flag info
+  idNumber     String?
+  idType       String?  // CC, CE, NIT, etc.
+  avatarUrl    String?
+  role         String   @default("USER") // USER, ADMIN
+  orders       Order[]
+  favorites    Favorite[]
+  addresses    Address[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Address {
+  id          String   @id @default(cuid())
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+  type        String   // "SHIPPING", "BILLING"
+  fullName    String
+  phone       String
+  idNumber    String?
+  idType      String?
+  street      String
+  city        String
+  state       String
+  country     String   @default("Colombia")
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([profileId])
+}

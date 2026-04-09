@@ -46,3 +46,5 @@ tests/**/snapshots/
 **/*-snapshots/
 test-results/
 .playwright/
+
+/app/generated/prisma

@@ -74,7 +74,6 @@ export default function Benefits() {
     return {
       duration: id === 1 ? 2 : 0.6,
       repeat: Infinity,
-      ease: (id === 1 ? "linear" : "easeInOut") as any,
     };
   };
 
