@@ -53,7 +53,7 @@ export async function createOrder(data: CreateOrderData) {
   }
 
   try {
-    const order = await prisma.$transaction(async (tx) => {
+    const order = await prisma.$transaction(async (tx: any) => {
       // 1. Create the Order
       const newOrder = await tx.order.create({
         data: {
