@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { getProductBySlug, getAllProducts } from "@/services/products";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";

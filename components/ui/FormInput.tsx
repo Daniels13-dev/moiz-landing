@@ -41,8 +41,6 @@ export function InputGroup({
 
 interface SelectInputGridProps {
   label: string;
-  selectName: string;
-  inputName: string;
   selectRegister: UseFormRegisterReturn;
   inputRegister: UseFormRegisterReturn;
   options: { label: string | ReactNode; value: string }[];
