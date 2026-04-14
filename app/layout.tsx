@@ -66,10 +66,7 @@ export const metadata: Metadata = {
     images: [siteConfig.ogImage],
   },
   icons: {
-    icon: [
-      { url: "/logo/logo.png" },
-      { url: "/logo/logo.png", sizes: "32x32", type: "image/png" },
-    ],
+    icon: [{ url: "/logo/logo.png" }, { url: "/logo/logo.png", sizes: "32x32", type: "image/png" }],
     shortcut: "/logo/logo.png",
     apple: "/logo/logo.png",
   },

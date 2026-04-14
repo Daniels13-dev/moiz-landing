@@ -11,16 +11,13 @@ export default function PoliticasPage() {
     <LegalLayout
       title={
         <>
-          Políticas de{" "}
-          <span className="text-[var(--moiz-green)]">Envío y Reembolso</span>
+          Políticas de <span className="text-[var(--moiz-green)]">Envío y Reembolso</span>
         </>
       }
     >
       {politicasData.sections.map((section, idx) => (
         <div key={idx} className={idx > 0 ? "mt-12" : "mt-8"}>
-          <h2 className="text-2xl font-bold text-[var(--moiz-dark)] mb-4">
-            {section.subtitle}
-          </h2>
+          <h2 className="text-2xl font-bold text-[var(--moiz-dark)] mb-4">{section.subtitle}</h2>
 
           {section.content &&
             section.content.map((paragraph, pIdx) => (
@@ -44,9 +41,7 @@ export default function PoliticasPage() {
                 if (parts.length > 1) {
                   return (
                     <li key={oIdx}>
-                      <strong className="text-[var(--moiz-dark)]">
-                        {parts[0]}:
-                      </strong>{" "}
+                      <strong className="text-[var(--moiz-dark)]">{parts[0]}:</strong>{" "}
                       {parts.slice(1).join(": ")}
                     </li>
                   );

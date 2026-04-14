@@ -22,8 +22,7 @@ export const buttonVariants = ({
         variant === "default",
       "border-2 border-gray-200 bg-white text-[var(--moiz-dark)] hover:border-[var(--moiz-green)] hover:text-[var(--moiz-green)]":
         variant === "outline",
-      "bg-transparent text-[var(--moiz-text)] hover:bg-gray-100":
-        variant === "ghost",
+      "bg-transparent text-[var(--moiz-text)] hover:bg-gray-100": variant === "ghost",
       "p-3 bg-white text-[var(--moiz-green)] shadow-md hover:text-white hover:bg-[var(--moiz-green)] hover:scale-105":
         variant === "icon",
       "h-12 px-6": size === "default",
@@ -42,13 +41,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "default", size = "default", ...props }, ref) => {
-    return (
-      <button
-        ref={ref}
-        className={buttonVariants({ variant, size, className })}
-        {...props}
-      />
-    );
+    return <button ref={ref} className={buttonVariants({ variant, size, className })} {...props} />;
   },
 );
 Button.displayName = "Button";

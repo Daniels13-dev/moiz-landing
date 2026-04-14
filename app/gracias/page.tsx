@@ -16,8 +16,7 @@ export default function GraciasPage() {
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 50 };
 
-    const randomInRange = (min: number, max: number) =>
-      Math.random() * (max - min) + min;
+    const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
 
     const intervalId: ReturnType<typeof setInterval> = setInterval(function () {
       const timeLeft = animationEnd - Date.now();
@@ -80,8 +79,7 @@ export default function GraciasPage() {
             <br /> elegir Möiz.
           </h1>
           <p className="text-xl text-zinc-600 font-medium mb-12">
-            Hemos transferido tu pedido al chat de WhatsApp de nuestro asesor
-            oficial.{" "}
+            Hemos transferido tu pedido al chat de WhatsApp de nuestro asesor oficial.{" "}
           </p>
 
           <Link

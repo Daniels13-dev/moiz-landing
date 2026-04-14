@@ -83,10 +83,7 @@ export default function Benefits() {
   };
 
   return (
-    <section
-      id="beneficios"
-      className="py-16 md:py-24 bg-zinc-50 relative overflow-hidden"
-    >
+    <section id="beneficios" className="py-16 md:py-24 bg-zinc-50 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-12 md:mb-16">
           <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">
@@ -96,8 +93,8 @@ export default function Benefits() {
             Beneficios para todos
           </h2>
           <p className="text-lg text-zinc-500 max-w-2xl mx-auto mt-4">
-            Nuestra arena está pensada tanto para el bienestar de tu gato, como
-            para la comodidad de tu hogar y el cuidado del planeta.
+            Nuestra arena está pensada tanto para el bienestar de tu gato, como para la comodidad de
+            tu hogar y el cuidado del planeta.
           </p>
         </div>
 
@@ -128,9 +125,7 @@ export default function Benefits() {
                 <Leaf size={32} />
               </motion.div>
             </div>
-            <h3 className="font-extrabold text-2xl text-zinc-900 mb-2">
-              {benefits[0].title}
-            </h3>
+            <h3 className="font-extrabold text-2xl text-zinc-900 mb-2">{benefits[0].title}</h3>
             <p className="text-zinc-500 font-medium">{benefits[0].desc}</p>
           </motion.article>
 
@@ -148,9 +143,7 @@ export default function Benefits() {
             >
               <Recycle size={40} />
             </motion.div>
-            <h3 className="font-extrabold text-2xl text-zinc-900 mb-4">
-              {benefits[1].title}
-            </h3>
+            <h3 className="font-extrabold text-2xl text-zinc-900 mb-4">{benefits[1].title}</h3>
             <p className="text-zinc-600 font-medium">
               {benefits[1].desc} Aporta a un ciclo completamente sostenible.
             </p>
@@ -174,9 +167,7 @@ export default function Benefits() {
             <h3 className="font-extrabold text-2xl text-zinc-900 mb-4 relative z-10">
               {benefits[4].title}
             </h3>
-            <p className="text-zinc-600 font-medium relative z-10">
-              {benefits[4].desc}
-            </p>
+            <p className="text-zinc-600 font-medium relative z-10">{benefits[4].desc}</p>
           </motion.article>
 
           {/* Item 3: Olores (Std) */}
@@ -194,9 +185,7 @@ export default function Benefits() {
               <Droplets size={28} />
             </motion.div>
             <div>
-              <h3 className="font-bold text-xl text-zinc-900 mb-1">
-                {benefits[3].title}
-              </h3>
+              <h3 className="font-bold text-xl text-zinc-900 mb-1">{benefits[3].title}</h3>
               <p className="text-zinc-500 text-sm">{benefits[3].desc}</p>
             </div>
           </motion.article>
@@ -218,9 +207,7 @@ export default function Benefits() {
                 <ShieldCheck size={32} />
               </motion.div>
             </div>
-            <h3 className="font-extrabold text-2xl text-zinc-900 mb-2">
-              {benefits[2].title}
-            </h3>
+            <h3 className="font-extrabold text-2xl text-zinc-900 mb-2">{benefits[2].title}</h3>
             <p className="text-zinc-500 font-medium">{benefits[2].desc}</p>
           </motion.article>
         </motion.div>

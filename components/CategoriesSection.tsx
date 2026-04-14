@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Bone, Bath, Activity, Star, Tag, Package } from "lucide-react";
+import { Bone, Bath, Activity, Star, Tag, Package, ArrowRight } from "lucide-react";
 import { ElementType } from "react";
 
 // Visual mapping based on typical pet store category names extending dynamic DB categories
@@ -81,11 +81,7 @@ interface CategoryProps {
   name: string;
 }
 
-export default function CategoriesSection({
-  dbCategories,
-}: {
-  dbCategories?: CategoryProps[];
-}) {
+export default function CategoriesSection({ dbCategories }: { dbCategories?: CategoryProps[] }) {
   // If we receive data from DB, we use it. Otherwise, return null or fallback
   if (!dbCategories || dbCategories.length === 0) return null;
 
@@ -104,8 +100,7 @@ export default function CategoriesSection({
               transition={{ duration: 0.5 }}
               className="text-4xl md:text-5xl font-black tracking-tighter text-zinc-900 mb-4"
             >
-              Explora por{" "}
-              <span className="text-[var(--moiz-green)]">Categorías</span>
+              Explora por <span className="text-[var(--moiz-green)]">Categorías</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -114,22 +109,25 @@ export default function CategoriesSection({
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-lg text-zinc-500 font-medium leading-relaxed"
             >
-              El universo de tus mascotas reunido en cajas de sorpresas.
-              Encuentra rápidamente lo indispensable.
+              El universo de tus mascotas reunido en cajas de sorpresas. Encuentra rápidamente lo
+              indispensable.
             </motion.p>
           </div>
           <Link
             href="/productos"
-            className="hidden md:inline-flex items-center gap-2 text-[var(--moiz-green)] hover:text-[var(--moiz-green)]/80 font-bold transition-colors"
+            className="hidden md:flex items-center justify-center w-14 h-14 bg-white border border-zinc-200 text-[var(--moiz-green)] rounded-full hover:border-[var(--moiz-green)] hover:shadow-xl transition-all duration-300 group"
+            aria-label="Ver catálogo completo"
           >
-            Ver catálogo completo <Activity size={18} />
+            <ArrowRight
+              size={24}
+              className="transition-transform duration-300 group-hover:-rotate-45"
+            />
           </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[250px] grid-flow-dense gap-4 md:gap-6">
           {dbCategories.map((dbCat, index) => {
-            const mappedStyle =
-              styleMap[dbCat.name.toLowerCase()] || fallbackStyle;
+            const mappedStyle = styleMap[dbCat.name.toLowerCase()] || fallbackStyle;
             const Icon = mappedStyle.icon;
 
             const total = dbCategories.length;
@@ -139,8 +137,7 @@ export default function CategoriesSection({
             let bentoClasses = "md:col-span-1 md:row-span-1";
             let iconWrapperSize = "w-20 h-20 mb-6";
             let titleSize = "text-xl";
-            const layoutClasses =
-              "flex-col items-center justify-center text-center";
+            const layoutClasses = "flex-col items-center justify-center text-center";
 
             // Bento Core Layout Engine
             if (index === 0) {

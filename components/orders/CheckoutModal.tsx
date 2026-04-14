@@ -22,6 +22,8 @@ import type { ReactNode } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 
+import type { User } from "@supabase/supabase-js";
+
 const checkoutSchema = z.object({
   customerName: z.string().min(2, "El nombre es obligatorio"),
   customerLastName: z.string().min(2, "El apellido es obligatorio"),
@@ -32,9 +34,7 @@ const checkoutSchema = z.object({
   customerState: z.string().min(2, "Departamento obligatorio"),
   customerPhone: z.string().min(7, "Teléfono no válido"),
   saveInfo: z.boolean().default(false),
-  paymentMethod: z
-    .enum(["efectivo", "transferencia", "tarjeta"])
-    .default("efectivo"),
+  paymentMethod: z.enum(["efectivo", "transferencia", "tarjeta"]).default("efectivo"),
   billingDifferent: z.boolean().default(false),
   billingName: z.string().optional(),
   billingLastName: z.string().optional(),
@@ -63,12 +63,12 @@ export default function CheckoutModal({
   isProcessing,
   totalPrice,
 }: CheckoutModalProps) {
-  const [user, setUser] = useState<unknown | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const client = createClient();
-    client.auth.getUser().then(({ data: { user } }: any) => {
+    client.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
     });
   }, []);
@@ -80,9 +80,7 @@ export default function CheckoutModal({
     setValue,
     formState: { errors },
   } = useForm<CheckoutFormValues>({
-    resolver: zodResolver(
-      checkoutSchema,
-    ) as unknown as Resolver<CheckoutFormValues>,
+    resolver: zodResolver(checkoutSchema) as unknown as Resolver<CheckoutFormValues>,
     defaultValues: {
       customerName: "",
       customerLastName: "",
@@ -155,9 +153,7 @@ export default function CheckoutModal({
                       <LogIn size={20} />
                     </div>
                     <div>
-                      <p className="font-black text-zinc-900">
-                        ¿Ya tienes una cuenta?
-                      </p>
+                      <p className="font-black text-zinc-900">¿Ya tienes una cuenta?</p>
                       <p className="text-sm text-zinc-500 font-medium">
                         Inicia sesión para una compra más rápida
                       </p>
@@ -239,11 +235,7 @@ export default function CheckoutModal({
 
                 <label className="flex items-center gap-3 cursor-pointer group">
                   <div className="relative flex items-center">
-                    <input
-                      type="checkbox"
-                      {...register("saveInfo")}
-                      className="peer sr-only"
-                    />
+                    <input type="checkbox" {...register("saveInfo")} className="peer sr-only" />
                     <div className="w-6 h-6 border-2 border-zinc-200 rounded-lg peer-checked:bg-[var(--moiz-green)] peer-checked:border-[var(--moiz-green)] transition-all"></div>
                     <CheckCircle2
                       size={16}
@@ -251,8 +243,7 @@ export default function CheckoutModal({
                     />
                   </div>
                   <span className="text-sm font-bold text-zinc-600 group-hover:text-zinc-900 transition-colors">
-                    Guardar mi información y consultar más rápidamente la
-                    proxima vez
+                    Guardar mi información y consultar más rápidamente la proxima vez
                   </span>
                 </label>
               </div>
@@ -415,9 +406,7 @@ export default function CheckoutModal({
                   <p className="text-white/40 font-bold uppercase tracking-[0.2em] text-[10px] mb-1">
                     Total a Pagar
                   </p>
-                  <p className="text-3xl font-black">
-                    ${totalPrice.toLocaleString("es-CO")}
-                  </p>
+                  <p className="text-3xl font-black">${totalPrice.toLocaleString("es-CO")}</p>
                 </div>
                 <button
                   type="submit"
@@ -465,11 +454,7 @@ function InputGroup({
         placeholder={placeholder}
         className={`w-full px-6 py-4 bg-zinc-50 border rounded-2xl outline-none transition-all font-bold text-zinc-900 placeholder:text-zinc-300 focus:ring-2 focus:ring-[var(--moiz-green)]/20 ${error ? "border-red-500" : "border-zinc-100"}`}
       />
-      {error && (
-        <p className="text-red-500 text-[10px] font-bold px-1">
-          {error.message}
-        </p>
-      )}
+      {error && <p className="text-red-500 text-[10px] font-bold px-1">{error.message}</p>}
     </div>
   );
 }

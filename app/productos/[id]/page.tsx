@@ -29,11 +29,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: slugParam } = await params;
   const product = await getProductBySlug(slugParam);
 
@@ -43,7 +39,7 @@ export default async function ProductDetailPage({
 
   // Fetch related products (same category)
   const allProducts = await getAllProducts();
-  const relatedProducts = (allProducts as any[])
+  const relatedProducts = allProducts
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 

@@ -17,9 +17,7 @@ async function main() {
   await prisma.category.deleteMany();
 
   // 2. Crear Categorías únicas
-  const categoryNames = Array.from(
-    new Set(productsData.map((p) => p.category)),
-  );
+  const categoryNames = Array.from(new Set(productsData.map((p) => p.category)));
   const categories = await Promise.all(
     categoryNames.map((name) =>
       prisma.category.create({
@@ -54,9 +52,7 @@ async function main() {
     }
   }
 
-  console.log(
-    `Sembrado completado con éxito para ${productsData.length} productos.`,
-  );
+  console.log(`Sembrado completado con éxito para ${productsData.length} productos.`);
 }
 
 main()

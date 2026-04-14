@@ -28,10 +28,7 @@ export default async function OrdersPage() {
           href="/"
           className="absolute -top-12 left-0 flex items-center gap-2 text-zinc-400 hover:text-[var(--moiz-green)] font-bold text-sm transition-colors group"
         >
-          <ArrowLeft
-            size={16}
-            className="group-hover:-translate-x-1 transition-transform"
-          />
+          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
           Volver al Inicio
         </Link>
 
@@ -44,8 +41,7 @@ export default async function OrdersPage() {
             Mis <span className="text-[var(--moiz-green)]">Pedidos</span>
           </h1>
           <p className="text-zinc-500 font-medium mt-4">
-            Aquí puedes ver todos tus pedidos anteriores y seguir el estado de
-            tus compras actuales.
+            Aquí puedes ver todos tus pedidos anteriores y seguir el estado de tus compras actuales.
           </p>
         </div>
 

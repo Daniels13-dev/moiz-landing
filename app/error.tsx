@@ -32,9 +32,8 @@ export default function Error({
         </h1>
 
         <p className="text-lg md:text-xl text-zinc-500 font-medium max-w-lg mb-10 leading-relaxed">
-          Parece que hemos tropezado con un error inesperado dentro de la
-          aplicación. No te preocupes, puedes resetear la tienda y volver a la
-          normalidad de inmediato.
+          Parece que hemos tropezado con un error inesperado dentro de la aplicación. No te
+          preocupes, puedes resetear la tienda y volver a la normalidad de inmediato.
         </p>
 
         <button

@@ -70,7 +70,7 @@ export async function checkIfFavorite(productId: string) {
       },
     });
     return !!favorite;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -100,14 +100,13 @@ export async function getUserFavorites() {
       },
     });
 
-    return (favorites as any[]).map((f) =>
+    return favorites.map((f) =>
       formatProduct({
         ...f.product,
         category: f.product.category.name,
       }),
     );
-  } catch (error) {
-    console.error("Error fetching favorites:", error);
+  } catch {
     return [];
   }
 }

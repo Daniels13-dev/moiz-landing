@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBag, Star, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { Star, ArrowRight } from "lucide-react";
 
 interface BlogProductCardProps {
   product: {
@@ -49,19 +48,21 @@ export default function BlogProductCard({ product }: BlogProductCardProps) {
           <h3 className="text-2xl md:text-3xl font-black text-zinc-900 mb-3 tracking-tight">
             {product.name}
           </h3>
-          
+
           <p className="text-zinc-500 font-medium text-sm md:text-base leading-relaxed mb-6 line-clamp-2">
             {product.description}
           </p>
 
           <div className="flex flex-wrap items-center justify-between gap-6 pt-6 border-t border-zinc-100 mt-auto">
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1">Precio Online</span>
+              <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1">
+                Precio Online
+              </span>
               <span className="text-2xl md:text-3xl font-black text-zinc-900">
                 ${product.price.toLocaleString("es-CO")}
               </span>
             </div>
-            
+
             <Link
               href={`/productos/${slug}`}
               className="px-8 py-4 bg-zinc-900 text-white rounded-full font-bold flex items-center gap-2 hover:bg-[var(--moiz-green)] transition-all group scale-100 active:scale-95 shadow-lg shadow-zinc-200"

@@ -15,9 +15,7 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
-          );
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           supabaseResponse = NextResponse.next({
             request,
           });
@@ -36,10 +34,7 @@ export async function updateSession(request: NextRequest) {
 
   // --- PRIVATE ROUTES PROTECTION ---
   // If the user tries to access /admin and is not logged in, redirect to /login
-  if (
-    request.nextUrl.pathname.startsWith("/admin") &&
-    request.nextUrl.pathname !== "/login"
-  ) {
+  if (request.nextUrl.pathname.startsWith("/admin") && request.nextUrl.pathname !== "/login") {
     if (!user) {
       const url = request.nextUrl.clone();
       url.pathname = "/login";

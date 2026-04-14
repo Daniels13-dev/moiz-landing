@@ -48,3 +48,6 @@ test-results/
 .playwright/
 
 /app/generated/prisma
+
+# Scratch scripts
+scratch/

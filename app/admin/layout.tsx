@@ -5,13 +5,9 @@ export const dynamic = "force-dynamic";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { logout } from "@/app/auth/actions";
-import { LogOut, Home } from "lucide-react";
+import { LogOut, Home, Clock } from "lucide-react";
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -51,6 +47,13 @@ export default async function AdminLayout({
           >
             <Home size={16} />
             Tienda
+          </Link>
+          <Link
+            href="/admin/suscripciones"
+            className="hidden sm:flex items-center gap-2 text-sm font-bold text-zinc-600 hover:text-[var(--moiz-green)] transition-all bg-zinc-50 border border-zinc-200 px-4 py-2.5 rounded-full hover:border-[var(--moiz-green)]"
+          >
+            <Clock size={16} />
+            Suscripciones
           </Link>
           <form action={logout}>
             <button
