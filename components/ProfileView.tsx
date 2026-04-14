@@ -33,7 +33,6 @@ interface ProfileViewProps {
 }
 
 import { toggleFavorite, checkIfFavorite } from "@/app/actions/favorites";
-import { toast } from "sonner";
 import { siteConfig } from "@/config/site";
 
 // Sub-components
