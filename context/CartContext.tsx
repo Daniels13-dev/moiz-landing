@@ -22,9 +22,10 @@ export interface CartItem {
 export interface CartProductVariant {
   id: string;
   name: string;
-  price: number | null;
-  image: string | null;
+  price?: number | null;
+  image?: string | null;
   stock: number;
+  productId?: string;
 }
 
 export interface Product {

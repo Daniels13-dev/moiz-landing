@@ -24,8 +24,8 @@ export function useAuth() {
         data: { session },
       } = await supabase.auth.getSession();
       if (session?.user) {
-        const role = await getUserRole();
-        setUser({ ...session.user, role });
+  const role = await getUserRole();
+  setUser({ ...session.user, role: role ?? undefined } as AuthUser);
       } else {
         setUser(null);
       }
@@ -44,7 +44,7 @@ export function useAuth() {
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         const role = await getUserRole();
-        setUser({ ...session.user, role } as AuthUser);
+        setUser({ ...session.user, role: role ?? undefined } as AuthUser);
       } else {
         setUser(null);
       }

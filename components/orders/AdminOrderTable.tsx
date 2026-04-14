@@ -22,8 +22,8 @@ interface AdminOrder {
   totalAmount: number;
   currency?: string;
   shippingMethod?: string;
-  customerCity?: string;
-  customerState?: string;
+  customerCity?: string | null | undefined;
+  customerState?: string | null | undefined;
 }
 
 interface AdminOrderTableProps {

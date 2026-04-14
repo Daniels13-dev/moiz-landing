@@ -42,7 +42,7 @@ interface Product {
 interface SubscriptionReminder {
   id: string;
   status: string;
-  reminderDate: Date;
+  reminderDate: Date | string;
   user: UserProfile;
   product: Product;
 }
