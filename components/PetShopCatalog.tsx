@@ -13,6 +13,7 @@ export interface CatalogProductVariant {
   name: string;
   price: number | null;
   image: string | null;
+  color?: string | null;
   stock: number;
 }
 

@@ -12,7 +12,7 @@ interface BillingFormSectionProps {
   billingDifferent: boolean;
   setValue: any;
   availableBillingCities: string[];
-  billingState: string;
+  billingState?: string | undefined;
 }
 
 export default function BillingFormSection({

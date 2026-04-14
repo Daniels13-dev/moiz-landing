@@ -28,8 +28,8 @@ interface OrderDetailOrder {
   currency?: string;
   status: string;
   shippingMethod?: string;
-  customerCity?: string;
-  customerState?: string;
+  customerCity?: string | null | undefined;
+  customerState?: string | null | undefined;
   customerIdentification?: string | null;
   history: OrderHistoryEvent[];
 }

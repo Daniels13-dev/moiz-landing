@@ -28,12 +28,11 @@ import RelatedProductsSection from "./product-detail/RelatedProductsSection";
 
 export interface ProductVariant {
   id: string;
-  productId: string;
   name: string;
   color?: string | null;
-  image?: string | null;
+  image: string | null;
   stock: number;
-  price?: number | null;
+  price: number | null;
 }
 
 interface ProductDetailViewProps {

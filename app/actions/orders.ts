@@ -310,9 +310,8 @@ async function generateInvoiceForOrder(tx: Prisma.TransactionClient, orderId: st
 
   const invoiceData = {
     orderId,
-    customerName: isDifferent
-      ? `${order.billingName} ${order.billingLastName || ""}`.trim()
-      : order.customerName,
+    // billingName already contains the full billing name; avoid referencing billingLastName
+    customerName: isDifferent ? `${order.billingName || ""}`.trim() : order.customerName,
     customerNit: isDifferent ? order.billingNit || "" : order.customerIdentification || "",
     customerIdType: isDifferent ? order.billingIdType || "CC" : "CC",
     customerAddress: isDifferent ? order.billingAddress || "" : order.customerAddress || "",
