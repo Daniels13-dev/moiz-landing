@@ -2,7 +2,7 @@ import Link from "next/link";
 import OrderStatusBadge from "./OrderStatusBadge";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { ChevronRight, Calendar, Package } from "lucide-react";
+import { ChevronRight, Calendar, Package, Truck } from "lucide-react";
 
 interface OrderItem {
   id: string;
@@ -19,6 +19,8 @@ interface Order {
   createdAt: string | number | Date;
   items: OrderItem[];
   status?: string;
+  shippingMethod?: string;
+  orderNumber?: number | string;
 }
 
 interface OrderTableProps {
@@ -32,9 +34,7 @@ export default function OrderTable({ orders }: OrderTableProps) {
         <div className="w-20 h-20 bg-zinc-50 text-zinc-300 rounded-full flex items-center justify-center mx-auto mb-6">
           <Package size={40} />
         </div>
-        <h3 className="text-2xl font-black text-zinc-900 mb-2">
-          No tienes pedidos aún
-        </h3>
+        <h3 className="text-2xl font-black text-zinc-900 mb-2">No tienes pedidos aún</h3>
         <p className="text-zinc-500 font-medium mb-8 max-w-xs mx-auto">
           Cuando realices una compra, aparecerá aquí para que puedas seguirla.
         </p>
@@ -53,7 +53,7 @@ export default function OrderTable({ orders }: OrderTableProps) {
       {orders.map((order) => (
         <Link
           key={order.id}
-          href={`/pedidos/${order.id}`}
+          href={`/pedidos/MZ-${order.orderNumber}`}
           className="group flex flex-col md:flex-row md:items-center justify-between p-6 md:p-8 bg-white border border-zinc-100 rounded-[2.5rem] hover:border-[var(--moiz-green)] transition-all hover:shadow-xl hover:shadow-[var(--moiz-green)]/5"
         >
           <div className="flex items-center gap-6 mb-4 md:mb-0">
@@ -62,7 +62,8 @@ export default function OrderTable({ orders }: OrderTableProps) {
             </div>
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">
-                Orden #{order.id.slice(-6).toUpperCase()}
+                Orden #
+                {order.orderNumber ? `MZ-${order.orderNumber}` : order.id.slice(-6).toUpperCase()}
               </p>
               <h4 className="text-xl font-bold text-zinc-900 group-hover:text-[var(--moiz-green)] transition-colors">
                 ${order.totalAmount.toLocaleString("es-CO")} {order.currency}
@@ -76,8 +77,20 @@ export default function OrderTable({ orders }: OrderTableProps) {
                 </span>
                 <span className="text-zinc-300">•</span>
                 <span className="text-xs font-medium text-zinc-500">
-                  {order.items.length}{" "}
-                  {order.items.length === 1 ? "producto" : "productos"}
+                  {order.items.length} {order.items.length === 1 ? "producto" : "productos"}
+                </span>
+                <span className="text-zinc-300">•</span>
+                <span
+                  className={`inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider ${
+                    order.shippingMethod?.toLowerCase() === "domicilio"
+                      ? "text-[var(--moiz-green)]"
+                      : "text-blue-500"
+                  }`}
+                >
+                  <Truck size={12} />
+                  {order.shippingMethod?.toLowerCase() === "domicilio"
+                    ? "Domicilio Hoy"
+                    : "Nacional"}
                 </span>
               </div>
             </div>

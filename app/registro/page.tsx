@@ -43,14 +43,8 @@ export default function RegistroPage() {
       return;
     }
 
-    if (
-      !/[A-Z]/.test(password) ||
-      !/[a-z]/.test(password) ||
-      !/[0-9]/.test(password)
-    ) {
-      setError(
-        "La contraseña debe contener al menos una mayúscula, una minúscula y un número.",
-      );
+    if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
+      setError("La contraseña debe contener al menos una mayúscula, una minúscula y un número.");
       setLoading(false);
       return;
     }
@@ -78,10 +72,7 @@ export default function RegistroPage() {
             href="/"
             className="flex items-center gap-2 text-zinc-400 hover:text-[var(--moiz-green)] font-bold text-sm transition-colors group"
           >
-            <ArrowLeft
-              size={16}
-              className="group-hover:-translate-x-1 transition-transform"
-            />
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
             Volver al Inicio
           </Link>
         </div>
@@ -101,9 +92,7 @@ export default function RegistroPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-zinc-500 pl-4">
-                Nombre Completo
-              </label>
+              <label className="text-xs font-bold text-zinc-500 pl-4">Nombre Completo</label>
               <div className="relative group">
                 <User
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[var(--moiz-green)] transition-colors"
@@ -121,9 +110,7 @@ export default function RegistroPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-500 pl-4">
-                  Correo Electrónico
-                </label>
+                <label className="text-xs font-bold text-zinc-500 pl-4">Correo Electrónico</label>
                 <div className="relative group">
                   <Mail
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[var(--moiz-green)] transition-colors"
@@ -140,9 +127,7 @@ export default function RegistroPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-500 pl-4">
-                  Teléfono / WhatsApp
-                </label>
+                <label className="text-xs font-bold text-zinc-500 pl-4">Teléfono / WhatsApp</label>
                 <div className="relative group">
                   <Phone
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[var(--moiz-green)] transition-colors"
@@ -161,9 +146,7 @@ export default function RegistroPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-500 pl-4">
-                  Contraseña
-                </label>
+                <label className="text-xs font-bold text-zinc-500 pl-4">Contraseña</label>
                 <div className="relative group">
                   <Lock
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[var(--moiz-green)] transition-colors"
@@ -180,9 +163,7 @@ export default function RegistroPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-500 pl-4">
-                  Confirmar Contraseña
-                </label>
+                <label className="text-xs font-bold text-zinc-500 pl-4">Confirmar Contraseña</label>
                 <div className="relative group">
                   <Lock
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[var(--moiz-green)] transition-colors"
@@ -225,10 +206,7 @@ export default function RegistroPage() {
                 className="text-zinc-500 font-bold text-sm cursor-pointer select-none"
               >
                 Acepto los{" "}
-                <Link
-                  href="/terminos"
-                  className="text-[var(--moiz-green)] hover:underline"
-                >
+                <Link href="/terminos" className="text-[var(--moiz-green)] hover:underline">
                   términos y condiciones
                 </Link>
               </label>
@@ -256,11 +234,7 @@ export default function RegistroPage() {
               disabled={loading || !!success}
               className="w-full bg-[var(--moiz-green)] text-white py-3 rounded-full font-bold shadow-[0_8px_20px_rgba(106,142,42,0.25)] hover:shadow-[0_12px_25px_rgba(106,142,42,0.4)] hover:-translate-y-0.5 active:scale-95 transition-all text-sm flex items-center justify-center gap-3 disabled:opacity-50 disabled:scale-100 disabled:translate-y-0"
             >
-              {loading ? (
-                <Loader2 className="animate-spin" size={20} />
-              ) : (
-                "Comenzar Ahora"
-              )}
+              {loading ? <Loader2 className="animate-spin" size={20} /> : "Comenzar Ahora"}
             </button>
           </form>
 

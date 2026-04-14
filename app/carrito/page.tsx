@@ -1,7 +1,8 @@
 "use client";
 
-// react imports removed (no hooks used in this component)
+import { useState } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
@@ -15,6 +16,8 @@ import {
   ShoppingBag,
   X,
   CreditCard,
+  CheckCircle2,
+  Info,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -27,7 +30,38 @@ export default function CarritoPage() {
     totalPrice,
     totalItems,
     clearCart,
+    appliedCoupon,
+    applyCoupon,
+    removeCoupon,
+    discountAmount,
+    finalPrice,
   } = useCart();
+
+  const [couponInput, setCouponInput] = useState("");
+  const [isValidating, setIsValidating] = useState(false);
+  const [showSubInfo, setShowSubInfo] = useState<string | null>(null);
+
+  const handleApplyCoupon = async () => {
+    if (!couponInput || cart.length === 0) return;
+    setIsValidating(true);
+    try {
+      const { validateCoupon } = await import("@/app/actions/coupons");
+      const result = await validateCoupon(couponInput);
+      if (result.success && result.coupon) {
+        applyCoupon(result.coupon);
+        setCouponInput("");
+        toast.success("¡Cupón aplicado!", {
+          description: `Se ha aplicado un ${result.coupon.discountPercentage}% de descuento.`,
+        });
+      } else {
+        toast.error(result.message || "No se pudo aplicar el cupón.");
+      }
+    } catch {
+      toast.error("Error al aplicar cupón");
+    } finally {
+      setIsValidating(false);
+    }
+  };
 
   const handleCheckoutClick = () => {
     router.push("/checkout");
@@ -90,6 +124,53 @@ export default function CarritoPage() {
                           <h3 className="text-base md:text-xl font-black text-zinc-900 truncate mb-0.5">
                             {item.name}
                           </h3>
+                          {item.isSubscription && (
+                            <div className="flex flex-col gap-1 mb-2">
+                              <div className="flex items-center gap-2">
+                                <div className="inline-flex items-center gap-1.5 bg-[var(--moiz-green)]/10 text-[var(--moiz-green)] text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest w-fit">
+                                  Suscripción (Ahorro 5%)
+                                </div>
+                                <div className="relative">
+                                  <button
+                                    onMouseEnter={() => setShowSubInfo(item.id)}
+                                    onMouseLeave={() => setShowSubInfo(null)}
+                                    className="text-zinc-400 hover:text-[var(--moiz-green)] transition-colors"
+                                  >
+                                    <Info size={12} />
+                                  </button>
+                                  <AnimatePresence>
+                                    {showSubInfo === item.id && (
+                                      <motion.div
+                                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                                        className="absolute bottom-full left-0 mb-3 w-64 bg-zinc-900 text-white p-5 rounded-3xl shadow-2xl z-50 text-[10px] leading-relaxed font-medium pointer-events-none"
+                                      >
+                                        <div className="space-y-3">
+                                          <p className="font-black uppercase tracking-widest text-[var(--moiz-green)] border-b border-white/10 pb-2">
+                                            Permanencia de 3 Meses
+                                          </p>
+                                          <p>
+                                            • Compromiso mínimo de <b>3 entregas</b>.
+                                          </p>
+                                          <p>
+                                            • <b>Sin cobros anticipados:</b> Pago mensual por
+                                            entrega.
+                                          </p>
+                                          <p>• Cancelación disponible después del tercer mes.</p>
+                                        </div>
+                                        <div className="absolute top-full left-4 border-[8px] border-transparent border-t-zinc-900" />
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-zinc-400 text-[10px] font-bold pl-1">
+                                <span className="w-1 h-1 bg-zinc-300 rounded-full" />
+                                {item.subscriptionInterval}
+                              </div>
+                            </div>
+                          )}
                           <p className="text-[var(--moiz-green)] font-black text-sm md:text-lg">
                             $
                             {(item.price * item.quantity)
@@ -136,9 +217,7 @@ export default function CarritoPage() {
                         <ShoppingBag size={48} />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-black text-zinc-900 mb-2">
-                          Carrito Vacío
-                        </h3>
+                        <h3 className="text-2xl font-black text-zinc-900 mb-2">Carrito Vacío</h3>
                         <p className="text-zinc-500 max-w-xs mx-auto mb-8 text-sm">
                           Agrega productos a tu carrito para verlos aquí.
                         </p>
@@ -161,40 +240,90 @@ export default function CarritoPage() {
             <div className="bg-zinc-900 rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden">
               <div className="absolute top-[-10%] right-[-10%] w-32 h-32 bg-[var(--moiz-green)]/20 blur-[50px] rounded-full" />
 
-              <h2 className="text-3xl font-black mb-10 tracking-tight">
-                Resumen
-              </h2>
+              <h2 className="text-3xl font-black mb-10 tracking-tight">Resumen</h2>
 
               <div className="space-y-6 pb-8 border-b border-white/10 mb-8">
                 <div className="flex justify-between text-white/60 font-medium">
                   <span>Productos ({totalItems})</span>
-                  <span>
-                    $
-                    {totalPrice
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-                  </span>
+                  <span>${totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span>
                 </div>
+
+                {appliedCoupon && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="flex justify-between text-[var(--moiz-green)] font-bold text-sm"
+                  >
+                    <span className="flex items-center gap-2">
+                      <CheckCircle2 size={14} /> Descuento ({appliedCoupon.code})
+                    </span>
+                    <span>
+                      -$
+                      {discountAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                    </span>
+                  </motion.div>
+                )}
+
                 <div className="flex justify-between items-center text-sm font-medium">
                   <span className="text-white/60">Envío</span>
                   {totalPrice >= 400000 ? (
-                    <span className="text-[var(--moiz-green)] font-black">
-                      ¡Gratis!
-                    </span>
+                    <span className="text-[var(--moiz-green)] font-black">¡Gratis!</span>
                   ) : (
-                    <span className="text-white/30 italic text-[11px]">
-                      Calculado por zona
-                    </span>
+                    <span className="text-white/30 italic text-[11px]">Calculado por zona</span>
                   )}
                 </div>
+              </div>
+
+              {/* Coupon Section */}
+              <div className="mb-10">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-4">
+                  ¿Tienes un cupón?
+                </p>
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl group transition-all">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-white/40 uppercase font-black tracking-widest mb-1">
+                        Cupón Activo
+                      </span>
+                      <span className="text-[var(--moiz-green)] font-black uppercase text-sm">
+                        {appliedCoupon.code}
+                      </span>
+                    </div>
+                    <button
+                      onClick={removeCoupon}
+                      className="p-2 text-white/20 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                      title="Quitar cupón"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <div className="relative flex-1 group">
+                      <input
+                        type="text"
+                        placeholder="CÓDIGO"
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-white font-black text-sm outline-none focus:border-[var(--moiz-green)]/40 focus:ring-4 focus:ring-[var(--moiz-green)]/5 transition-all uppercase placeholder:text-white/20"
+                        value={couponInput}
+                        onChange={(e) => setCouponInput(e.target.value)}
+                        onKeyPress={(e) => e.key === "Enter" && handleApplyCoupon()}
+                      />
+                    </div>
+                    <button
+                      onClick={handleApplyCoupon}
+                      disabled={isValidating || !couponInput || cart.length === 0}
+                      className="bg-zinc-800 hover:bg-zinc-700 text-white px-6 rounded-2xl font-black text-xs uppercase transition-all disabled:opacity-50"
+                    >
+                      {isValidating ? "..." : "Aplicar"}
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Progress Bar de Envío Gratis */}
               <div className="mb-10 bg-white/5 p-4 rounded-2xl border border-white/10">
                 <div className="flex justify-between text-xs font-bold mb-3">
-                  <span className="text-white/70 tracking-wider uppercase">
-                    Envío Gratis
-                  </span>
+                  <span className="text-white/70 tracking-wider uppercase">Envío Gratis</span>
                   {totalPrice >= 400000 ? (
                     <span className="text-[var(--moiz-green)] flex items-center gap-1">
                       ¡Desbloqueado! 🎉
@@ -202,9 +331,7 @@ export default function CarritoPage() {
                   ) : (
                     <span className="text-white/50">
                       Faltan $
-                      {(400000 - totalPrice)
-                        .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                      {(400000 - totalPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                     </span>
                   )}
                 </div>
@@ -229,7 +356,7 @@ export default function CarritoPage() {
                   Total del pedido
                 </span>
                 <span className="text-3xl font-black text-white">
-                  ${totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                  ${finalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                 </span>
               </div>
 
@@ -260,7 +387,7 @@ export default function CarritoPage() {
                   Total
                 </span>
                 <span className="text-xl font-black">
-                  ${totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                  ${finalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                 </span>
               </div>
               <button

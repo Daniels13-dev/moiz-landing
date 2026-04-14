@@ -15,10 +15,7 @@ export default function SavingsCalculator() {
   const totalSavings = totalClassic - totalMoiz;
 
   return (
-    <section
-      className="py-12 md:py-20 bg-white relative overflow-hidden"
-      id="calculadora"
-    >
+    <section className="py-12 md:py-20 bg-white relative overflow-hidden" id="calculadora">
       {/* Background elements */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--moiz-green)]/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
 
@@ -28,12 +25,10 @@ export default function SavingsCalculator() {
             Impacto Económico
           </span>
           <h2 className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tight">
-            Calcula tu{" "}
-            <span className="text-[var(--moiz-green)]">Ahorro Anual</span>
+            Calcula tu <span className="text-[var(--moiz-green)]">Ahorro Anual</span>
           </h2>
           <p className="mt-4 text-zinc-500 font-medium max-w-lg mx-auto">
-            Por ser una arena de alto rendimiento, Möiz dura más y cuida tu
-            bolsillo.
+            Por ser una arena de alto rendimiento, Möiz dura más y cuida tu bolsillo.
           </p>
         </div>
 
@@ -120,8 +115,8 @@ export default function SavingsCalculator() {
               </div>
 
               <p className="relative z-10 mt-8 text-zinc-500 text-[10px] font-medium max-w-xs mx-auto">
-                *Cálculo promediado basado en el rendimiento superior de
-                aglomeración del maíz frente a la bentonita común.
+                *Cálculo promediado basado en el rendimiento superior de aglomeración del maíz
+                frente a la bentonita común.
               </p>
             </div>
           </div>

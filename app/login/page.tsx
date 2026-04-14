@@ -2,14 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { login, signInWithGoogle } from "../auth/actions";
-import {
-  LogIn,
-  Mail,
-  Lock,
-  AlertCircle,
-  Loader2,
-  ArrowLeft,
-} from "lucide-react";
+import { LogIn, Mail, Lock, AlertCircle, Loader2, ArrowLeft } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 
 export default function LoginPage() {
@@ -37,10 +30,7 @@ export default function LoginPage() {
             href="/"
             className="flex items-center gap-2 text-zinc-400 hover:text-[var(--moiz-green)] font-bold text-sm transition-colors group"
           >
-            <ArrowLeft
-              size={16}
-              className="group-hover:-translate-x-1 transition-transform"
-            />
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
             Volver al Inicio
           </Link>
         </div>
@@ -61,9 +51,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex flex-col gap-5">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-500 pl-4">
-                  Correo Electrónico
-                </label>
+                <label className="text-xs font-bold text-zinc-500 pl-4">Correo Electrónico</label>
                 <div className="relative group">
                   <Mail
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[var(--moiz-green)] transition-colors"
@@ -80,9 +68,7 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-500 pl-4">
-                  Contraseña
-                </label>
+                <label className="text-xs font-bold text-zinc-500 pl-4">Contraseña</label>
                 <div className="relative group">
                   <Lock
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[var(--moiz-green)] transition-colors"
@@ -112,11 +98,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-[var(--moiz-green)] text-white py-3 rounded-full font-bold shadow-[0_8px_20px_rgba(106,142,42,0.25)] hover:shadow-[0_12px_25px_rgba(106,142,42,0.4)] hover:-translate-y-0.5 active:scale-95 transition-all text-sm flex items-center justify-center gap-3 disabled:opacity-50 disabled:scale-100 disabled:translate-y-0"
             >
-              {loading ? (
-                <Loader2 className="animate-spin" size={20} />
-              ) : (
-                "Entrar Ahora"
-              )}
+              {loading ? <Loader2 className="animate-spin" size={20} /> : "Entrar Ahora"}
             </button>
           </form>
 

@@ -12,10 +12,7 @@ export default async function AdminOrdersPage() {
         href="/admin"
         className="inline-flex items-center gap-2 text-zinc-400 font-bold text-sm hover:text-[var(--moiz-green)] transition-colors group mb-8"
       >
-        <ArrowLeft
-          size={16}
-          className="group-hover:-translate-x-1 transition-transform"
-        />
+        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
         Volver al panel
       </Link>
 
@@ -28,8 +25,7 @@ export default async function AdminOrdersPage() {
           Gestión de <span className="text-[var(--moiz-green)]">Pedidos</span>
         </h1>
         <p className="text-zinc-500 font-medium mt-4 max-w-2xl">
-          Monitorea las ventas, actualiza estados de envío y revisa el historial
-          de cada cliente.
+          Monitorea las ventas, actualiza estados de envío y revisa el historial de cada cliente.
         </p>
       </div>
 

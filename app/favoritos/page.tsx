@@ -29,12 +29,11 @@ export default async function FavoritosPage() {
             Mis <span className="text-[var(--moiz-green)]">Favoritos</span>
           </h1>
           <p className="text-lg text-zinc-500 font-medium">
-            Los productos que más te gustan, guardados para cuando los
-            necesites.
+            Los productos que más te gustan, guardados para cuando los necesites.
           </p>
         </header>
 
-        <FavoritesList initialFavorites={initialFavorites as any} />
+        <FavoritesList initialFavorites={initialFavorites} />
       </div>
 
       <Footer />

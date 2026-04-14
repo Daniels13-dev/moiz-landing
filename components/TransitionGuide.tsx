@@ -35,10 +35,7 @@ const steps = [
 
 export default function TransitionGuide() {
   return (
-    <section
-      id="transicion"
-      className="py-16 md:py-24 bg-zinc-50 overflow-hidden"
-    >
+    <section id="transicion" className="py-16 md:py-24 bg-zinc-50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12 md:mb-16">
           <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">
@@ -48,8 +45,8 @@ export default function TransitionGuide() {
             Cómo pasarse a Möiz
           </h2>
           <p className="mt-4 text-lg text-zinc-500 max-w-2xl mx-auto">
-            Para una transición exitosa y sin estrés para tu michi, te
-            recomendamos seguir este plan de 10 días.
+            Para una transición exitosa y sin estrés para tu michi, te recomendamos seguir este plan
+            de 10 días.
           </p>
         </div>
 
@@ -74,9 +71,7 @@ export default function TransitionGuide() {
                 {step.day}
               </div>
 
-              <h3 className="font-extrabold text-2xl text-zinc-900 mb-4">
-                {step.title}
-              </h3>
+              <h3 className="font-extrabold text-2xl text-zinc-900 mb-4">{step.title}</h3>
 
               <div className="flex items-center justify-center gap-2 mb-6">
                 <div className="h-2 w-24 bg-zinc-100 rounded-full overflow-hidden">
@@ -88,22 +83,17 @@ export default function TransitionGuide() {
                     className="h-full bg-[var(--moiz-green)]"
                   />
                 </div>
-                <span className="text-sm font-bold text-zinc-400">
-                  {step.percent}
-                </span>
+                <span className="text-sm font-bold text-zinc-400">{step.percent}</span>
               </div>
 
-              <p className="text-zinc-500 font-medium text-sm leading-relaxed">
-                {step.desc}
-              </p>
+              <p className="text-zinc-500 font-medium text-sm leading-relaxed">{step.desc}</p>
             </motion.div>
           ))}
         </div>
 
         <div className="mt-16 text-center">
           <p className="text-zinc-400 font-medium italic">
-            * Recuerda limpiar el arenero antes de empezar con el día 10 para
-            una frescura total.
+            * Recuerda limpiar el arenero antes de empezar con el día 10 para una frescura total.
           </p>
         </div>
       </div>

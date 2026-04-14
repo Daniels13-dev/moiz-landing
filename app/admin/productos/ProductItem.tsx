@@ -1,16 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { Trash2, Edit2 } from "lucide-react";
 import { deleteProduct } from "../actions";
 import { toast } from "sonner";
-import EditProductModal from "./EditProductModal";
-
-interface Category {
-  id: string;
-  name: string;
-}
 
 interface Product {
   id: string;
@@ -21,18 +16,23 @@ interface Product {
   oldPrice?: number | null;
   isFeatured?: boolean;
   isNew?: boolean;
+  allowSubscription?: boolean;
   category?: { name?: string } | null;
-  categoryId?: string;
-  petType?: string;
+  variants?: {
+    id: string;
+    name: string;
+    color?: string | null;
+    image?: string | null;
+    stock: number;
+    price?: number | null;
+  }[];
 }
 
 interface ProductItemProps {
   product: Product;
-  categories: Category[];
 }
 
-export default function ProductItem({ product, categories }: ProductItemProps) {
-  const [isEditOpen, setIsEditOpen] = useState(false);
+export default function ProductItem({ product }: ProductItemProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -70,11 +70,19 @@ export default function ProductItem({ product, categories }: ProductItemProps) {
                 Destacado
               </span>
             )}
+            {product.allowSubscription && (
+              <span className="bg-blue-50 text-[10px] font-black uppercase tracking-widest text-blue-500 px-3 py-1 rounded-full border border-blue-100">
+                Suscripción
+              </span>
+            )}
+            {product.variants && product.variants.length > 0 && (
+              <span className="bg-zinc-100 text-[10px] font-black uppercase tracking-widest text-zinc-400 px-3 py-1 rounded-full">
+                {product.variants.length} Colores
+              </span>
+            )}
           </div>
           <h3 className="text-xl font-black text-zinc-900">{product.name}</h3>
-          <p className="text-zinc-400 text-sm font-medium line-clamp-1">
-            {product.description}
-          </p>
+          <p className="text-zinc-400 text-sm font-medium line-clamp-1">{product.description}</p>
         </div>
 
         <div className="text-right flex flex-col items-end gap-2 pr-4">
@@ -83,13 +91,13 @@ export default function ProductItem({ product, categories }: ProductItemProps) {
           </span>
 
           <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button
-              onClick={() => setIsEditOpen(true)}
+            <Link
+              href={`/admin/productos/${product.id}/edit`}
               className="w-10 h-10 rounded-xl flex items-center justify-center text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition-all shadow-sm bg-white border border-zinc-100"
               title="Editar"
             >
               <Edit2 size={18} />
-            </button>
+            </Link>
 
             <button
               onClick={handleDelete}
@@ -102,13 +110,6 @@ export default function ProductItem({ product, categories }: ProductItemProps) {
           </div>
         </div>
       </div>
-
-      <EditProductModal
-        product={product}
-        categories={categories}
-        isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-      />
     </>
   );
 }

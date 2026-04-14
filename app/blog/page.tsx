@@ -23,7 +23,8 @@ export default function BlogPage() {
             Blog & <span className="text-[var(--moiz-green)]">Bienestar</span>
           </h1>
           <p className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto font-medium">
-            Consejos de expertos, ciencia del cuidado felino y nuestra misión por un planeta más verde.
+            Consejos de expertos, ciencia del cuidado felino y nuestra misión por un planeta más
+            verde.
           </p>
         </div>
 
@@ -65,7 +66,7 @@ export default function BlogPage() {
 
         {/* Post Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPosts.slice(1).map((post, idx) => (
+          {blogPosts.slice(1).map((post) => (
             <div
               key={post.slug}
               className="group bg-white rounded-[2.5rem] border border-zinc-100 overflow-hidden hover:shadow-2xl hover:shadow-zinc-200/50 transition-all flex flex-col"
@@ -85,7 +86,11 @@ export default function BlogPage() {
               </div>
               <div className="p-8 flex-1 flex flex-col">
                 <div className="flex items-center gap-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-4">
-                  <Calendar size={12} /> {new Date(post.date).toLocaleDateString("es-ES", { month: "long", day: "numeric" })}
+                  <Calendar size={12} />{" "}
+                  {new Date(post.date).toLocaleDateString("es-ES", {
+                    month: "long",
+                    day: "numeric",
+                  })}
                 </div>
                 <h3 className="text-2xl font-black text-zinc-900 tracking-tight group-hover:text-[var(--moiz-green)] transition-all mb-4 leading-tight">
                   <Link href={`/blog/${post.slug}`}>{post.title}</Link>
