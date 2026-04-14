@@ -18,7 +18,7 @@ export function createClient() {
           data: { subscription: { unsubscribe: () => {} } },
         }),
       },
-    } as any;
+    } as unknown as SupabaseClient;
   }
 
   client = createBrowserClient(url, key, {

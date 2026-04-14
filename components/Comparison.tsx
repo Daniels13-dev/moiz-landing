@@ -70,7 +70,7 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
           >
             {/* Background Accent */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--moiz-green)]/5 rounded-bl-full -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-700" />
-            
+
             <div className="relative">
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--moiz-green)] mb-2 block">
                 Especificación {idx + 1}
@@ -85,11 +85,11 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-[var(--moiz-green)]" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">El Estándar Möiz</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                    El Estándar Möiz
+                  </span>
                 </div>
-                <p className="text-xl font-black text-zinc-900 leading-tight">
-                  {item.moiz}
-                </p>
+                <p className="text-xl font-black text-zinc-900 leading-tight">{item.moiz}</p>
               </div>
 
               {/* Separator */}
@@ -97,10 +97,10 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
 
               {/* Others Value */}
               <div className="flex flex-col gap-1 opacity-50 group-hover:opacity-80 transition-opacity">
-                <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-400">Arena Común</span>
-                <p className="text-sm font-medium text-zinc-500 italic">
-                  {item.others}
-                </p>
+                <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-400">
+                  Arena Común
+                </span>
+                <p className="text-sm font-medium text-zinc-500 italic">{item.others}</p>
               </div>
             </div>
 
@@ -131,8 +131,7 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
               Möiz vs. Arena Tradicional
             </h2>
             <p className="mt-4 text-lg text-zinc-500 max-w-2xl mx-auto">
-              No es solo arena, es una mejora tecnológica para tu hogar y el
-              planeta.
+              No es solo arena, es una mejora tecnológica para tu hogar y el planeta.
             </p>
           </div>
         )}
@@ -170,9 +169,7 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
                         onMouseEnter={() => setActiveIdx(idx)}
                         onMouseLeave={() => setActiveIdx(null)}
                       >
-                        <span className="font-bold text-zinc-900 text-lg">
-                          {item.feature}
-                        </span>
+                        <span className="font-bold text-zinc-900 text-lg">{item.feature}</span>
                         <div
                           className={`w-6 h-6 rounded-full flex items-center justify-center transition-all cursor-help ${activeIdx === idx ? "bg-[var(--moiz-green)] text-white" : "bg-zinc-100 text-[var(--moiz-green)] hover:bg-[var(--moiz-green)] hover:text-white"}`}
                         >
@@ -213,9 +210,7 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
                         <div className="w-6 h-6 rounded-full bg-[var(--moiz-green)] flex items-center justify-center text-white shrink-0">
                           <Check size={14} strokeWidth={4} />
                         </div>
-                        <span className="font-extrabold text-zinc-900 text-lg">
-                          {item.moiz}
-                        </span>
+                        <span className="font-extrabold text-zinc-900 text-lg">{item.moiz}</span>
                       </div>
                     </td>
                     <td className="p-8">
@@ -223,9 +218,7 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
                         <div className="w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center text-zinc-500 shrink-0">
                           <X size={14} strokeWidth={4} />
                         </div>
-                        <span className="font-medium text-zinc-500 text-lg">
-                          {item.others}
-                        </span>
+                        <span className="font-medium text-zinc-500 text-lg">{item.others}</span>
                       </div>
                     </td>
                   </motion.tr>
@@ -251,9 +244,7 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
                 <div className="w-10 h-10 rounded-xl bg-[var(--moiz-green)]/10 flex items-center justify-center text-[var(--moiz-green)] font-bold text-xl">
                   {idx + 1}
                 </div>
-                <h3 className="text-xl font-black text-zinc-900 tracking-tight">
-                  {item.feature}
-                </h3>
+                <h3 className="text-xl font-black text-zinc-900 tracking-tight">{item.feature}</h3>
               </div>
 
               {/* Comparison Blocks */}
@@ -264,15 +255,9 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
                     <span className="text-[var(--moiz-green)] font-black text-[10px] uppercase tracking-[0.2em]">
                       Möiz
                     </span>
-                    <Check
-                      size={18}
-                      className="text-[var(--moiz-green)]"
-                      strokeWidth={3}
-                    />
+                    <Check size={18} className="text-[var(--moiz-green)]" strokeWidth={3} />
                   </div>
-                  <p className="text-zinc-900 font-extrabold text-lg">
-                    {item.moiz}
-                  </p>
+                  <p className="text-zinc-900 font-extrabold text-lg">{item.moiz}</p>
                 </div>
 
                 {/* Others Block */}
@@ -283,9 +268,7 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
                     </span>
                     <X size={18} className="text-zinc-300" strokeWidth={3} />
                   </div>
-                  <p className="text-zinc-500 font-bold text-lg">
-                    {item.others}
-                  </p>
+                  <p className="text-zinc-500 font-bold text-lg">{item.others}</p>
                 </div>
               </div>
 
@@ -304,12 +287,10 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
             💡
           </div>
           <div>
-            <h4 className="font-extrabold text-zinc-900 text-xl mb-1">
-              Dato curioso
-            </h4>
+            <h4 className="font-extrabold text-zinc-900 text-xl mb-1">Dato curioso</h4>
             <p className="text-zinc-600 font-medium">
-              Una bolsa de Möiz de 10kg rinde lo mismo que 20kg de arena de
-              arcilla tradicional, ¡y sin cargar el doble de peso!
+              Una bolsa de Möiz de 10kg rinde lo mismo que 20kg de arena de arcilla tradicional, ¡y
+              sin cargar el doble de peso!
             </p>
           </div>
         </div>

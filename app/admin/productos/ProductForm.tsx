@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Plus, ChevronDown, Loader2, Save } from "lucide-react";
 import { createProduct } from "../actions";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface Category {
   id: string;
@@ -16,7 +17,7 @@ interface ProductFormProps {
 
 export default function ProductForm({ categories }: ProductFormProps) {
   const [loading, setLoading] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,7 +28,8 @@ export default function ProductForm({ categories }: ProductFormProps) {
 
     if (res.success) {
       toast.success("Producto creado con éxito");
-      formRef.current?.reset();
+      router.push("/admin/productos");
+      router.refresh();
     } else {
       toast.error(res.error || "Ocurrió un error al crear el producto");
     }
@@ -36,7 +38,7 @@ export default function ProductForm({ categories }: ProductFormProps) {
   };
 
   return (
-    <div className="lg:col-span-4 h-max p-10 bg-white border border-zinc-100 rounded-[3rem] shadow-sm">
+    <div className="w-full max-w-4xl mx-auto p-10 bg-white border border-zinc-100 rounded-[3rem] shadow-sm">
       <h2 className="text-2xl font-black text-zinc-900 mb-8 flex items-center gap-3">
         <div className="w-10 h-10 bg-[var(--moiz-green)]/10 text-[var(--moiz-green)] rounded-xl flex items-center justify-center">
           <Plus size={20} />
@@ -44,11 +46,7 @@ export default function ProductForm({ categories }: ProductFormProps) {
         Nuevo Producto
       </h2>
 
-      <form
-        ref={formRef}
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-6"
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <div className="space-y-2">
           <label className="text-xs font-black uppercase tracking-widest text-zinc-400 pl-1">
             Información Básica
@@ -160,25 +158,28 @@ export default function ProductForm({ categories }: ProductFormProps) {
             <span className="text-sm font-bold text-zinc-900">Destacado</span>
           </label>
           <label className="flex-1 flex items-center gap-3 p-4 bg-zinc-50 border border-zinc-200 rounded-2xl cursor-pointer hover:border-[var(--moiz-green)]/30 transition-all">
-            <input
-              name="isNew"
-              type="checkbox"
-              className="w-5 h-5 accent-[var(--moiz-green)]"
-            />
+            <input name="isNew" type="checkbox" className="w-5 h-5 accent-[var(--moiz-green)]" />
             <span className="text-sm font-bold text-zinc-900">Nuevo</span>
           </label>
         </div>
+
+        <label className="flex items-center gap-3 p-4 bg-zinc-50 border border-zinc-200 rounded-2xl cursor-pointer hover:border-[var(--moiz-green)]/30 transition-all">
+          <input
+            name="allowSubscription"
+            type="checkbox"
+            className="w-5 h-5 accent-[var(--moiz-green)]"
+          />
+          <span className="text-sm font-bold text-zinc-900">
+            Permitir Compra mediante Suscripción
+          </span>
+        </label>
 
         <button
           type="submit"
           disabled={loading}
           className="w-full bg-[var(--moiz-green)] text-white py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-[var(--moiz-green)]/20 hover:scale-[1.02] active:scale-95 transition-all mt-4 flex items-center justify-center gap-2"
         >
-          {loading ? (
-            <Loader2 className="animate-spin" size={20} />
-          ) : (
-            <Save size={20} />
-          )}
+          {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
           <span>{loading ? "Creando..." : "Crear Producto"}</span>
         </button>
       </form>

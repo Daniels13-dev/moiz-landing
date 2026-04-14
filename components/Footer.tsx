@@ -2,7 +2,7 @@ import { FaWhatsapp, FaInstagram, FaTiktok, FaFacebook } from "react-icons/fa";
 import { siteConfig } from "@/config/site";
 
 import Link from "next/link";
-import { Home, ShoppingBag, Box, Star, MessageCircle } from "lucide-react";
+import { Home, ShoppingBag, Box, Star, MessageCircle, Truck } from "lucide-react";
 
 const socials = [
   {
@@ -84,6 +84,7 @@ export default function Footer() {
                   { name: "Comparativa", path: "/info/arena" },
                   { name: "Reseñas", path: "/#clientes" },
                   { name: "Preguntas", path: "/#faq" },
+                  { name: "Rastrear Pedido", path: "/rastrear-mi-pedido" },
                 ].map((link) => (
                   <Link
                     key={link.name}
@@ -172,6 +173,11 @@ export default function Footer() {
                   path: "/#faq",
                   icon: <MessageCircle size={16} />,
                 },
+                {
+                  name: "Rastrear",
+                  path: "/rastrear-mi-pedido",
+                  icon: <Truck size={16} />,
+                },
               ].map((link) => (
                 <Link
                   key={link.name}
@@ -196,9 +202,7 @@ export default function Footer() {
                 <div className="w-10 h-10 rounded-2xl bg-zinc-900 flex items-center justify-center text-zinc-500 group-active:text-[#25D366] transition-colors border border-white/5">
                   <MessageCircle size={16} />
                 </div>
-                <span className="text-zinc-300 font-bold text-xs tracking-tight">
-                  Soporte
-                </span>
+                <span className="text-zinc-300 font-bold text-xs tracking-tight">Soporte</span>
               </a>
             </div>
 

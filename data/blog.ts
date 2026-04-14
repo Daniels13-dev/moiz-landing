@@ -13,11 +13,13 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "por-que-cambiar-arena-biodegradable",
     title: "Por qué cambiar a arena biodegradable salvará la salud de tu gato",
-    excerpt: "La arena de maíz no solo es mejor para el planeta, sino que previene enfermedades respiratorias en tu michi.",
+    excerpt:
+      "La arena de maíz no solo es mejor para el planeta, sino que previene enfermedades respiratorias en tu michi.",
     category: "Sostenibilidad",
     date: "2024-04-09",
     readTime: "5 min",
-    image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=800",
+    image:
+      "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=800",
     content: `# El cambio que tu gato y el planeta necesitan
 
 La mayoría de las arenas convencionales utilizan bentonita de sodio, un mineral que, aunque efectivo para aglomerar, genera un polvo fino. Este polvo, al ser inhalado diariamente, puede provocar asma felina y alergias tanto en gatos como en sus dueños.
@@ -43,11 +45,13 @@ El olfato de un gato es 14 veces más sensible que el humano. No lo hagas de gol
   {
     slug: "comparativa-bentonita-vs-maiz",
     title: "Bentonita vs Sílice vs Maíz: La verdad sobre lo que pisa tu gato",
-    excerpt: "Analizamos los 3 materiales más comunes del mercado. Spoiler: El maíz gana en casi todo.",
+    excerpt:
+      "Analizamos los 3 materiales más comunes del mercado. Spoiler: El maíz gana en casi todo.",
     category: "Cuidado Felino",
     date: "2024-04-05",
     readTime: "8 min",
-    image: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=800",
+    image:
+      "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=800",
     content: `# La batalla de las arenas: ¿Qué es lo mejor para tu michi?
 
 Elegir la arena adecuada parece una tarea simple hasta que te enfrentas a las góndolas llenas de opciones químicas y minerales. La mayoría de nosotros crecimos usando bentonita o sílice, asumiendo que eran las únicas opciones. Sin embargo, la ciencia del bienestar animal ha avanzado hacia soluciones más humanas y sostenibles.

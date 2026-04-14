@@ -11,11 +11,7 @@ interface EditCategoryModalProps {
   onClose: () => void;
 }
 
-export default function EditCategoryModal({
-  category,
-  isOpen,
-  onClose,
-}: EditCategoryModalProps) {
+export default function EditCategoryModal({ category, isOpen, onClose }: EditCategoryModalProps) {
   const [name, setName] = useState(category.name);
   const [loading, setLoading] = useState(false);
 
@@ -37,10 +33,7 @@ export default function EditCategoryModal({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
       <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-zinc-100 p-10 animate-in fade-in zoom-in duration-300">
@@ -54,9 +47,7 @@ export default function EditCategoryModal({
         <h2 className="text-3xl font-black text-zinc-900 mb-2 tracking-tighter">
           Editar Categoría
         </h2>
-        <p className="text-zinc-500 font-medium mb-8">
-          Modifica el nombre de la categoría.
-        </p>
+        <p className="text-zinc-500 font-medium mb-8">Modifica el nombre de la categoría.</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
@@ -85,11 +76,7 @@ export default function EditCategoryModal({
               disabled={loading}
               className="flex-2 py-4 bg-[var(--moiz-green)] text-white rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-[var(--moiz-green)]/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
             >
-              {loading ? (
-                <Loader2 className="animate-spin" size={20} />
-              ) : (
-                <Save size={20} />
-              )}
+              {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
               <span>Guardar Cambios</span>
             </button>
           </div>

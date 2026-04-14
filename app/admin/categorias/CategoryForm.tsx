@@ -32,11 +32,7 @@ export default function CategoryForm() {
         <Plus size={18} className="text-[var(--moiz-green)]" />
         Nueva Categoría
       </h2>
-      <form
-        ref={formRef}
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-4"
-      >
+      <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           name="name"
           type="text"
@@ -49,11 +45,7 @@ export default function CategoryForm() {
           disabled={loading}
           className="w-full bg-[var(--moiz-green)] text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-[var(--moiz-green)]/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
         >
-          {loading ? (
-            <Loader2 className="animate-spin" size={18} />
-          ) : (
-            <Save size={18} />
-          )}
+          {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
           <span>{loading ? "Creando..." : "Crear"}</span>
         </button>
       </form>

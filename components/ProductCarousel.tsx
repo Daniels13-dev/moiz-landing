@@ -6,13 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
-import {
-  Minus,
-  Plus,
-  ChevronLeft,
-  ChevronRight,
-  ShoppingBag,
-} from "lucide-react";
+import { Minus, Plus, ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
 
 import { CatalogProduct } from "./PetShopCatalog";
 
@@ -38,18 +32,9 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
     };
   }, [emblaApi]);
 
-  const scrollPrev = useCallback(
-    () => emblaApi && emblaApi.scrollPrev(),
-    [emblaApi],
-  );
-  const scrollNext = useCallback(
-    () => emblaApi && emblaApi.scrollNext(),
-    [emblaApi],
-  );
-  const scrollTo = useCallback(
-    (idx: number) => emblaApi && emblaApi.scrollTo(idx),
-    [emblaApi],
-  );
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback((idx: number) => emblaApi && emblaApi.scrollTo(idx), [emblaApi]);
 
   const activeProduct = products[selected] || products[0];
   const { cart, addToCart, updateQuantity } = useCart();

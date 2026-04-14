@@ -1,15 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Search,
-  Shield,
-  User,
-  Phone,
-  ShieldCheck,
-  ShieldAlert,
-  ChevronDown,
-} from "lucide-react";
+import { Search, Shield, User, Phone, ShieldCheck, ShieldAlert, ChevronDown } from "lucide-react";
 import { updateUserRole } from "../actions";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -48,10 +40,7 @@ export default function UserTable({ initialUsers }: UserTableProps) {
   const handleRoleToggle = async (userId: string, currentRole: string) => {
     const newRole = currentRole === "ADMIN" ? "USER" : "ADMIN";
 
-    if (
-      !confirm(`¿Estás seguro de cambiar el rol de este usuario a ${newRole}?`)
-    )
-      return;
+    if (!confirm(`¿Estás seguro de cambiar el rol de este usuario a ${newRole}?`)) return;
 
     setUpdating(userId);
     const result = await updateUserRole(userId, newRole);
@@ -59,9 +48,7 @@ export default function UserTable({ initialUsers }: UserTableProps) {
 
     if (result.success) {
       toast.success(`Rol actualizado a ${newRole} correctamente`);
-      setUsers(
-        users.map((u) => (u.id === userId ? { ...u, role: newRole } : u)),
-      );
+      setUsers(users.map((u) => (u.id === userId ? { ...u, role: newRole } : u)));
     } else {
       toast.error(result.error || "Error al actualizar rol");
     }
@@ -127,10 +114,7 @@ export default function UserTable({ initialUsers }: UserTableProps) {
             <tbody className="divide-y divide-zinc-50">
               {filteredUsers.length > 0 ? (
                 filteredUsers.map((user) => (
-                  <tr
-                    key={user.id}
-                    className="group hover:bg-zinc-50/50 transition-colors"
-                  >
+                  <tr key={user.id} className="group hover:bg-zinc-50/50 transition-colors">
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-4">
                         <div
@@ -144,9 +128,7 @@ export default function UserTable({ initialUsers }: UserTableProps) {
                           <div className="font-black text-zinc-900 leading-tight">
                             {user.full_name || "Sin nombre"}
                           </div>
-                          <div className="text-sm text-zinc-500 font-medium">
-                            {user.email}
-                          </div>
+                          <div className="text-sm text-zinc-500 font-medium">{user.email}</div>
                         </div>
                       </div>
                     </td>
@@ -170,11 +152,7 @@ export default function UserTable({ initialUsers }: UserTableProps) {
                             : "bg-zinc-100 text-zinc-500 border-zinc-200"
                         }`}
                       >
-                        {user.role === "ADMIN" ? (
-                          <ShieldCheck size={12} />
-                        ) : (
-                          <User size={12} />
-                        )}
+                        {user.role === "ADMIN" ? <ShieldCheck size={12} /> : <User size={12} />}
                         {user.role === "ADMIN" ? "Administrador" : "Usuario"}
                       </span>
                     </td>
@@ -214,12 +192,8 @@ export default function UserTable({ initialUsers }: UserTableProps) {
                   <td colSpan={5} className="px-8 py-20 text-center">
                     <div className="flex flex-col items-center gap-2 text-zinc-400">
                       <Search size={48} strokeWidth={1} className="mb-2" />
-                      <p className="font-bold text-lg">
-                        No se encontraron usuarios
-                      </p>
-                      <p className="text-sm">
-                        Prueba con otros términos de búsqueda.
-                      </p>
+                      <p className="font-bold text-lg">No se encontraron usuarios</p>
+                      <p className="text-sm">Prueba con otros términos de búsqueda.</p>
                     </div>
                   </td>
                 </tr>

@@ -20,8 +20,7 @@ export async function login(formData: FormData) {
     let errorMessage = error.message;
 
     if (errorMessage === "Invalid login credentials") {
-      errorMessage =
-        "Correo o contraseña incorrectos. Por favor, verifica tus datos.";
+      errorMessage = "Correo o contraseña incorrectos. Por favor, verifica tus datos.";
     } else if (errorMessage === "Email not confirmed") {
       errorMessage = "Tu Correo electrónico no ha sido confirmado.";
     }
@@ -64,10 +63,8 @@ function validatePassword(password: string) {
   const isLongEnough = password.length >= 8;
 
   if (!isLongEnough) return "La contraseña debe tener al menos 8 caracteres.";
-  if (!hasUpperCase)
-    return "La contraseña debe tener al menos una letra mayúscula.";
-  if (!hasLowerCase)
-    return "La contraseña debe tener al menos una letra minúscula.";
+  if (!hasUpperCase) return "La contraseña debe tener al menos una letra mayúscula.";
+  if (!hasLowerCase) return "La contraseña debe tener al menos una letra minúscula.";
   if (!hasNumber) return "La contraseña debe tener al menos un número.";
 
   return null;
@@ -95,8 +92,7 @@ export async function signup(formData: FormData) {
 
   if (existingProfile) {
     return {
-      error:
-        "Este correo electrónico ya está registrado. Intenta iniciar sesión.",
+      error: "Este correo electrónico ya está registrado. Intenta iniciar sesión.",
     };
   }
 
@@ -120,8 +116,7 @@ export async function signup(formData: FormData) {
   // but not in our Profile table (uncommon) or we just didn't catch it.
   if (data?.user && data.user.identities?.length === 0) {
     return {
-      error:
-        "Este correo electrónico ya está registrado. Intenta iniciar sesión.",
+      error: "Este correo electrónico ya está registrado. Intenta iniciar sesión.",
     };
   }
 

@@ -75,7 +75,9 @@ export default function Hero() {
         className="relative z-30 mt-[-2rem] md:mt-[-5rem] flex flex-col items-center gap-6 px-6 text-center shadow-none"
       >
         <p className="text-xs md:text-sm font-medium text-zinc-500 max-w-lg leading-relaxed">
-          <span className="text-zinc-900 font-bold block mb-1">{siteConfig.content.heroTagline}</span>
+          <span className="text-zinc-900 font-bold block mb-1">
+            {siteConfig.content.heroTagline}
+          </span>
           {siteConfig.description}
         </p>
 
@@ -104,12 +106,8 @@ export default function Hero() {
           🌱
         </div>
         <div className="flex flex-col">
-          <span className="font-extrabold text-zinc-900 text-base">
-            100% Orgánico
-          </span>
-          <span className="text-sm text-zinc-500 font-medium">
-            Bienestar natural
-          </span>
+          <span className="font-extrabold text-zinc-900 text-base">100% Orgánico</span>
+          <span className="text-sm text-zinc-500 font-medium">Bienestar natural</span>
         </div>
       </motion.div>
 
@@ -127,12 +125,8 @@ export default function Hero() {
           🍖
         </div>
         <div className="flex flex-col">
-          <span className="font-extrabold text-zinc-900 text-base">
-            Nutrición Alta
-          </span>
-          <span className="text-sm text-zinc-500 font-medium">
-            Sabor y energía
-          </span>
+          <span className="font-extrabold text-zinc-900 text-base">Nutrición Alta</span>
+          <span className="text-sm text-zinc-500 font-medium">Sabor y energía</span>
         </div>
       </motion.div>
 
@@ -150,12 +144,8 @@ export default function Hero() {
           🧴
         </div>
         <div className="flex flex-col">
-          <span className="font-extrabold text-zinc-900 text-base">
-            Higiene Total
-          </span>
-          <span className="text-sm text-zinc-500 font-medium">
-            Libre de olores
-          </span>
+          <span className="font-extrabold text-zinc-900 text-base">Higiene Total</span>
+          <span className="text-sm text-zinc-500 font-medium">Libre de olores</span>
         </div>
       </motion.div>
 

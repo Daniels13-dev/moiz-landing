@@ -8,9 +8,7 @@ interface AdminOrderDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function AdminOrderDetailPage({
-  params,
-}: AdminOrderDetailPageProps) {
+export default async function AdminOrderDetailPage({ params }: AdminOrderDetailPageProps) {
   const { id } = await params;
   const order = await getOrderById(id);
 
@@ -29,7 +27,7 @@ export default async function AdminOrderDetailPage({
         </Link>
       </div>
 
-      <OrderDetail order={order} />
+      <OrderDetail order={order} showHelp={false} />
     </div>
   );
 }

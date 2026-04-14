@@ -5,10 +5,16 @@ import { createClient } from "@/utils/supabase/client";
 import { getUserRole, logout as authLogout } from "@/app/auth/actions";
 import { useRouter } from "next/navigation";
 
+import { User } from "@supabase/supabase-js";
+
+export interface AuthUser extends User {
+  role?: string;
+}
+
 const supabase = createClient();
 
 export function useAuth() {
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -35,10 +41,10 @@ export function useAuth() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event: any, session: any) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         const role = await getUserRole();
-        setUser({ ...session.user, role });
+        setUser({ ...session.user, role } as AuthUser);
       } else {
         setUser(null);
       }

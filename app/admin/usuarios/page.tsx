@@ -12,9 +12,9 @@ export default async function AdminUsersPage() {
 
   // Prisma model returns camelCased `fullName`; the UserTable expects `full_name`.
   // Map the records to include the expected property to satisfy the component's prop type.
-  const normalizedUsers = (users as any[]).map((u) => ({
+  const normalizedUsers = users.map((u) => ({
     ...u,
-    full_name: (u as unknown as { fullName?: string }).fullName ?? null,
+    full_name: u.fullName ?? null,
   }));
 
   return (
@@ -23,10 +23,7 @@ export default async function AdminUsersPage() {
         href="/admin"
         className="inline-flex items-center gap-2 text-zinc-400 font-bold text-sm hover:text-[var(--moiz-green)] transition-colors group mb-8"
       >
-        <ArrowLeft
-          size={16}
-          className="group-hover:-translate-x-1 transition-transform"
-        />
+        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
         Volver al panel
       </Link>
       <div className="mb-12">
