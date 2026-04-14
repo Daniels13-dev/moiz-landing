@@ -14,9 +14,7 @@ interface FavoritesListProps {
   initialFavorites: CatalogProduct[];
 }
 
-export default function FavoritesList({
-  initialFavorites,
-}: FavoritesListProps) {
+export default function FavoritesList({ initialFavorites }: FavoritesListProps) {
   const [favorites, setFavorites] = useState(initialFavorites);
   const { addToCart } = useCart();
 
@@ -37,9 +35,7 @@ export default function FavoritesList({
         <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-6">
           <Heart size={32} className="text-zinc-200" />
         </div>
-        <h3 className="text-2xl font-bold text-zinc-900 mb-2">
-          Aún no tienes favoritos
-        </h3>
+        <h3 className="text-2xl font-bold text-zinc-900 mb-2">Aún no tienes favoritos</h3>
         <p className="text-zinc-500 mb-8 max-w-xs mx-auto">
           Explora nuestro catálogo y guarda los productos que más te gustan.
         </p>
@@ -96,9 +92,7 @@ export default function FavoritesList({
                   {product.category}
                 </span>
                 <Star className="fill-yellow-400 text-yellow-400" size={10} />
-                <span className="text-[10px] font-bold text-zinc-600">
-                  {product.rating}
-                </span>
+                <span className="text-[10px] font-bold text-zinc-600">{product.rating}</span>
               </div>
 
               <h3 className="text-xl font-bold text-zinc-900 group-hover:text-[var(--moiz-green)] transition-all line-clamp-1 mb-4">

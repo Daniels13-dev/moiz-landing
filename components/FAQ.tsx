@@ -44,9 +44,7 @@ function FAQItem({
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <p className="pb-6 text-zinc-500 font-medium leading-relaxed max-w-3xl">
-              {answer}
-            </p>
+            <p className="pb-6 text-zinc-500 font-medium leading-relaxed max-w-3xl">{answer}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -93,8 +91,8 @@ export default function FAQ() {
             Todo lo que necesitas saber
           </h2>
           <p className="mt-4 text-lg text-zinc-500">
-            Resolvemos tus dudas para que tú y tu mascota tengan la mejor
-            experiencia posible en nuestra tienda.
+            Resolvemos tus dudas para que tú y tu mascota tengan la mejor experiencia posible en
+            nuestra tienda.
           </p>
         </div>
 
@@ -113,9 +111,7 @@ export default function FAQ() {
         <div className="mt-16 p-8 rounded-3xl bg-zinc-900 text-white flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="text-center md:text-left">
             <h4 className="text-2xl font-black mb-2">¿Aún tienes dudas?</h4>
-            <p className="text-zinc-400 font-medium">
-              Estamos listos para ayudarte vía WhatsApp.
-            </p>
+            <p className="text-zinc-400 font-medium">Estamos listos para ayudarte vía WhatsApp.</p>
           </div>
           <a
             href="#contacto"

@@ -2,8 +2,8 @@ export const siteConfig = {
   name: "Möiz",
   fullName: "Möiz Bienestar Animal SAS",
   version: "1.0.0",
-  url: "https://moiz-bienestar.com",
-  ogImage: "https://moiz-bienestar.com/og-image.jpg",
+  url: "https://moizpets.com",
+  ogImage: "https://moizpets.com/og-image.jpg",
   description: "Bienestar Natural & Premium para tus Mascotas",
   slogan: "El Cambio Inteligente en Arena para Gatos",
   keywords: [
@@ -13,7 +13,7 @@ export const siteConfig = {
     "mascotas",
     "bienestar animal",
     "Colombia",
-    "sustentable"
+    "sustentable",
   ],
   navMain: [
     { title: "Inicio", href: "/" },
@@ -29,10 +29,10 @@ export const siteConfig = {
     legal: [
       { title: "Términos y Condiciones", href: "/legal/terminos" },
       { title: "Privacidad", href: "/legal/privacidad" },
-    ]
+    ],
   },
   links: {
-    instagram: "https://instagram.com/moiz_bienestar",
+    instagram: "https://instagram.com/moizpets",
     whatsapp: "https://wa.me/573218515161",
     whatsappNumber: "573218515161",
     tiktok: "https://tiktok.com/@moiz",
@@ -50,8 +50,8 @@ export const siteConfig = {
   },
   theme: {
     primary: "var(--moiz-green)",
-    accent: "var(--moiz-yellow)"
-  }
+    accent: "var(--moiz-yellow)",
+  },
 };
 
 export type SiteConfig = typeof siteConfig;

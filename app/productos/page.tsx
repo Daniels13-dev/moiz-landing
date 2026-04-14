@@ -37,8 +37,7 @@ export default async function ProductosPage() {
               </div>
               <h3 className="text-xl font-bold mb-3">Envíos Rápidos</h3>
               <p className="text-zinc-500 text-sm leading-relaxed">
-                Entregas en tiempo récord para que tu mascota nunca se quede sin
-                lo que necesita.
+                Entregas en tiempo récord para que tu mascota nunca se quede sin lo que necesita.
               </p>
             </div>
             <div className="bg-white p-10 rounded-[3rem] border border-zinc-100">
@@ -56,8 +55,8 @@ export default async function ProductosPage() {
               </div>
               <h3 className="text-xl font-bold mb-3">Calidad Premium</h3>
               <p className="text-zinc-500 text-sm leading-relaxed">
-                Solo seleccionamos productos de la más alta calidad, priorizando
-                ingredientes naturales.
+                Solo seleccionamos productos de la más alta calidad, priorizando ingredientes
+                naturales.
               </p>
             </div>
             <div className="bg-white p-10 rounded-[3rem] border border-zinc-100">
@@ -75,8 +74,7 @@ export default async function ProductosPage() {
               </div>
               <h3 className="text-xl font-bold mb-3">Soporte Experto</h3>
               <p className="text-zinc-500 text-sm leading-relaxed">
-                Nuestro equipo está listo para asesorarte en la mejor elección
-                para tu mascota.
+                Nuestro equipo está listo para asesorarte en la mejor elección para tu mascota.
               </p>
             </div>
           </div>

@@ -138,8 +138,8 @@ export default function ProductReviews() {
           Mascotas felices, dueños tranquilos
         </h2>
         <p className="mt-4 text-lg text-zinc-500 max-w-2xl mx-auto">
-          Cientos de hogares confían en nuestros productos naturales e
-          innovadores. Estas son sus experiencias reales con Möiz.
+          Cientos de hogares confían en nuestros productos naturales e innovadores. Estas son sus
+          experiencias reales con Möiz.
         </p>
       </div>
 
@@ -171,20 +171,13 @@ export default function ProductReviews() {
                     {r.name.split(" ")[0].slice(0, 1)}
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-zinc-900">
-                      {r.name}
-                    </div>
-                    <div className="text-xs text-zinc-400 font-medium">
-                      {r.date}
-                    </div>
+                    <div className="text-sm font-bold text-zinc-900">{r.name}</div>
+                    <div className="text-xs text-zinc-400 font-medium">{r.date}</div>
                   </div>
                 </div>
 
                 <div className="flex flex-col items-end gap-1">
-                  <div
-                    className="flex"
-                    aria-label={`Valoración de ${r.rating} estrellas`}
-                  >
+                  <div className="flex" aria-label={`Valoración de ${r.rating} estrellas`}>
                     {Array.from({ length: 5 }).map((_, index) => (
                       <svg
                         key={index}
@@ -194,9 +187,7 @@ export default function ProductReviews() {
                         fill={index < r.rating ? "currentColor" : "none"}
                         stroke="currentColor"
                         strokeWidth={1.5}
-                        className={
-                          index < r.rating ? "text-yellow-400" : "text-zinc-200"
-                        }
+                        className={index < r.rating ? "text-yellow-400" : "text-zinc-200"}
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path d="M12 .587l3.668 7.431L24 9.748l-6 5.848 1.417 8.265L12 19.771 4.583 23.861 6 15.596 0 9.748l8.332-1.73z" />
@@ -206,9 +197,7 @@ export default function ProductReviews() {
                 </div>
               </div>
 
-              <p className="text-[15px] leading-relaxed text-zinc-600">
-                &quot;{r.text}&quot;
-              </p>
+              <p className="text-[15px] leading-relaxed text-zinc-600">&quot;{r.text}&quot;</p>
             </article>
           ))}
         </motion.div>

@@ -15,6 +15,8 @@ import {
   MapPin,
   LayoutDashboard,
   Heart,
+  Search,
+  Clock,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { usePathname, useRouter } from "next/navigation";
@@ -22,14 +24,20 @@ import { useAuth } from "@/hooks/use-auth";
 import { useScroll } from "@/hooks/use-scroll";
 import { siteConfig } from "@/config/site";
 
+interface AuthUser {
+  user_metadata?: { full_name?: string };
+  email?: string;
+  role?: string;
+}
+
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  
+
   const { totalItems } = useCart();
   const pathname = usePathname();
   const router = useRouter();
-  
+
   // Refactor: Hooks personalizados para lógica de negocio
   const { user, loading, logout } = useAuth();
   const isScrolled = useScroll(20);
@@ -39,11 +47,13 @@ export default function Navbar() {
     setUserDropdownOpen(false);
   };
 
-  // Close mobile menu on route change
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(pathname);
+
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
     setMobileMenuOpen(false);
     setUserDropdownOpen(false);
-  }, [pathname]);
+  }
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -100,6 +110,13 @@ export default function Navbar() {
 
           {/* Right Actions Section (Desktop) */}
           <div className="hidden md:flex items-center gap-4 relative">
+            <button
+              onClick={() => router.push("/productos?search=focus")}
+              className="p-2.5 text-zinc-500 hover:text-[var(--moiz-green)] hover:bg-[var(--moiz-green)]/10 rounded-full transition-all"
+              title="Buscar productos"
+            >
+              <Search size={20} />
+            </button>
             {!loading &&
               (user ? (
                 <div className="relative">
@@ -136,45 +153,22 @@ export default function Navbar() {
                             </div>
                             <div className="flex flex-col overflow-hidden">
                               <p className="text-sm font-black text-zinc-900 truncate">
-                                {(
-                                  user as {
-                                    user_metadata?: { full_name?: string };
-                                    email?: string;
-                                    role?: string;
-                                  }
-                                )?.user_metadata?.full_name || "Usuario Möiz"}
+                                {(user as AuthUser)?.user_metadata?.full_name || "Usuario Möiz"}
                               </p>
                               <p className="text-xs font-medium text-zinc-500 truncate">
-                                {
-                                  (
-                                    user as {
-                                      user_metadata?: { full_name?: string };
-                                      email?: string;
-                                      role?: string;
-                                    }
-                                  )?.email
-                                }
+                                {(user as AuthUser)?.email}
                               </p>
                             </div>
                           </div>
 
                           <div className="p-2 flex flex-col">
-                            {(
-                              user as {
-                                user_metadata?: { full_name?: string };
-                                email?: string;
-                                role?: string;
-                              }
-                            )?.role?.toUpperCase() === "ADMIN" && (
+                            {(user as AuthUser)?.role?.toUpperCase() === "ADMIN" && (
                               <Link
                                 href="/admin"
                                 onClick={() => setUserDropdownOpen(false)}
                                 className="flex items-center gap-3 px-3 py-2.5 text-sm font-black text-zinc-900 hover:text-[var(--moiz-green)] hover:bg-[var(--moiz-green)]/10 rounded-xl transition-colors bg-zinc-100/80 mb-1"
                               >
-                                <LayoutDashboard
-                                  size={16}
-                                  className="text-[var(--moiz-green)]"
-                                />
+                                <LayoutDashboard size={16} className="text-[var(--moiz-green)]" />
                                 Panel de Control
                               </Link>
                             )}
@@ -193,6 +187,14 @@ export default function Navbar() {
                             >
                               <Package size={16} />
                               Mis Pedidos
+                            </Link>
+                            <Link
+                              href="/suscripciones"
+                              onClick={() => setUserDropdownOpen(false)}
+                              className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-zinc-600 hover:text-[var(--moiz-green)] hover:bg-[var(--moiz-green)]/10 rounded-xl transition-colors"
+                            >
+                              <Clock size={16} />
+                              Mis Suscripciones
                             </Link>
                             <Link
                               href="/favoritos"
@@ -230,19 +232,29 @@ export default function Navbar() {
                 </Link>
               ))}
 
-            {/* Cart Trigger */}
+            {/* Cart Trigger with Pulse Animation */}
             <Link
               href="/carrito"
               className="group relative flex items-center gap-2 bg-[var(--moiz-green)] text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-[0_8px_20px_rgba(106,142,42,0.25)] hover:shadow-[0_12px_25px_rgba(106,142,42,0.4)] hover:-translate-y-0.5 transition-all duration-300"
             >
-              <ShoppingBag size={18} />
-              <span>Carrito</span>
+              <motion.div
+                key={totalItems}
+                initial={{ scale: 1 }}
+                animate={{ scale: totalItems > 0 ? [1, 1.2, 1] : 1 }}
+                transition={{ duration: 0.3 }}
+                className="flex items-center gap-2"
+              >
+                <ShoppingBag size={18} />
+                <span>Carrito</span>
+              </motion.div>
               <AnimatePresence>
                 {totalItems > 0 && (
                   <motion.span
+                    key={`count-${totalItems}`}
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0, opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 25 }}
                     className="flex items-center justify-center bg-white text-[var(--moiz-green)] text-[11px] font-black min-w-[20px] h-[20px] px-1.5 rounded-full ml-1"
                   >
                     {totalItems}
@@ -254,6 +266,12 @@ export default function Navbar() {
 
           {/* Mobile Right Actions */}
           <div className="flex justify-end md:hidden items-center gap-3">
+            <button
+              onClick={() => router.push("/productos?search=focus")}
+              className="p-2.5 text-zinc-500 hover:text-[var(--moiz-green)] active:bg-zinc-100 rounded-full transition-colors"
+            >
+              <Search size={20} />
+            </button>
             {!loading && !user && (
               <Link
                 href="/login"
@@ -332,7 +350,9 @@ export default function Navbar() {
                       key={item.href}
                       href={item.href}
                       className={`text-2xl font-black transition-colors ${
-                        pathname === item.href ? "text-[var(--moiz-green)]" : "text-zinc-800 hover:text-[var(--moiz-green)]"
+                        pathname === item.href
+                          ? "text-[var(--moiz-green)]"
+                          : "text-zinc-800 hover:text-[var(--moiz-green)]"
                       }`}
                     >
                       {item.title}

@@ -9,14 +9,12 @@ import ProductReviews from "@/components/ProductReviews";
 import Footer from "@/components/Footer";
 import WhatsappButton from "@/components/WhatsappButton";
 import FAQ from "@/components/FAQ";
+import Newsletter from "@/components/Newsletter";
 
 export default async function Home() {
-  const [allProducts, categoriesDb] = await Promise.all([
-    getAllProducts(),
-    getAllCategories(),
-  ]);
+  const [allProducts, categoriesDb] = await Promise.all([getAllProducts(), getAllCategories()]);
 
-  const featuredProducts = (allProducts as any[]).filter((p) => p.isFeatured).slice(0, 5);
+  const featuredProducts = allProducts.filter((p) => p.isFeatured).slice(0, 5);
 
   return (
     <main>
@@ -31,6 +29,8 @@ export default async function Home() {
       <ProductReviews />
 
       <FAQ />
+
+      <Newsletter />
 
       <Footer />
 

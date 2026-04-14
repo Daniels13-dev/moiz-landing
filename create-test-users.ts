@@ -72,8 +72,7 @@ async function setupUsers() {
       // Sync metadata for existing user
       await supabase.auth.admin.updateUserById(authUser.id, {
         user_metadata: {
-          full_name:
-            authUser.user_metadata?.full_name || item.email.split("@")[0],
+          full_name: authUser.user_metadata?.full_name || item.email.split("@")[0],
           phone: item.phone,
         },
       });
@@ -81,16 +80,13 @@ async function setupUsers() {
 
     if (authUser) {
       // Now ensure profile exists with the correct role
-      console.log(
-        `Sincronizando perfil para ${item.email} con rol: ${item.role}...`,
-      );
+      console.log(`Sincronizando perfil para ${item.email} con rol: ${item.role}...`);
       await prisma.profile.upsert({
         where: { id: authUser.id },
         update: {
           role: item.role,
           phone: item.phone,
-          fullName:
-            authUser.user_metadata?.full_name || item.email.split("@")[0],
+          fullName: authUser.user_metadata?.full_name || item.email.split("@")[0],
         },
         create: {
           id: authUser.id,

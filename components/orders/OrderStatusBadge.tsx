@@ -1,11 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export type OrderStatus =
-  | "pendiente"
-  | "pagado"
-  | "enviado"
-  | "entregado"
-  | "cancelado";
+export type OrderStatus = "pendiente" | "pagado" | "enviado" | "entregado" | "cancelado";
 
 const statusConfig = {
   pendiente: {
@@ -52,9 +47,7 @@ export default function OrderStatusBadge({
         className,
       )}
     >
-      <span
-        className={cn("w-1.5 h-1.5 rounded-full animate-pulse", config.dot)}
-      />
+      <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", config.dot)} />
       {config.label}
     </span>
   );

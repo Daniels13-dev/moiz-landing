@@ -21,9 +21,8 @@ export default function ProductsHeader() {
         </span>
       </h1>
       <p className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto font-medium leading-relaxed">
-        Desde la arena de maíz más pura hasta los snacks y juguetes más
-        divertidos. Calidad premium diseñada para la felicidad de tus mejores
-        amigos.
+        Desde la arena de maíz más pura hasta los snacks y juguetes más divertidos. Calidad premium
+        diseñada para la felicidad de tus mejores amigos.
       </p>
     </motion.div>
   );

@@ -18,29 +18,68 @@ export interface ProductData {
   petType: string;
   isFeatured?: boolean;
   isNew?: boolean;
+  allowSubscription?: boolean;
+  variants?: Array<{
+    id: string;
+    name: string;
+    color: string | null;
+    image: string | null;
+    stock: number;
+    price: number | null;
+  }>;
+}
+
+interface RawVariant {
+  [key: string]: unknown;
+  image?: string | null;
+}
+
+interface RawProduct {
+  [key: string]: unknown;
+  image?: string;
+  description?: string;
+  desc?: string;
+  category?: string;
+  petType?: string;
+  variants?: RawVariant[];
 }
 
 /**
  * Formatea un producto asegurando que use la versión transparente de la imagen
  * y cumpliendo con el estándar de arquitectura.
  */
-export function formatProduct(product: any): ProductData {
-  if (!product) return product;
+export function formatProduct(product: unknown): ProductData {
+  if (!product) return product as unknown as ProductData;
+  const p = product as RawProduct;
 
-  let image = product.image || "";
-  
+  let image = p.image || "";
+
   // Lógica centralizada: Si es un PNG de producto local sin sufijo transparent, lo añadimos
   if (image.startsWith("/products/") && image.endsWith(".png") && !image.includes("-transparent")) {
     image = image.replace(".png", "-transparent.png");
   }
 
+  // Formatear imágenes de variantes si existen
+  const variants = p.variants?.map((v) => {
+    let vImage = v.image || "";
+    if (
+      vImage.startsWith("/products/") &&
+      vImage.endsWith(".png") &&
+      !vImage.includes("-transparent")
+    ) {
+      vImage = vImage.replace(".png", "-transparent.png");
+    }
+    return { ...v, image: vImage };
+  });
+
   return {
-    ...product,
+    ...p,
     image,
-    description: product.description || product.desc || "", // Normalización de nombres de campos
-    category: product.category || "General",
-    petType: product.petType || "Gato",
-  };
+    variants,
+    description: p.description || p.desc || "", // Normalización de nombres de campos
+    category: p.category || "General",
+    petType: p.petType || "Gato",
+  } as ProductData;
 }
 
 /**
@@ -49,12 +88,12 @@ export function formatProduct(product: any): ProductData {
 export async function getFeaturedProduct() {
   const product = await prisma.product.findFirst({
     where: { isFeatured: true },
-    include: { category: true }
+    include: { category: true },
   });
 
   return formatProduct({
     ...product,
-    category: product?.category?.name
+    category: product?.category?.name,
   });
 }
 
@@ -63,13 +102,15 @@ export async function getFeaturedProduct() {
  */
 export async function getAllProducts() {
   const products = await prisma.product.findMany({
-    include: { category: true }
+    include: { category: true, variants: true },
   });
 
-  return products.map(p => formatProduct({
-    ...p,
-    category: p.category?.name
-  }));
+  return products.map((p) =>
+    formatProduct({
+      ...p,
+      category: p.category?.name,
+    }),
+  );
 }
 
 /**

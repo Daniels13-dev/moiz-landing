@@ -39,9 +39,7 @@ export default function CategoryItem({ category }: CategoryItemProps) {
             <Tag size={20} />
           </div>
           <div>
-            <h3 className="font-black text-zinc-900 text-lg">
-              {category.name}
-            </h3>
+            <h3 className="font-black text-zinc-900 text-lg">{category.name}</h3>
             <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider">
               {category._count.products} productos asociados
             </p>

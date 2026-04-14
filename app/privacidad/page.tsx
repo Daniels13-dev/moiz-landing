@@ -18,19 +18,14 @@ export default function PrivacidadPage() {
       {privacidadData.intro && (
         <p
           dangerouslySetInnerHTML={{
-            __html: privacidadData.intro.replace(
-              "Möiz",
-              "<strong>Möiz</strong>",
-            ),
+            __html: privacidadData.intro.replace("Möiz", "<strong>Möiz</strong>"),
           }}
         />
       )}
 
       {privacidadData.sections.map((section, idx) => (
         <div key={idx} className="mt-8">
-          <h2 className="text-2xl font-bold text-[var(--moiz-dark)] mb-4">
-            {section.subtitle}
-          </h2>
+          <h2 className="text-2xl font-bold text-[var(--moiz-dark)] mb-4">{section.subtitle}</h2>
 
           {section.content &&
             section.content.map((paragraph, pIdx) => (

@@ -1,12 +1,21 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Plus, Minus, Search, Star, ShoppingBag, Dog, Cat } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useSearchParams } from "next/navigation";
+
+export interface CatalogProductVariant {
+  id: string;
+  name: string;
+  price: number | null;
+  image: string | null;
+  color?: string | null;
+  stock: number;
+}
 
 export interface CatalogProduct {
   id: string;
@@ -20,6 +29,9 @@ export interface CatalogProduct {
   rating: number;
   isNew?: boolean;
   isFeatured?: boolean;
+  allowSubscription?: boolean;
+  stock?: number;
+  variants?: CatalogProductVariant[];
 }
 
 export const createProductSlug = (name: string) => {
@@ -35,40 +47,39 @@ interface PetShopCatalogProps {
   initialProducts: CatalogProduct[];
 }
 
-export default function PetShopCatalog({
-  initialProducts,
-}: PetShopCatalogProps) {
+export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps) {
   const { cart, addToCart, updateQuantity } = useCart();
   const searchParams = useSearchParams();
   const urlCategory = searchParams.get("categoria");
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPet, setSelectedPet] = useState<string>("Ambos");
-  const [selectedCategory, setSelectedCategory] = useState<string>(
-    urlCategory || "Todos",
-  );
+  const [selectedCategory, setSelectedCategory] = useState<string>(urlCategory || "Todos");
 
   // Compile unique categories from DB to ensure navigation pills always exist
   const categories = useMemo(() => {
-    const defaultCats = [
-      "Todos",
-      "Alimento",
-      "Higiene",
-      "Juguetes",
-      "Snacks",
-      "Accesorios",
-    ];
+    const defaultCats = ["Todos", "Alimento", "Higiene", "Juguetes", "Snacks", "Accesorios"];
     const dbCats = initialProducts.map((p) => p.category);
     // Merge and remove duplicates
     return Array.from(new Set([...defaultCats, ...dbCats]));
   }, [initialProducts]);
 
-  // Sync state if URL changes
-  useEffect(() => {
+  const [prevUrlCategory, setPrevUrlCategory] = useState(urlCategory);
+
+  if (urlCategory !== prevUrlCategory) {
+    setPrevUrlCategory(urlCategory);
     if (urlCategory) {
       setSelectedCategory(urlCategory);
     }
-  }, [urlCategory]);
+  }
+
+  // Focus input if search param is set to focus
+  useEffect(() => {
+    if (searchParams.get("search") === "focus") {
+      searchInputRef.current?.focus();
+    }
+  }, [searchParams]);
 
   const filteredProducts = useMemo(() => {
     return initialProducts.filter((product) => {
@@ -80,9 +91,7 @@ export default function PetShopCatalog({
           ? true
           : product.petType === selectedPet || product.petType === "Ambos";
       const matchesCategory =
-        selectedCategory === "Todos"
-          ? true
-          : product.category === selectedCategory;
+        selectedCategory === "Todos" ? true : product.category === selectedCategory;
 
       return matchesSearch && matchesPet && matchesCategory;
     });
@@ -104,6 +113,7 @@ export default function PetShopCatalog({
               <Search size={24} strokeWidth={2.5} />
             </div>
             <input
+              ref={searchInputRef}
               type="text"
               placeholder="¿Qué busca hoy la mascota de la casa?..."
               value={searchQuery}
@@ -167,17 +177,17 @@ export default function PetShopCatalog({
       {/* Results Header */}
       <div className="flex items-center justify-between mb-8">
         <p className="text-zinc-500 font-medium">
-          Mostrando{" "}
-          <span className="text-zinc-900 font-bold">
-            {filteredProducts.length}
-          </span>{" "}
+          Mostrando <span className="text-zinc-900 font-bold">{filteredProducts.length}</span>{" "}
           productos
         </p>
       </div>
 
-      {/* Grid */}
+      {/* Grid with Layout Transitions */}
       {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
+        <motion.div
+          layout
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10"
+        >
           <AnimatePresence mode="popLayout">
             {filteredProducts.map((product) => (
               <motion.div
@@ -209,10 +219,7 @@ export default function PetShopCatalog({
                     </span>
                   )}
 
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    className="relative w-full h-full"
-                  >
+                  <motion.div whileHover={{ scale: 1.1 }} className="relative w-full h-full">
                     <Image
                       src={product.image}
                       alt={product.name}
@@ -306,13 +313,8 @@ export default function PetShopCatalog({
 
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-1 bg-zinc-100 px-2 py-1 rounded-lg">
-                        <Star
-                          className="fill-yellow-400 text-yellow-400"
-                          size={14}
-                        />
-                        <span className="text-xs font-bold text-zinc-600">
-                          {product.rating}
-                        </span>
+                        <Star className="fill-yellow-400 text-yellow-400" size={14} />
+                        <span className="text-xs font-bold text-zinc-600">{product.rating}</span>
                       </div>
                     </div>
                   </div>
@@ -320,18 +322,14 @@ export default function PetShopCatalog({
               </motion.div>
             ))}
           </AnimatePresence>
-        </div>
+        </motion.div>
       ) : (
         <div className="text-center py-32 bg-white rounded-[3rem] border-2 border-dashed border-zinc-200">
           <div className="w-20 h-20 bg-zinc-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <Search size={32} className="text-zinc-400" />
           </div>
-          <h3 className="text-2xl font-bold text-zinc-900 mb-2">
-            No encontramos productos
-          </h3>
-          <p className="text-zinc-500">
-            Intenta con otros filtros o términos de búsqueda
-          </p>
+          <h3 className="text-2xl font-bold text-zinc-900 mb-2">No encontramos productos</h3>
+          <p className="text-zinc-500">Intenta con otros filtros o términos de búsqueda</p>
           <button
             onClick={() => {
               setSearchQuery("");
