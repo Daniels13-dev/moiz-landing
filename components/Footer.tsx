@@ -79,12 +79,12 @@ export default function Footer() {
               </p>
               <nav className="flex flex-col gap-4">
                 {[
-                  { name: "Inicio", path: "/" },
-                  { name: "Productos", path: "/#producto" },
-                  { name: "Comparativa", path: "/info/arena" },
-                  { name: "Reseñas", path: "/#clientes" },
-                  { name: "Preguntas", path: "/#faq" },
-                  { name: "Rastrear Pedido", path: "/rastrear-mi-pedido" },
+                  { name: siteConfig.ui.home, path: "/" },
+                  { name: siteConfig.ui.productos, path: "/#producto" },
+                  { name: siteConfig.ui.comparison.subtitle, path: "/info/arena" },
+                  { name: siteConfig.ui.resenas, path: "/#clientes" },
+                  { name: siteConfig.ui.preguntas, path: "/#faq" },
+                  { name: siteConfig.ui.rastrear, path: "/rastrear-mi-pedido" },
                 ].map((link) => (
                   <Link
                     key={link.name}
@@ -152,29 +152,29 @@ export default function Footer() {
             {/* Iconographic Grid Links */}
             <div className="grid grid-cols-2 gap-3 w-full max-w-sm mb-16 px-2">
               {[
-                { name: "Inicio", path: "/", icon: <Home size={16} /> },
+                { name: siteConfig.ui.home, path: "/", icon: <Home size={16} /> },
                 {
-                  name: "Productos",
+                  name: siteConfig.ui.productos,
                   path: "/#producto",
                   icon: <ShoppingBag size={16} />,
                 },
                 {
-                  name: "Comparativa",
+                  name: siteConfig.ui.comparison.subtitle,
                   path: "/info/arena",
                   icon: <Box size={16} />,
                 },
                 {
-                  name: "Reseñas",
+                  name: siteConfig.ui.resenas,
                   path: "/#clientes",
                   icon: <Star size={16} />,
                 },
                 {
-                  name: "FAQ",
+                  name: siteConfig.ui.faq.title,
                   path: "/#faq",
                   icon: <MessageCircle size={16} />,
                 },
                 {
-                  name: "Rastrear",
+                  name: siteConfig.ui.rastrear,
                   path: "/rastrear-mi-pedido",
                   icon: <Truck size={16} />,
                 },
@@ -202,7 +202,9 @@ export default function Footer() {
                 <div className="w-10 h-10 rounded-2xl bg-zinc-900 flex items-center justify-center text-zinc-500 group-active:text-[#25D366] transition-colors border border-white/5">
                   <MessageCircle size={16} />
                 </div>
-                <span className="text-zinc-300 font-bold text-xs tracking-tight">Soporte</span>
+                <span className="text-zinc-300 font-bold text-xs tracking-tight">
+                  {siteConfig.ui.soporte}
+                </span>
               </a>
             </div>
 

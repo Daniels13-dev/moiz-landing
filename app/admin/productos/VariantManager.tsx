@@ -1,17 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Trash2, Loader2, Palette, Box, Save } from "lucide-react";
-import { createVariant, deleteVariant, updateVariant } from "../actions";
+import { Plus, Palette, Layers, Type, Ruler } from "lucide-react";
+import { createVariant, createVariantBatch, deleteVariant, updateVariant } from "../actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Edit2 } from "lucide-react";
+
+// Sub-components
+import IndividualVariantForm from "./IndividualVariantForm";
+import BatchVariantForm from "./BatchVariantForm";
+import VariantList from "./VariantList";
+
+const TAMAÑOS = ["P", "M", "G"];
+const TALLAS = ["XS", "S", "M", "L", "XL", "XXL"];
+const ALL_SIZE_KEYS = Array.from(new Set([...TAMAÑOS, ...TALLAS]));
 
 interface Variant {
   id: string;
   name: string;
   color?: string | null;
   image?: string | null;
+  size?: string | null;
   stock: number;
   price?: number | null;
 }
@@ -21,24 +30,27 @@ interface VariantManagerProps {
   variants: Variant[];
 }
 
-export default function VariantManager({
-  productId,
-  variants: initialVariants,
-}: VariantManagerProps) {
+export default function VariantManager({ productId, variants: initialVariants }: VariantManagerProps) {
+  const [tab, setTab] = useState<"individual" | "batch">("individual");
+  const [sizingSystem, setSizingSystem] = useState<"tamaños" | "tallas">("tamaños");
   const [loading, setLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingVariant, setEditingVariant] = useState<Variant | null>(null);
   const router = useRouter();
 
+  // Batch tab state
+  const [batchImage, setBatchImage] = useState("");
+  const [batchSizes, setBatchSizes] = useState<
+    Record<string, { enabled: boolean; stock: number; price: string }>
+  >(Object.fromEntries(ALL_SIZE_KEYS.map((s) => [s, { enabled: false, stock: 10, price: "" }])));
+
   useEffect(() => {
     if (showAddForm || editingVariant) {
-      document
-        .getElementById("variant-form")
-        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      document.getElementById("variant-form")?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, [showAddForm, editingVariant]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleIndividualSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     setLoading(true);
@@ -52,10 +64,61 @@ export default function VariantManager({
       toast.success(editingVariant ? "Variante actualizada" : "Variante añadida");
       if (!editingVariant) form.reset();
       else setEditingVariant(null);
-
       router.refresh();
     } else {
       toast.error(res.error || "Error al procesar variante");
+    }
+    setLoading(false);
+  };
+
+  const handleBatchSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const name = formData.get("name") as string;
+    const color = (formData.get("color") as string) || null;
+
+    const activeSizes = sizingSystem === "tamaños" ? TAMAÑOS : TALLAS;
+
+    const sizes = activeSizes
+      .filter((s) => batchSizes[s].enabled)
+      .map((s) => ({
+        size: s,
+        stock: batchSizes[s].stock,
+        price: batchSizes[s].price
+          ? parseFloat(batchSizes[s].price.replace(/\./g, "").replace(",", "."))
+          : null,
+      }));
+
+    if (!name) {
+      toast.error("Ingresa el nombre del estampado");
+      return;
+    }
+    if (sizes.length === 0) {
+      toast.error("Selecciona al menos una talla");
+      return;
+    }
+
+    setLoading(true);
+    const res = await createVariantBatch(productId, {
+      name,
+      image: batchImage || null,
+      color,
+      sizes,
+    });
+
+    if (res.success) {
+      const count = (res as { count?: number }).count ?? sizes.length;
+      toast.success(`${count} variante(s) creadas correctamente`);
+      form.reset();
+      setBatchImage("");
+      setBatchSizes(
+        Object.fromEntries(ALL_SIZE_KEYS.map((s) => [s, { enabled: false, stock: 10, price: "" }])),
+      );
+      router.refresh();
+    } else {
+      toast.error(res.error || "Error al crear variantes");
     }
     setLoading(false);
   };
@@ -73,199 +136,130 @@ export default function VariantManager({
     setLoading(false);
   };
 
+  const currentSizes = sizingSystem === "tamaños" ? TAMAÑOS : TALLAS;
+
   return (
     <div className="pb-10">
-      <div className="flex items-center justify-between mb-8 bg-zinc-50/50 p-6 rounded-[2rem] border border-zinc-100">
+      <div className="flex flex-col md:flex-row items-center justify-between mb-6 bg-zinc-50/50 p-6 rounded-[2rem] border border-zinc-100 gap-4">
         <div>
           <h3 className="text-xl font-black text-zinc-900 tracking-tight flex items-center gap-2">
             <Palette className="text-[var(--moiz-green)]" size={20} />
-            {editingVariant ? "Editando Variante" : "Variantes de Color"}
+            Variantes
           </h3>
-          <p className="text-sm text-zinc-500 font-medium">
-            {editingVariant
-              ? `Modificando "${editingVariant.name}"`
-              : "Gestiona disponibilidad por color."}
-          </p>
+          <p className="text-sm text-zinc-500 font-medium tracking-tight">Gestiona colores, estampados y tallas.</p>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            if (editingVariant) {
+
+        <div className="flex bg-zinc-100 p-1 rounded-2xl gap-1 shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              setTab("individual");
+              setShowAddForm(false);
               setEditingVariant(null);
-            } else {
-              setShowAddForm(!showAddForm);
-            }
-          }}
-          className="flex items-center gap-2 px-6 py-2 bg-zinc-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-lg active:scale-95"
-        >
-          {showAddForm || editingVariant ? (
-            <>Cerrar</>
-          ) : (
-            <>
-              <Plus size={14} strokeWidth={3} />
-              Añadir Color
-            </>
-          )}
-        </button>
+            }}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+              tab === "individual" ? "bg-white text-zinc-900 shadow" : "text-zinc-500 hover:text-zinc-700"
+            }`}
+          >
+            <Plus size={12} strokeWidth={3} />
+            Individual
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setTab("batch");
+              setShowAddForm(false);
+              setEditingVariant(null);
+            }}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+              tab === "batch" ? "bg-white text-zinc-900 shadow" : "text-zinc-500 hover:text-zinc-700"
+            }`}
+          >
+            <Layers size={12} />
+            Por Tallas
+          </button>
+        </div>
       </div>
 
-      {(showAddForm || editingVariant) && (
-        <form
-          id="variant-form"
-          onSubmit={handleSubmit}
-          className="bg-white p-8 rounded-[2.5rem] border-2 border-[var(--moiz-green)]/20 mb-10 shadow-xl shadow-zinc-200/50"
-        >
-          <div className="grid md:grid-cols-2 gap-4 mb-4">
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">
-                Nombre del Color
-              </label>
-              <input
-                name="name"
-                placeholder="Ej: Azul Marino"
-                required
-                defaultValue={editingVariant?.name || ""}
-                className="w-full p-3 bg-white border border-zinc-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-[var(--moiz-green)]/20 outline-none"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">
-                Color (Hex)
-              </label>
-              <div className="flex gap-2">
-                <input
-                  name="color"
-                  type="color"
-                  defaultValue={editingVariant?.color || "#6A8E2A"}
-                  className="w-12 h-11 p-1 bg-white border border-zinc-200 rounded-xl cursor-pointer"
-                />
-                <input
-                  name="color"
-                  placeholder="#6A8E2A"
-                  defaultValue={editingVariant?.color || ""}
-                  className="flex-1 p-3 bg-white border border-zinc-200 rounded-xl text-sm font-mono focus:ring-2 focus:ring-[var(--moiz-green)]/20 outline-none"
-                />
-              </div>
-            </div>
+      {(showAddForm || editingVariant || tab === "batch") && (
+        <div className="flex justify-center mb-4">
+          <div className="flex bg-white border border-zinc-100 p-1 rounded-2xl shadow-sm gap-1">
+            <button
+              type="button"
+              onClick={() => setSizingSystem("tamaños")}
+              className={`flex items-center gap-2 px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                sizingSystem === "tamaños" ? "bg-zinc-900 text-white shadow-lg" : "text-zinc-400 hover:text-zinc-600"
+              }`}
+            >
+              <Type size={12} />
+              Tamaños (P, M, G)
+            </button>
+            <button
+              type="button"
+              onClick={() => setSizingSystem("tallas")}
+              className={`flex items-center gap-2 px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                sizingSystem === "tallas" ? "bg-zinc-900 text-white shadow-lg" : "text-zinc-400 hover:text-zinc-600"
+              }`}
+            >
+              <Ruler size={12} />
+              Tallas (S, M, L...)
+            </button>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-4 mb-6">
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">
-                URL Imagen
-              </label>
-              <input
-                name="image"
-                placeholder="/products/color-1.png"
-                required
-                defaultValue={editingVariant?.image || ""}
-                className="w-full p-3 bg-white border border-zinc-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-[var(--moiz-green)]/20 outline-none"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">
-                Stock
-              </label>
-              <input
-                name="stock"
-                type="number"
-                required
-                defaultValue={editingVariant?.stock ?? 10}
-                className="w-full p-3 bg-white border border-zinc-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-[var(--moiz-green)]/20 outline-none"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">
-                Precio (Opcional)
-              </label>
-              <input
-                name="price"
-                type="number"
-                placeholder="Dejar vacío para base"
-                defaultValue={editingVariant?.price || ""}
-                className="w-full p-3 bg-white border border-zinc-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-[var(--moiz-green)]/20 outline-none"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-[var(--moiz-green)] text-white rounded-xl font-black uppercase tracking-widest text-xs shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
-          >
-            {loading ? (
-              <Loader2 className="animate-spin" size={16} />
-            ) : editingVariant ? (
-              <Save size={16} />
-            ) : (
-              <Plus size={16} />
-            )}
-            {editingVariant ? "Guardar Cambios" : "Guardar Variante"}
-          </button>
-        </form>
+        </div>
       )}
 
-      <div className="space-y-3">
-        {initialVariants.length === 0 ? (
-          <div className="text-center py-10 bg-zinc-50 border border-dashed border-zinc-200 rounded-3xl">
-            <Palette size={32} className="mx-auto text-zinc-200 mb-2" />
-            <p className="text-zinc-400 font-bold text-sm">Este producto no tiene variantes aún.</p>
-          </div>
-        ) : (
-          initialVariants.map((v) => (
-            <div
-              key={v.id}
-              className="flex items-center justify-between p-4 bg-white border border-zinc-100 rounded-2xl group hover:border-[var(--moiz-green)]/20 transition-all"
+      {tab === "individual" && (
+        <>
+          <div className="flex justify-end mb-4">
+            <button
+              type="button"
+              onClick={() => {
+                if (editingVariant) setEditingVariant(null);
+                else setShowAddForm(!showAddForm);
+              }}
+              className="flex items-center gap-2 px-6 py-2 bg-zinc-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-lg active:scale-95"
             >
-              <div className="flex items-center gap-4">
-                <div
-                  className="w-10 h-10 rounded-full border border-zinc-100 shadow-sm shrink-0"
-                  style={{ backgroundColor: v.color || "#eee" }}
-                />
-                <div>
-                  <h4 className="font-black text-zinc-900 leading-tight">{v.name}</h4>
-                  <div className="flex items-center gap-3 mt-1">
-                    <span className="flex items-center gap-1 text-[10px] font-black text-zinc-400 uppercase tracking-tighter">
-                      <Box size={12} /> {v.stock} disp.
-                    </span>
-                    {v.price && (
-                      <span className="text-[10px] font-black text-[var(--moiz-green)] uppercase tracking-tighter">
-                        ${v.price.toLocaleString("es-CO")}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditingVariant(v);
-                    setShowAddForm(false);
-                    setTimeout(() => {
-                      document
-                        .getElementById("variant-form")
-                        ?.scrollIntoView({ behavior: "smooth", block: "center" });
-                    }, 100);
-                  }}
-                  disabled={loading}
-                  className="p-2 text-zinc-300 hover:text-[var(--moiz-green)] hover:bg-[var(--moiz-green)]/10 rounded-lg transition-all"
-                >
-                  <Edit2 size={16} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDeleteVariant(v.id, v.name)}
-                  disabled={loading}
-                  className="p-2 text-zinc-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+              {showAddForm || editingVariant ? "Cerrar" : <><Plus size={14} strokeWidth={3} /> Añadir</>}
+            </button>
+          </div>
+
+          {(showAddForm || editingVariant) && (
+            <IndividualVariantForm
+              editingVariant={editingVariant}
+              onSubmit={handleIndividualSubmit}
+              loading={loading}
+              sizingSystem={sizingSystem}
+              currentSizes={currentSizes}
+            />
+          )}
+        </>
+      )}
+
+      {tab === "batch" && (
+        <BatchVariantForm
+          onSubmit={handleBatchSubmit}
+          loading={loading}
+          sizingSystem={sizingSystem}
+          currentSizes={currentSizes}
+          batchImage={batchImage}
+          setBatchImage={setBatchImage}
+          batchSizes={batchSizes}
+          setBatchSizes={setBatchSizes}
+        />
+      )}
+
+      <VariantList
+        variants={initialVariants}
+        onEdit={(v) => {
+          const isDescSystem = v.size && TAMAÑOS.includes(v.size) && !TALLAS.includes(v.size);
+          setSizingSystem(isDescSystem ? "tamaños" : "tallas");
+          setEditingVariant(v);
+          setTab("individual");
+          setShowAddForm(false);
+        }}
+        onDelete={handleDeleteVariant}
+        loading={loading}
+      />
     </div>
   );
 }

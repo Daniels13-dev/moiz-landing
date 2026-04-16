@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Bone, Bath, Activity, Star, Tag, Package, ArrowRight } from "lucide-react";
 import { ElementType } from "react";
+import { siteConfig } from "@/config/site";
 
 // Visual mapping based on typical pet store category names extending dynamic DB categories
 const styleMap: Record<
@@ -100,7 +101,7 @@ export default function CategoriesSection({ dbCategories }: { dbCategories?: Cat
               transition={{ duration: 0.5 }}
               className="text-4xl md:text-5xl font-black tracking-tighter text-zinc-900 mb-4"
             >
-              Explora por <span className="text-[var(--moiz-green)]">Categorías</span>
+              {siteConfig.ui.categories.title} <span className="text-[var(--moiz-green)]">{siteConfig.ui.categories.titleAccent}</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -109,14 +110,13 @@ export default function CategoriesSection({ dbCategories }: { dbCategories?: Cat
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-lg text-zinc-500 font-medium leading-relaxed"
             >
-              El universo de tus mascotas reunido en cajas de sorpresas. Encuentra rápidamente lo
-              indispensable.
+              {siteConfig.ui.categories.subtitle}
             </motion.p>
           </div>
           <Link
             href="/productos"
             className="hidden md:flex items-center justify-center w-14 h-14 bg-white border border-zinc-200 text-[var(--moiz-green)] rounded-full hover:border-[var(--moiz-green)] hover:shadow-xl transition-all duration-300 group"
-            aria-label="Ver catálogo completo"
+            aria-label={siteConfig.ui.categories.viewCatalog}
           >
             <ArrowRight
               size={24}

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { User, MapPin, CreditCard, Save, CheckCircle2, ChevronDown } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
+import { User, MapPin, CreditCard } from "lucide-react";
 import { updateProfile, upsertAddress } from "@/app/actions/profile";
 import { toast } from "sonner";
 
@@ -31,9 +31,6 @@ interface Profile {
 interface ProfileViewProps {
   initialProfile: Profile;
 }
-
-import { toggleFavorite, checkIfFavorite } from "@/app/actions/favorites";
-import { siteConfig } from "@/config/site";
 
 // Sub-components
 import PersonalInfoTab from "./profile/PersonalInfoTab";

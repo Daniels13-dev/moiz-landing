@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import WhatsappButton from "@/components/WhatsappButton";
 import ProductsHeader from "@/components/ProductsHeader";
 import PetShopCatalog from "@/components/PetShopCatalog";
+import { siteConfig } from "@/config/site";
 
 export default async function ProductosPage() {
   const initialProducts = await getAllProducts();
@@ -35,9 +36,9 @@ export default async function ProductosPage() {
                   <path d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-3">Envíos Rápidos</h3>
+              <h3 className="text-xl font-bold mb-3">{siteConfig.ui.badges.fastShipping}</h3>
               <p className="text-zinc-500 text-sm leading-relaxed">
-                Entregas en tiempo récord para que tu mascota nunca se quede sin lo que necesita.
+                {siteConfig.ui.badges.fastShippingDesc}
               </p>
             </div>
             <div className="bg-white p-10 rounded-[3rem] border border-zinc-100">
@@ -53,10 +54,9 @@ export default async function ProductosPage() {
                   <path d="M12 2v20M2 12h20" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-3">Calidad Premium</h3>
+              <h3 className="text-xl font-bold mb-3">{siteConfig.ui.badges.premiumQuality}</h3>
               <p className="text-zinc-500 text-sm leading-relaxed">
-                Solo seleccionamos productos de la más alta calidad, priorizando ingredientes
-                naturales.
+                {siteConfig.ui.badges.premiumQualityDesc}
               </p>
             </div>
             <div className="bg-white p-10 rounded-[3rem] border border-zinc-100">
@@ -72,9 +72,9 @@ export default async function ProductosPage() {
                   <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 11-7.6-10.4 8.38 8.38 0 013.8.9L21 11.5z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-3">Soporte Experto</h3>
+              <h3 className="text-xl font-bold mb-3">{siteConfig.ui.badges.expertSupport}</h3>
               <p className="text-zinc-500 text-sm leading-relaxed">
-                Nuestro equipo está listo para asesorarte en la mejor elección para tu mascota.
+                {siteConfig.ui.badges.expertSupportDesc}
               </p>
             </div>
           </div>

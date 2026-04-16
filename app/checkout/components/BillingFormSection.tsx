@@ -6,11 +6,14 @@ import { BillingSelection } from "./CheckoutFormComponents";
 import { InputGroup, SelectInputGrid, SelectGroup } from "@/components/ui/FormInput";
 import { countries, idTypes, COLOMBIA_REGIONS } from "@/config/constants";
 
+import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
+import { CheckoutFormValues } from "../lib/schema";
+
 interface BillingFormSectionProps {
-  register: any;
-  errors: any;
+  register: UseFormRegister<CheckoutFormValues>;
+  errors: FieldErrors<CheckoutFormValues>;
   billingDifferent: boolean;
-  setValue: any;
+  setValue: UseFormSetValue<CheckoutFormValues>;
   availableBillingCities: string[];
   billingState?: string | undefined;
 }
@@ -78,7 +81,7 @@ export default function BillingFormSection({
                 label="Teléfono"
                 selectRegister={register("billingPhoneCountry")}
                 inputRegister={register("billingPhone")}
-                options={countries.map((c: any) => ({
+                options={countries.map((c) => ({
                   label: `${c.flag} ${c.code}`,
                   value: c.code,
                 }))}

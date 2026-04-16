@@ -20,5 +20,5 @@ export default prisma;
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
-// Force prisma reload: 2026-04-14T13:43
-// Reload: Tue Apr 14 13:43:00 -05 2026
+// Force prisma reload: 2026-04-15T16:17
+// Reload: Wed Apr 15 16:17:00 -05 2026

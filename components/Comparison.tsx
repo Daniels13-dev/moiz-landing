@@ -3,6 +3,7 @@
 import { Check, X, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { siteConfig } from "@/config/site";
 
 const comparisonData = [
   {
@@ -86,7 +87,7 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-[var(--moiz-green)]" />
                   <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-                    El Estándar Möiz
+                    {siteConfig.ui.comparison.moizStandard}
                   </span>
                 </div>
                 <p className="text-xl font-black text-zinc-900 leading-tight">{item.moiz}</p>
@@ -98,7 +99,7 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
               {/* Others Value */}
               <div className="flex flex-col gap-1 opacity-50 group-hover:opacity-80 transition-opacity">
                 <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-400">
-                  Arena Común
+                  {siteConfig.ui.comparison.commonSand}
                 </span>
                 <p className="text-sm font-medium text-zinc-500 italic">{item.others}</p>
               </div>
@@ -125,13 +126,13 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
         {!isBlog && (
           <div className="text-center mb-12 md:mb-16">
             <span className="text-[var(--moiz-green)] font-semibold tracking-wider text-sm uppercase mb-3 block">
-              El Cambio Inteligente
+              {siteConfig.ui.comparison.subtitle}
             </span>
             <h2 className="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight">
-              Möiz vs. Arena Tradicional
+              {siteConfig.ui.comparison.title}
             </h2>
             <p className="mt-4 text-lg text-zinc-500 max-w-2xl mx-auto">
-              No es solo arena, es una mejora tecnológica para tu hogar y el planeta.
+              {siteConfig.ui.comparison.tagline}
             </p>
           </div>
         )}
@@ -146,10 +147,10 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
                     Característica
                   </th>
                   <th className="p-8 text-[var(--moiz-green)] font-black text-2xl border-b border-zinc-100 bg-[var(--moiz-green)]/5">
-                    Möiz
+                    {siteConfig.name}
                   </th>
                   <th className="p-8 text-zinc-400 font-bold text-xl border-b border-zinc-100">
-                    Otras Arenas
+                    {siteConfig.ui.comparison.commonSand}
                   </th>
                 </tr>
               </thead>
@@ -253,7 +254,7 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
                 <div className="bg-[var(--moiz-green)]/5 p-5 rounded-3xl border-2 border-[var(--moiz-green)]/20 relative">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[var(--moiz-green)] font-black text-[10px] uppercase tracking-[0.2em]">
-                      Möiz
+                      {siteConfig.name}
                     </span>
                     <Check size={18} className="text-[var(--moiz-green)]" strokeWidth={3} />
                   </div>
@@ -264,7 +265,7 @@ export default function Comparison({ isBlog = false }: ComparisonProps) {
                 <div className="bg-zinc-50 p-5 rounded-3xl border border-zinc-200/50 opacity-60">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-zinc-400 font-bold text-[10px] uppercase tracking-[0.2em]">
-                      Otras Arenas
+                      {siteConfig.ui.comparison.commonSand}
                     </span>
                     <X size={18} className="text-zinc-300" strokeWidth={3} />
                   </div>

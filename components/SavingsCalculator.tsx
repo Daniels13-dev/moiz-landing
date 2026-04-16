@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { siteConfig } from "@/config/site";
 
 export default function SavingsCalculator() {
   const [cats, setCats] = useState<number>(2);
@@ -22,13 +23,13 @@ export default function SavingsCalculator() {
       <div className="max-w-4xl mx-auto px-6 relative">
         <div className="text-center mb-12">
           <span className="text-[var(--moiz-green)] font-black text-xs tracking-widest uppercase py-1 px-3 bg-[var(--moiz-green)]/10 rounded-full mb-4 inline-block">
-            Impacto Económico
+            {siteConfig.ui.calculator.title}
           </span>
           <h2 className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tight">
-            Calcula tu <span className="text-[var(--moiz-green)]">Ahorro Anual</span>
+            {siteConfig.ui.calculator.heading} <span className="text-[var(--moiz-green)]">{siteConfig.ui.calculator.headingAccent}</span>
           </h2>
           <p className="mt-4 text-zinc-500 font-medium max-w-lg mx-auto">
-            Por ser una arena de alto rendimiento, Möiz dura más y cuida tu bolsillo.
+            {siteConfig.ui.calculator.description}
           </p>
         </div>
 
@@ -37,7 +38,7 @@ export default function SavingsCalculator() {
             {/* Input Section */}
             <div className="space-y-8 text-center max-w-xl mx-auto w-full">
               <label className="text-white font-bold text-xl md:text-2xl block">
-                ¿Cuántos gatos tienes en casa?
+                {siteConfig.ui.calculator.question}
               </label>
 
               <div className="flex justify-center gap-3 h-10 items-center">
@@ -55,7 +56,7 @@ export default function SavingsCalculator() {
                   ))}
                 </AnimatePresence>
                 <div className="ml-4 bg-[var(--moiz-green)]/20 text-[var(--moiz-green)] px-3 py-1 rounded-lg text-sm font-black">
-                  {cats} {cats === 1 ? "Mericat" : "Mericats"}
+                  {cats} {cats === 1 ? siteConfig.ui.calculator.catLabel : siteConfig.ui.calculator.catsLabel}
                 </div>
               </div>
 
@@ -72,8 +73,8 @@ export default function SavingsCalculator() {
                   }}
                 />
                 <div className="flex justify-between mt-4 text-white/30 font-bold text-[10px] uppercase tracking-widest px-1">
-                  <span>1 Gato</span>
-                  <span>+6 Gatos</span>
+                  <span>{siteConfig.ui.calculator.oneCat}</span>
+                  <span>{siteConfig.ui.calculator.moreCats}</span>
                 </div>
               </div>
             </div>
@@ -83,7 +84,7 @@ export default function SavingsCalculator() {
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--moiz-green)]/10 to-transparent opacity-50" />
 
               <span className="relative z-10 text-white/50 text-xs font-black uppercase tracking-[0.2em] mb-4 block">
-                Ahorro estimado al año
+                {siteConfig.ui.calculator.estimatedSavings}
               </span>
 
               <motion.div
@@ -98,7 +99,7 @@ export default function SavingsCalculator() {
               <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-sm mx-auto">
                 <div className="p-4 rounded-2xl bg-zinc-900 border border-white/5 flex flex-col items-center">
                   <span className="text-[10px] text-zinc-500 font-bold uppercase mb-1">
-                    Tradicional
+                    {siteConfig.ui.calculator.traditional}
                   </span>
                   <span className="text-zinc-400 font-black line-through decoration-red-500/50">
                     ${totalClassic.toLocaleString("es-CO")}
@@ -106,7 +107,7 @@ export default function SavingsCalculator() {
                 </div>
                 <div className="p-4 rounded-2xl bg-[var(--moiz-green)] flex flex-col items-center shadow-lg shadow-[var(--moiz-green)]/20">
                   <span className="text-[10px] text-zinc-950/60 font-black uppercase mb-1">
-                    Con Möiz
+                    {siteConfig.ui.calculator.withMoiz}
                   </span>
                   <span className="text-zinc-950 font-black">
                     ${totalMoiz.toLocaleString("es-CO")}
@@ -115,8 +116,7 @@ export default function SavingsCalculator() {
               </div>
 
               <p className="relative z-10 mt-8 text-zinc-500 text-[10px] font-medium max-w-xs mx-auto">
-                *Cálculo promediado basado en el rendimiento superior de aglomeración del maíz
-                frente a la bentonita común.
+                {siteConfig.ui.calculator.disclaimer}
               </p>
             </div>
           </div>

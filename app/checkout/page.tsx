@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect, type ReactNode } from "react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import {
   Loader2,
   CreditCard as CreditCardIcon,
@@ -15,7 +13,6 @@ import {
   Truck,
   ShoppingBag,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
@@ -25,8 +22,7 @@ import { siteConfig } from "@/config/site";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { countries, idTypes, COLOMBIA_REGIONS } from "@/config/constants";
-import { InputGroup, SelectInputGrid, SelectGroup } from "@/components/ui/FormInput";
+import { countries, COLOMBIA_REGIONS } from "@/config/constants";
 
 // Lib
 import { checkoutSchema, type CheckoutFormValues } from "./lib/schema";
@@ -40,7 +36,6 @@ import BillingFormSection from "./components/BillingFormSection";
 import {
   ShippingOption,
   PaymentOption,
-  BillingSelection,
 } from "./components/CheckoutFormComponents";
 
 export default function CheckoutPage() {
@@ -59,7 +54,6 @@ export default function CheckoutPage() {
   const [recentCart, setRecentCart] = useState<
     { id: string; name: string; quantity: number; price: number }[]
   >([]);
-  const [showSubInfo, setShowSubInfo] = useState<string | null>(null);
 
   // Redirect if cart is empty
   useEffect(() => {

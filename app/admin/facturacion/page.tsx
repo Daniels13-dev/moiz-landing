@@ -168,7 +168,7 @@ export default function BillingAdminPage() {
             <div>
               <h4 className="font-black text-zinc-900 mb-1">Automatizado</h4>
               <p className="text-xs font-medium text-zinc-500 leading-relaxed italic">
-                Solo se incluyen facturas de pedidos marcados como "Pagado".
+                Solo se incluyen facturas de pedidos marcados como &quot;Pagado&quot;.
               </p>
             </div>
           </div>
