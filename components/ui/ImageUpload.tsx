@@ -55,7 +55,7 @@ export default function ImageUpload({
       if (!res.ok) throw new Error(data.error || "Error al guardar");
 
       filename = data.filename;
-      setPreviewUrl(data.tempUrl); // Show image immediately from local path
+      setPreviewUrl(data.tempUrl); // Ahora es una URL de Cloudinary (temp)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al subir la imagen");
       setPhase("error");
@@ -81,7 +81,7 @@ export default function ImageUpload({
         throw new Error(data.error || "Error al procesar");
       }
 
-      const finalUrl = data.url || data.tempUrl;
+      const finalUrl = data.transparentUrl || data.url || data.tempUrl;
       setPreviewUrl(finalUrl);
       setCloudinaryUrl(finalUrl);
       onUrlChange?.(finalUrl);
