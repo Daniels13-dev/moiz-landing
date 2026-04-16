@@ -66,9 +66,16 @@ export const metadata: Metadata = {
     images: [siteConfig.ogImage],
   },
   icons: {
-    icon: [{ url: "/logo/logo.png" }, { url: "/logo/logo.png", sizes: "32x32", type: "image/png" }],
-    shortcut: "/logo/logo.png",
-    apple: "/logo/logo.png",
+    icon: [
+      { url: "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223130/moiz/logo/logo.png" },
+      {
+        url: "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223130/moiz/logo/logo.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
+    ],
+    shortcut: "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223130/moiz/logo/logo.png",
+    apple: "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223130/moiz/logo/logo.png",
   },
 };
 

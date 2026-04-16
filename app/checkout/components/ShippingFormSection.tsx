@@ -4,12 +4,13 @@ import { MapPin, Info, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { InputGroup, SelectInputGrid, SelectGroup } from "@/components/ui/FormInput";
 import { countries, idTypes, COLOMBIA_REGIONS } from "@/config/constants";
-import { useState } from "react";
+import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { CheckoutFormValues } from "../lib/schema";
 
 interface ShippingFormSectionProps {
-  register: any;
-  errors: any;
-  user: any;
+  register: UseFormRegister<CheckoutFormValues>;
+  errors: FieldErrors<CheckoutFormValues>;
+  user: unknown;
   customerState: string;
   availableCustomerCities: string[];
   showSaveInfoPopover: boolean;
@@ -61,7 +62,7 @@ export default function ShippingFormSection({
           label="Teléfono"
           selectRegister={register("customerPhoneCountry")}
           inputRegister={register("customerPhone")}
-          options={countries.map((c: any) => ({
+          options={countries.map((c) => ({
             label: `${c.flag} ${c.code}`,
             value: c.code,
           }))}

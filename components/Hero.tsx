@@ -29,7 +29,7 @@ export default function Hero() {
           <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--moiz-green)]"></span>
         </span>
         <span className="text-[var(--moiz-green)] text-xs md:text-sm font-bold tracking-widest uppercase">
-          Bienestar premium para tus mejores amigos
+          {siteConfig.ui.badges.heroBadge}
         </span>
       </motion.div>
 
@@ -56,7 +56,7 @@ export default function Hero() {
         className="relative z-20 mt-[-1rem] sm:mt-[-2rem] md:mt-[-3rem] lg:mt-[-4rem] pointer-events-none flex justify-center w-full max-w-lg md:max-w-xl"
       >
         <Image
-          src="/logo/moiz.png"
+          src="https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223133/moiz/logo/moiz.png"
           alt="Empaque de arena ecológica Möiz hecha de maíz natural para gatos"
           width={900}
           height={900}
@@ -90,7 +90,7 @@ export default function Hero() {
             )}
           >
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-            Adquirir ahora
+            {siteConfig.ui.badges.heroCta}
             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -106,8 +106,8 @@ export default function Hero() {
           🌱
         </div>
         <div className="flex flex-col">
-          <span className="font-extrabold text-zinc-900 text-base">100% Orgánico</span>
-          <span className="text-sm text-zinc-500 font-medium">Bienestar natural</span>
+          <span className="font-extrabold text-zinc-900 text-base">{siteConfig.ui.badges.organic}</span>
+          <span className="text-sm text-zinc-500 font-medium">{siteConfig.ui.badges.organicDesc}</span>
         </div>
       </motion.div>
 
@@ -125,8 +125,8 @@ export default function Hero() {
           🍖
         </div>
         <div className="flex flex-col">
-          <span className="font-extrabold text-zinc-900 text-base">Nutrición Alta</span>
-          <span className="text-sm text-zinc-500 font-medium">Sabor y energía</span>
+          <span className="font-extrabold text-zinc-900 text-base">{siteConfig.ui.badges.nutrition}</span>
+          <span className="text-sm text-zinc-500 font-medium">{siteConfig.ui.badges.nutritionDesc}</span>
         </div>
       </motion.div>
 
@@ -144,8 +144,8 @@ export default function Hero() {
           🧴
         </div>
         <div className="flex flex-col">
-          <span className="font-extrabold text-zinc-900 text-base">Higiene Total</span>
-          <span className="text-sm text-zinc-500 font-medium">Libre de olores</span>
+          <span className="font-extrabold text-zinc-900 text-base">{siteConfig.ui.badges.hygiene}</span>
+          <span className="text-sm text-zinc-500 font-medium">{siteConfig.ui.badges.hygieneDesc}</span>
         </div>
       </motion.div>
 
@@ -171,10 +171,10 @@ export default function Hero() {
         </div>
         <div className="flex flex-col">
           <span className="font-extrabold text-zinc-900 text-base">
-            {siteConfig.stats.rating} Estrellas
+            {siteConfig.stats.rating} {siteConfig.ui.badges.ratingSuffix}
           </span>
           <span className="text-sm text-zinc-500 font-medium">
-            {siteConfig.stats.happyPets} Mascotas Felices
+            {siteConfig.stats.happyPets} {siteConfig.ui.badges.happyPetsSuffix}
           </span>
         </div>
       </motion.div>

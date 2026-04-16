@@ -29,6 +29,7 @@ model Product {
   isFeatured    Boolean        @default(false)
   isNew             Boolean        @default(false)
   allowSubscription Boolean        @default(false)
+  isActive      Boolean        @default(true)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   favorites     Favorite[]
@@ -45,11 +46,12 @@ model ProductVariant {
   id           String      @id @default(cuid())
   productId    String
   product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  name         String      // Ej: "Azul Turquesa"
-  color        String?     // Hexadecimal ej: "#0000FF"
-  image        String?     // Imagen específica del color
+  name         String      // Ej: "Mariposas" (nombre del estampado/color)
+  color        String?     // Hexadecimal o null si es estampado con imagen
+  image        String?     // Imagen del estampado — si existe, se muestra en vez del color sólido
+  size         String?     // Talla opcional: "S", "M", "L", "XL", etc.
   stock        Int         @default(0)
-  price        Float?      // Precio opcional si varía por color
+  price        Float?      // Precio opcional si varía por talla/color
   orderItems   OrderItem[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt

@@ -4,31 +4,16 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ShoppingBag,
-  Menu,
-  X,
-  Package,
-  LogOut,
-  User,
-  ChevronDown,
-  MapPin,
-  LayoutDashboard,
-  Heart,
-  Search,
-  Clock,
-} from "lucide-react";
+import { ShoppingBag, Menu, User, Search } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { useScroll } from "@/hooks/use-scroll";
 import { siteConfig } from "@/config/site";
 
-interface AuthUser {
-  user_metadata?: { full_name?: string };
-  email?: string;
-  role?: string;
-}
+// Sub-components
+import UserDropdown from "./navbar/UserDropdown";
+import MobileMenu from "./navbar/MobileMenu";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -38,7 +23,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Refactor: Hooks personalizados para lógica de negocio
   const { user, loading, logout } = useAuth();
   const isScrolled = useScroll(20);
 
@@ -64,7 +48,6 @@ export default function Navbar() {
     }
   }, [mobileMenuOpen]);
 
-  // We make it sticky top-0, z-50.
   return (
     <>
       <header
@@ -79,7 +62,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-2 group">
             <div className="relative overflow-hidden rounded-full transition-transform duration-300 group-hover:scale-105">
               <Image
-                src="/logo/logo.png"
+                src="https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223130/moiz/logo/logo.png"
                 alt="Möiz"
                 width={38}
                 height={38}
@@ -119,116 +102,19 @@ export default function Navbar() {
             </button>
             {!loading &&
               (user ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                    className="flex items-center gap-2 text-sm font-bold text-zinc-700 hover:text-[var(--moiz-green)] transition-colors border border-zinc-200 px-4 py-2 rounded-full bg-white hover:border-[var(--moiz-green)] hover:shadow-sm"
-                  >
-                    <div className="w-5 h-5 bg-[var(--moiz-green)] text-white rounded-full flex items-center justify-center">
-                      <User size={12} />
-                    </div>
-                    <ChevronDown
-                      size={14}
-                      className={`transition-transform ${userDropdownOpen ? "rotate-180" : ""}`}
-                    />
-                  </button>
-
-                  <AnimatePresence>
-                    {userDropdownOpen && (
-                      <>
-                        <div
-                          className="fixed inset-0 z-40"
-                          onClick={() => setUserDropdownOpen(false)}
-                        />
-                        <motion.div
-                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          transition={{ duration: 0.2 }}
-                          className="absolute right-0 top-full mt-3 w-64 bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.12)] border border-zinc-100 overflow-hidden flex flex-col z-[50]"
-                        >
-                          <div className="px-5 py-4 bg-zinc-50 border-b border-zinc-100 flex items-center gap-3">
-                            <div className="w-10 h-10 bg-[var(--moiz-green)] text-white rounded-full flex items-center justify-center shadow-inner flex-shrink-0">
-                              <User size={20} />
-                            </div>
-                            <div className="flex flex-col overflow-hidden">
-                              <p className="text-sm font-black text-zinc-900 truncate">
-                                {(user as AuthUser)?.user_metadata?.full_name || "Usuario Möiz"}
-                              </p>
-                              <p className="text-xs font-medium text-zinc-500 truncate">
-                                {(user as AuthUser)?.email}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="p-2 flex flex-col">
-                            {(user as AuthUser)?.role?.toUpperCase() === "ADMIN" && (
-                              <Link
-                                href="/admin"
-                                onClick={() => setUserDropdownOpen(false)}
-                                className="flex items-center gap-3 px-3 py-2.5 text-sm font-black text-zinc-900 hover:text-[var(--moiz-green)] hover:bg-[var(--moiz-green)]/10 rounded-xl transition-colors bg-zinc-100/80 mb-1"
-                              >
-                                <LayoutDashboard size={16} className="text-[var(--moiz-green)]" />
-                                Panel de Control
-                              </Link>
-                            )}
-                            <Link
-                              href="/perfil"
-                              onClick={() => setUserDropdownOpen(false)}
-                              className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-zinc-600 hover:text-[var(--moiz-green)] hover:bg-[var(--moiz-green)]/10 rounded-xl transition-colors"
-                            >
-                              <MapPin size={16} />
-                              Mi Perfil
-                            </Link>
-                            <Link
-                              href="/pedidos"
-                              onClick={() => setUserDropdownOpen(false)}
-                              className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-zinc-600 hover:text-[var(--moiz-green)] hover:bg-[var(--moiz-green)]/10 rounded-xl transition-colors"
-                            >
-                              <Package size={16} />
-                              Mis Pedidos
-                            </Link>
-                            <Link
-                              href="/suscripciones"
-                              onClick={() => setUserDropdownOpen(false)}
-                              className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-zinc-600 hover:text-[var(--moiz-green)] hover:bg-[var(--moiz-green)]/10 rounded-xl transition-colors"
-                            >
-                              <Clock size={16} />
-                              Mis Suscripciones
-                            </Link>
-                            <Link
-                              href="/favoritos"
-                              onClick={() => setUserDropdownOpen(false)}
-                              className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-zinc-600 hover:text-[var(--moiz-green)] hover:bg-[var(--moiz-green)]/10 rounded-xl transition-colors"
-                            >
-                              <Heart size={16} />
-                              Mis Favoritos
-                            </Link>
-                          </div>
-                          <div className="p-2 border-t border-zinc-100">
-                            <button
-                              onClick={() => {
-                                setUserDropdownOpen(false);
-                                handleLogout();
-                              }}
-                              className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-red-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors w-full text-left"
-                            >
-                              <LogOut size={16} />
-                              Cerrar Sesión
-                            </button>
-                          </div>
-                        </motion.div>
-                      </>
-                    )}
-                  </AnimatePresence>
-                </div>
+                <UserDropdown
+                  user={user}
+                  userDropdownOpen={userDropdownOpen}
+                  setUserDropdownOpen={setUserDropdownOpen}
+                  handleLogout={handleLogout}
+                />
               ) : (
                 <Link
                   href="/login"
                   className="flex items-center gap-2 text-sm font-bold text-zinc-600 hover:text-[var(--moiz-green)] transition-colors border border-zinc-200 px-4 py-2 rounded-full bg-white hover:border-[var(--moiz-green)] hover:shadow-sm"
                 >
                   <User size={18} />
-                  <span>Ingresar</span>
+                  <span>{siteConfig.ui.ingresar}</span>
                 </Link>
               ))}
 
@@ -245,7 +131,7 @@ export default function Navbar() {
                 className="flex items-center gap-2"
               >
                 <ShoppingBag size={18} />
-                <span>Carrito</span>
+                <span>{siteConfig.ui.carrito}</span>
               </motion.div>
               <AnimatePresence>
                 {totalItems > 0 && (
@@ -309,104 +195,13 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Sliding Navigation Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-[60] bg-zinc-900/40 backdrop-blur-sm"
-              onClick={() => setMobileMenuOpen(false)}
-            />
-
-            {/* Sliding Panel */}
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 z-[70] w-full max-w-sm bg-white shadow-2xl flex flex-col"
-            >
-              <div className="flex items-center justify-between p-6 border-b border-zinc-100">
-                <span className="font-extrabold text-2xl tracking-tighter text-[var(--moiz-green)]">
-                  Möiz
-                </span>
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 bg-zinc-100 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200 rounded-full transition-colors"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto py-6 px-8 flex flex-col gap-6">
-                <nav className="flex flex-col gap-6">
-                  {siteConfig.navMain.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`text-2xl font-black transition-colors ${
-                        pathname === item.href
-                          ? "text-[var(--moiz-green)]"
-                          : "text-zinc-800 hover:text-[var(--moiz-green)]"
-                      }`}
-                    >
-                      {item.title}
-                    </Link>
-                  ))}
-                  <div className="h-px w-full bg-zinc-100 my-2" />
-                  <Link
-                    href="/#clientes"
-                    className="text-xl font-bold text-zinc-500 hover:text-[var(--moiz-green)] transition-colors"
-                  >
-                    Reseñas de Clientes
-                  </Link>
-                  <Link
-                    href="/#faq"
-                    className="text-xl font-bold text-zinc-500 hover:text-[var(--moiz-green)] transition-colors"
-                  >
-                    Preguntas Frecuentes
-                  </Link>
-                </nav>
-              </div>
-
-              <div className="p-6 border-t border-zinc-100 bg-zinc-50">
-                {!loading &&
-                  (user ? (
-                    <div className="flex flex-col gap-3">
-                      <Link
-                        href="/pedidos"
-                        className="flex items-center justify-center gap-2 w-full py-4 bg-white border border-zinc-200 text-zinc-900 font-bold rounded-2xl shadow-sm text-lg"
-                      >
-                        <Package size={20} />
-                        Mis Pedidos
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center justify-center gap-2 w-full py-4 text-red-500 font-bold text-lg hover:bg-red-50 rounded-2xl transition-colors"
-                      >
-                        <LogOut size={20} />
-                        Cerrar Sesión
-                      </button>
-                    </div>
-                  ) : (
-                    <Link
-                      href="/login"
-                      className="flex items-center justify-center gap-2 w-full py-4 bg-[var(--moiz-green)] text-white font-bold rounded-2xl shadow-[0_8px_20px_rgba(106,142,42,0.25)] text-lg"
-                    >
-                      <User size={20} />
-                      Iniciar Sesión
-                    </Link>
-                  ))}
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      <MobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        user={user}
+        loading={loading}
+        handleLogout={handleLogout}
+      />
     </>
   );
 }

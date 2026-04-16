@@ -7,41 +7,9 @@ import Link from "next/link";
 import { Plus, Minus, Search, Star, ShoppingBag, Dog, Cat } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useSearchParams } from "next/navigation";
-
-export interface CatalogProductVariant {
-  id: string;
-  name: string;
-  price: number | null;
-  image: string | null;
-  color?: string | null;
-  stock: number;
-}
-
-export interface CatalogProduct {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  oldPrice?: number | null;
-  description: string;
-  category: string;
-  petType: string;
-  rating: number;
-  isNew?: boolean;
-  isFeatured?: boolean;
-  allowSubscription?: boolean;
-  stock?: number;
-  variants?: CatalogProductVariant[];
-}
-
-export const createProductSlug = (name: string) => {
-  return name
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-};
+import { siteConfig } from "@/config/site";
+import { CatalogProduct } from "@/types/product";
+import { createProductSlug } from "@/utils/slug";
 
 interface PetShopCatalogProps {
   initialProducts: CatalogProduct[];
@@ -115,7 +83,7 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
             <input
               ref={searchInputRef}
               type="text"
-              placeholder="¿Qué busca hoy la mascota de la casa?..."
+              placeholder={siteConfig.ui.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 bg-transparent py-4 text-lg font-semibold text-zinc-800 focus:outline-none placeholder:text-zinc-400"
@@ -273,7 +241,7 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
                         className="btn-moiz w-full bg-zinc-900 text-white cursor-pointer pointer-events-auto"
                       >
                         <ShoppingBag size={20} />
-                        Agregar al carrito
+                        {siteConfig.ui.addToCart}
                       </button>
                     )}
                   </div>
@@ -328,8 +296,8 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
           <div className="w-20 h-20 bg-zinc-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <Search size={32} className="text-zinc-400" />
           </div>
-          <h3 className="text-2xl font-bold text-zinc-900 mb-2">No encontramos productos</h3>
-          <p className="text-zinc-500">Intenta con otros filtros o términos de búsqueda</p>
+          <h3 className="text-2xl font-bold text-zinc-900 mb-2">{siteConfig.ui.noProducts}</h3>
+          <p className="text-zinc-500">{siteConfig.ui.noProductsDesc}</p>
           <button
             onClick={() => {
               setSearchQuery("");

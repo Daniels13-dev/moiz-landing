@@ -3,6 +3,7 @@ import OrderStatusBadge from "./OrderStatusBadge";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { ChevronRight, Calendar, Package, Truck } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 interface OrderItem {
   id: string;
@@ -34,15 +35,15 @@ export default function OrderTable({ orders }: OrderTableProps) {
         <div className="w-20 h-20 bg-zinc-50 text-zinc-300 rounded-full flex items-center justify-center mx-auto mb-6">
           <Package size={40} />
         </div>
-        <h3 className="text-2xl font-black text-zinc-900 mb-2">No tienes pedidos aún</h3>
+        <h3 className="text-2xl font-black text-zinc-900 mb-2">{siteConfig.ui.order.noOrders}</h3>
         <p className="text-zinc-500 font-medium mb-8 max-w-xs mx-auto">
-          Cuando realices una compra, aparecerá aquí para que puedas seguirla.
+          {siteConfig.ui.order.noOrdersDesc}
         </p>
         <Link
           href="/productos"
           className="inline-flex items-center gap-2 bg-[var(--moiz-green)] text-zinc-950 px-8 py-3 rounded-full font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform"
         >
-          Ir a la tienda
+          {siteConfig.ui.order.goToStore}
         </Link>
       </div>
     );
@@ -62,7 +63,7 @@ export default function OrderTable({ orders }: OrderTableProps) {
             </div>
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">
-                Orden #
+                {siteConfig.ui.order.orderLabel}
                 {order.orderNumber ? `MZ-${order.orderNumber}` : order.id.slice(-6).toUpperCase()}
               </p>
               <h4 className="text-xl font-bold text-zinc-900 group-hover:text-[var(--moiz-green)] transition-colors">
@@ -89,8 +90,8 @@ export default function OrderTable({ orders }: OrderTableProps) {
                 >
                   <Truck size={12} />
                   {order.shippingMethod?.toLowerCase() === "domicilio"
-                    ? "Domicilio Hoy"
-                    : "Nacional"}
+                    ? siteConfig.ui.order.local
+                    : siteConfig.ui.order.national}
                 </span>
               </div>
             </div>

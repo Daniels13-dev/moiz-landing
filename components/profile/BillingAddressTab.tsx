@@ -2,15 +2,25 @@
 
 import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 interface BillingAddressTabProps {
   billingAddress: {
     fullName: string;
+    phone: string;
     street: string;
     city: string;
     state: string;
+    country: string;
   };
-  setBillingAddress: (info: any) => void;
+  setBillingAddress: (info: {
+    fullName: string;
+    phone: string;
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+  }) => void;
   sameAsShipping: boolean;
   setSameAsShipping: (val: boolean) => void;
   loading: boolean;
@@ -35,11 +45,11 @@ export default function BillingAddressTab({
     >
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-2xl font-black text-zinc-900 mb-2">Datos de Facturación</h2>
-          <p className="text-zinc-500">Para generar tus recibos y facturas legales.</p>
+          <h2 className="text-2xl font-black text-zinc-900 mb-2">{siteConfig.ui.profile.billingData}</h2>
+          <p className="text-zinc-500">{siteConfig.ui.profile.billingDataDesc}</p>
         </div>
         <div className="flex items-center gap-3 bg-zinc-50 border border-zinc-100 p-2 rounded-2xl">
-          <span className="text-xs font-bold text-zinc-500 ml-2">¿Igual que envío?</span>
+          <span className="text-xs font-bold text-zinc-500 ml-2">{siteConfig.ui.profile.sameAsShipping}</span>
           <button
             onClick={() => setSameAsShipping(!sameAsShipping)}
             className={`w-12 h-6 rounded-full transition-colors relative flex items-center px-1 ${
@@ -127,7 +137,7 @@ export default function BillingAddressTab({
             <CheckCircle2 size={24} />
           </div>
           <div>
-            <h4 className="font-bold text-green-900">Sincronizado con Envío</h4>
+            <h4 className="font-bold text-green-900">{siteConfig.ui.profile.synced}</h4>
             <p className="text-green-700/70 text-sm">
               Se utilizará la misma información de tu dirección de envío para la facturación.
             </p>

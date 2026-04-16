@@ -17,7 +17,8 @@ export const productsData: Product[] = [
   {
     id: "arena-2",
     name: "Arena Premium 2kg",
-    image: "/products/arena2kg-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223144/moiz/products/arena2kg-transparent.png",
     price: 12000,
     desc: "La presentación ideal para gatos pequeños o de un solo mes de prueba.",
     category: "Higiene",
@@ -27,7 +28,8 @@ export const productsData: Product[] = [
   {
     id: "arena-4",
     name: "Arena Premium 4kg",
-    image: "/products/arena4kg-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223147/moiz/products/arena4kg-transparent.png",
     price: 24000,
     desc: "Nuestra presentación estrella. Máximo equilibrio entre rendimiento y frescura constante.",
     category: "Higiene",
@@ -38,7 +40,8 @@ export const productsData: Product[] = [
   {
     id: "arena-10",
     name: "Arena Premium 10kg",
-    image: "/products/arena10kg-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223134/moiz/products/arena10kg-transparent.png",
     price: 55000,
     oldPrice: 60000,
     desc: "Mejor relación precio/uso. Perfecta para quienes buscan ahorro sin perder aglomeración.",
@@ -49,7 +52,8 @@ export const productsData: Product[] = [
   {
     id: "arena-20",
     name: "Arena Pro 20kg",
-    image: "/products/arena20kg-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223138/moiz/products/arena20kg-transparent.png",
     price: 108000,
     desc: "El formato de suministro constante. Diseñado para hogares con 2 a 3 encantadores felinos.",
     category: "Higiene",
@@ -59,7 +63,8 @@ export const productsData: Product[] = [
   {
     id: "arena-25",
     name: "Arena Pro 25kg",
-    image: "/products/arena25kg-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223140/moiz/products/arena25kg-transparent.png",
     price: 125000,
     desc: "Rendimiento extendido y frescura sin compromisos. Ideal para hogares múltiples.",
     category: "Higiene",
@@ -69,7 +74,8 @@ export const productsData: Product[] = [
   {
     id: "arena-50",
     name: "Arena Titan 50kg",
-    image: "/products/arena50kg-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223151/moiz/products/arena50kg-transparent.png",
     price: 237000,
     oldPrice: 250000,
     desc: "El titán del soporte. Uso profesional, fundaciones o familias multiespecie gigantes.",
@@ -82,7 +88,8 @@ export const productsData: Product[] = [
   {
     id: "dog-food-premium",
     name: "Ultra Paws Adulto 20lb",
-    image: "/products/dog-food-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223250/moiz/products/dog-food-transparent.png",
     price: 185000,
     desc: "Fórmula de pollo real y arroz integral para perros de razas grandes.",
     category: "Alimento",
@@ -94,7 +101,8 @@ export const productsData: Product[] = [
   {
     id: "dog-food-puppy",
     name: "Ultra Paws Cachorro 10lb",
-    image: "/products/dog-food-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223250/moiz/products/dog-food-transparent.png",
     price: 95000,
     desc: "Crecimiento saludable con DHA y proteínas de alta calidad.",
     category: "Alimento",
@@ -106,7 +114,8 @@ export const productsData: Product[] = [
   {
     id: "cat-food-gourmet",
     name: "Purrfection Gourmet 3kg",
-    image: "/products/cat-food-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223188/moiz/products/cat-food-transparent.png",
     price: 78000,
     desc: "Pollo, salmón y batata. Libre de granos para una digestión superior.",
     category: "Alimento",
@@ -119,7 +128,8 @@ export const productsData: Product[] = [
   {
     id: "dog-toy-rope",
     name: "Cuerda PawFlex Dura-Rope",
-    image: "/products/dog-toy-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223255/moiz/products/dog-toy-transparent.png",
     price: 32000,
     desc: "Juguete interactivo de larga duración, resistente para las mordidas más fuertes.",
     category: "Juguetes",
@@ -129,7 +139,8 @@ export const productsData: Product[] = [
   {
     id: "cat-toy-feather",
     name: "Varita Mágica con Plumas",
-    image: "/products/dog-toy-transparent.png", // Usando el mismo por ahora como placeholder o podrías generar más
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223255/moiz/products/dog-toy-transparent.png",
     price: 15000,
     desc: "Estimula el instinto cazador de tu gato con esta varita interactiva.",
     category: "Juguetes",
@@ -141,7 +152,8 @@ export const productsData: Product[] = [
   {
     id: "dog-snack-chicken",
     name: "Tiritas de Pollo Natural",
-    image: "/products/dog-food-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223250/moiz/products/dog-food-transparent.png",
     price: 22000,
     desc: "Snacks 100% naturales, sin conservantes. El premio perfecto.",
     category: "Snacks",
@@ -151,7 +163,8 @@ export const productsData: Product[] = [
   {
     id: "cat-snack-salmon",
     name: "Bocaditos de Salmón",
-    image: "/products/cat-food-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223188/moiz/products/cat-food-transparent.png",
     price: 18000,
     desc: "Ricos en Omega 3 para una piel sana y pelaje brillante.",
     category: "Snacks",
@@ -163,7 +176,8 @@ export const productsData: Product[] = [
   {
     id: "leather-leash",
     name: "Correa de Cuero Premium",
-    image: "/products/dog-toy-transparent.png",
+    image:
+      "https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223255/moiz/products/dog-toy-transparent.png",
     price: 65000,
     desc: "Elegancia y resistencia en cada paseo. Cuero genuino cosido a mano.",
     category: "Accesorios",

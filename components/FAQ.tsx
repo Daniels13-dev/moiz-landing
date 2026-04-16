@@ -3,6 +3,7 @@
 import { ChevronDown, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { siteConfig } from "@/config/site";
 
 import { faqData } from "@/data/faq";
 
@@ -88,11 +89,10 @@ export default function FAQ() {
             Soporte Möiz
           </span>
           <h2 className="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight">
-            Todo lo que necesitas saber
+            {siteConfig.ui.faq.title}
           </h2>
           <p className="mt-4 text-lg text-zinc-500">
-            Resolvemos tus dudas para que tú y tu mascota tengan la mejor experiencia posible en
-            nuestra tienda.
+            {siteConfig.ui.faq.subtitle}
           </p>
         </div>
 
