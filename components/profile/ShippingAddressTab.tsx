@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { siteConfig } from "@/config/site";
 
 interface ShippingAddressTabProps {
   shippingAddress: {
@@ -9,8 +10,16 @@ interface ShippingAddressTabProps {
     street: string;
     city: string;
     state: string;
+    country: string;
   };
-  setShippingAddress: (info: any) => void;
+  setShippingAddress: (info: {
+    fullName: string;
+    phone: string;
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+  }) => void;
   loading: boolean;
   handleUpdateAddress: (type: "SHIPPING" | "BILLING") => void;
 }
@@ -30,8 +39,8 @@ export default function ShippingAddressTab({
       className="space-y-8"
     >
       <div>
-        <h2 className="text-2xl font-black text-zinc-900 mb-2">Dirección de Envío</h2>
-        <p className="text-zinc-500">¿A dónde enviamos tus productos Moiz?</p>
+        <h2 className="text-2xl font-black text-zinc-900 mb-2">{siteConfig.ui.profile.shippingAddress}</h2>
+        <p className="text-zinc-500">{siteConfig.ui.profile.shippingAddressDesc}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

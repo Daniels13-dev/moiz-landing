@@ -6,6 +6,7 @@ import { updateProduct } from "../../../actions";
 import { toast } from "sonner";
 import VariantManager from "../../VariantManager";
 import { useRouter } from "next/navigation";
+import ImageUpload from "@/components/ui/ImageUpload";
 
 interface Category {
   id: string;
@@ -137,6 +138,7 @@ export default function EditProductView({ product, categories }: EditProductView
                     <input
                       name="price"
                       type="number"
+                      step="any"
                       defaultValue={product.price}
                       required
                       className="w-full p-4 pl-10 bg-white/5 border border-white/10 rounded-2xl focus:border-[var(--moiz-green)] focus:ring-4 focus:ring-[var(--moiz-green)]/10 outline-none transition-all font-black text-2xl"
@@ -154,6 +156,7 @@ export default function EditProductView({ product, categories }: EditProductView
                     <input
                       name="oldPrice"
                       type="number"
+                      step="any"
                       defaultValue={product.oldPrice || ""}
                       className="w-full p-4 pl-10 bg-white/5 border border-white/10 rounded-2xl focus:border-white/20 outline-none transition-all font-black text-xl text-white/40"
                     />
@@ -213,14 +216,9 @@ export default function EditProductView({ product, categories }: EditProductView
 
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-4">
-                URL de Imagen Principal
+                Imagen Principal
               </label>
-              <input
-                name="image"
-                defaultValue={product.image}
-                required
-                className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl font-bold text-zinc-500 text-sm"
-              />
+              <ImageUpload name="image" defaultValue={product.image || ""} required />
             </div>
 
             <div className="flex gap-4">

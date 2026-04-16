@@ -1,0 +1,108 @@
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/app/actions/billing.ts
+  23:16  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/app/admin/actions.ts
+  161:24  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  190:80  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/app/admin/facturacion/page.tsx
+   77:14  warning  'err' is defined but never used                                  @typescript-eslint/no-unused-vars
+  171:68  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  171:75  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/app/admin/productos/ProductItem.tsx
+   50:33  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  233:66  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  233:81  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/app/admin/productos/VariantManager.tsx
+   70:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/app/admin/productos/VariantManager.tsx:70:9
+  68 |     if (editingVariant?.size) {
+  69 |       if (TAMAÑOS.includes(editingVariant.size) && !TALLAS.includes(editingVariant.size)) {
+> 70 |         setSizingSystem("tamaños");
+     |         ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  71 |       } else if (TALLAS.includes(editingVariant.size)) {
+  72 |         setSizingSystem("tallas");
+  73 |       }  react-hooks/set-state-in-effect
+  139:29  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       @typescript-eslint/no-explicit-any
+  546:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @next/next/no-img-element
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/app/checkout/components/BillingFormSection.tsx
+  10:13  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  11:11  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  13:13  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  81:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/app/checkout/components/ShippingFormSection.tsx
+   7:10  warning  'useState' is defined but never used      @typescript-eslint/no-unused-vars
+  10:13  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  11:11  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  12:9   error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  64:38  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/app/checkout/page.tsx
+    3:36  warning  'ReactNode' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+    4:8   warning  'Image' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+    8:13  warning  'z' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+   18:10  warning  'motion' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+   18:18  warning  'AnimatePresence' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   28:10  warning  'countries' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+   28:21  warning  'idTypes' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   29:10  warning  'InputGroup' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+   29:22  warning  'SelectInputGrid' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   29:39  warning  'SelectGroup' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+   43:3   warning  'BillingSelection' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   62:10  warning  'showSubInfo' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+   62:23  warning  'setShowSubInfo' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  153:28  warning  Compilation Skipped: Use of incompatible library
+
+This API returns functions which cannot be memoized without leading to stale UI. To prevent this, by default React Compiler will skip memoizing this component/hook. However, you may see issues if values from this API are passed to other components/hooks that are memoized.
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/app/checkout/page.tsx:153:28
+  151 |   }, [setValue]);
+  152 |
+> 153 |   const billingDifferent = watch("billingDifferent");
+      |                            ^^^^^ React Hook Form's `useForm()` API returns a `watch()` function which cannot be memoized safely.
+  154 |   const paymentMethod = watch("paymentMethod");
+  155 |   const shippingMethod = watch("shippingMethod");
+  156 |   const customerState = watch("customerState");  react-hooks/incompatible-library
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/components/orders/CheckoutModal.tsx
+  107:28  warning  Compilation Skipped: Use of incompatible library
+
+This API returns functions which cannot be memoized without leading to stale UI. To prevent this, by default React Compiler will skip memoizing this component/hook. However, you may see issues if values from this API are passed to other components/hooks that are memoized.
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/components/orders/CheckoutModal.tsx:107:28
+  105 |   });
+  106 |
+> 107 |   const billingDifferent = watch("billingDifferent");
+      |                            ^^^^^ React Hook Form's `useForm()` API returns a `watch()` function which cannot be memoized safely.
+  108 |   const paymentMethod = watch("paymentMethod");
+  109 |
+  110 |   return (  react-hooks/incompatible-library
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/scripts/debug-products.ts
+  10:48  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/scripts/fix-featured-active.ts
+  10:48  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  14:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/scripts/migrate-images-to-cloudinary.ts
+  29:48  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/danielsanchez/Desktop/Moiz/moiz-landing/scripts/upload-missing.ts
+   4:13  warning  'path' is defined but never used          @typescript-eslint/no-unused-vars
+  20:48  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 42 problems (23 errors, 19 warnings)
+

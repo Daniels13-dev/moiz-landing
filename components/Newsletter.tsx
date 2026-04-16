@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Mail, Sparkles, Send, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { subscribeToNewsletter } from "@/app/actions/newsletter";
+import { siteConfig } from "@/config/site";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
@@ -60,13 +61,11 @@ export default function Newsletter() {
               </motion.div>
 
               <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-6 leading-[1.1]">
-                Únete al Universo <span className="text-[var(--moiz-green)]">Möiz</span>
+                {siteConfig.ui.newsletter.title}
               </h2>
 
               <p className="text-lg text-white/60 font-medium mb-0 max-w-md">
-                Suscríbete ahora y recibe un{" "}
-                <span className="text-white font-bold">10% de descuento</span> en tu primera compra,
-                además de consejos expertos para tu mascota.
+                {siteConfig.ui.newsletter.subtitle}
               </p>
             </div>
 
@@ -80,9 +79,9 @@ export default function Newsletter() {
                   <div className="w-16 h-16 bg-[var(--moiz-green)] text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
                     <CheckCircle2 size={32} />
                   </div>
-                  <h3 className="text-2xl font-black text-white mb-2">¡Ya eres parte!</h3>
+                  <h3 className="text-2xl font-black text-white mb-2">{siteConfig.ui.newsletter.success}</h3>
                   <p className="text-white/60 font-medium">
-                    Hemos registrado tu correo. Pronto recibirás tus beneficios.
+                    {siteConfig.ui.newsletter.successDesc}
                   </p>
                 </motion.div>
               ) : (

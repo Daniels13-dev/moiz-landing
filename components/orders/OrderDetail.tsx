@@ -2,6 +2,7 @@ import OrderStatusBadge from "./OrderStatusBadge";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { MapPin, Phone, User, Package, Clock, Truck } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 interface OrderItem {
   id: string;
@@ -75,7 +76,7 @@ export default function OrderDetail({ order, showHelp = true }: OrderDetailProps
             }`}
           >
             <Truck size={16} />
-            <span className="opacity-60 mr-2">Método de Envío:</span>
+            <span className="opacity-60 mr-2">{siteConfig.ui.order.method}:</span>
             {order.shippingMethod?.toLowerCase() === "domicilio"
               ? "🛵 Domicilio Möiz (Entrega Hoy)"
               : "🚚 Envío Nacional Estándar"}
@@ -134,15 +135,15 @@ export default function OrderDetail({ order, showHelp = true }: OrderDetailProps
           {/* Totals */}
           <div className="mt-10 p-8 bg-zinc-900 rounded-[2.5rem] text-white">
             <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/10">
-              <span className="font-bold text-white/60">Subtotal</span>
+              <span className="font-bold text-white/60">{siteConfig.ui.order.subtotal}</span>
               <span className="font-bold">${order.totalAmount.toLocaleString("es-CO")}</span>
             </div>
             <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/10">
-              <span className="font-bold text-white/60">Envío</span>
-              <span className="font-bold text-[var(--moiz-green)] italic">Gratis</span>
+              <span className="font-bold text-white/60">{siteConfig.ui.order.shipping}</span>
+              <span className="font-bold text-[var(--moiz-green)] italic">{siteConfig.ui.order.free}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-black">TOTAL</span>
+              <span className="text-2xl font-black">{siteConfig.ui.order.total}</span>
               <span className="text-3xl font-black text-[var(--moiz-green)]">
                 ${order.totalAmount.toLocaleString("es-CO")} {order.currency}
               </span>
@@ -180,9 +181,9 @@ export default function OrderDetail({ order, showHelp = true }: OrderDetailProps
 
         {showHelp && (
           <div className="bg-[var(--moiz-green)]/10 border border-[var(--moiz-green)]/20 rounded-[3rem] p-10 text-center">
-            <h4 className="text-lg font-black text-[var(--moiz-green)] mb-2">¿Necesitas ayuda?</h4>
+            <h4 className="text-lg font-black text-[var(--moiz-green)] mb-2">{siteConfig.ui.needHelp}</h4>
             <p className="text-sm font-medium text-zinc-600 mb-6">
-              Si tienes alguna duda con tu pedido, contáctanos por WhatsApp.
+              {siteConfig.ui.whatsappReady}
             </p>
             <a
               href="https://wa.me/573218515161"

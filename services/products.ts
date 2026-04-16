@@ -24,6 +24,7 @@ export interface ProductData {
     name: string;
     color: string | null;
     image: string | null;
+    size: string | null;
     stock: number;
     price: number | null;
   }>;
@@ -41,6 +42,9 @@ interface RawProduct {
   desc?: string;
   category?: string;
   petType?: string;
+  isFeatured?: boolean;
+  isNew?: boolean;
+  allowSubscription?: boolean;
   variants?: RawVariant[];
 }
 
@@ -52,33 +56,24 @@ export function formatProduct(product: unknown): ProductData {
   if (!product) return product as unknown as ProductData;
   const p = product as RawProduct;
 
-  let image = p.image || "";
+  const image = p.image || "";
 
-  // Lógica centralizada: Si es un PNG de producto local sin sufijo transparent, lo añadimos
-  if (image.startsWith("/products/") && image.endsWith(".png") && !image.includes("-transparent")) {
-    image = image.replace(".png", "-transparent.png");
-  }
-
-  // Formatear imágenes de variantes si existen
-  const variants = p.variants?.map((v) => {
-    let vImage = v.image || "";
-    if (
-      vImage.startsWith("/products/") &&
-      vImage.endsWith(".png") &&
-      !vImage.includes("-transparent")
-    ) {
-      vImage = vImage.replace(".png", "-transparent.png");
-    }
-    return { ...v, image: vImage };
-  });
+  // Format variant images (pass through, Cloudinary URLs need no transformation)
+  const variants = p.variants?.map((v) => ({
+    ...v,
+    image: v.image || "",
+  }));
 
   return {
     ...p,
     image,
     variants,
-    description: p.description || p.desc || "", // Normalización de nombres de campos
+    description: p.description || p.desc || "",
     category: p.category || "General",
     petType: p.petType || "Gato",
+    isFeatured: Boolean(p.isFeatured),
+    isNew: Boolean(p.isNew),
+    allowSubscription: Boolean(p.allowSubscription),
   } as ProductData;
 }
 
@@ -87,7 +82,7 @@ export function formatProduct(product: unknown): ProductData {
  */
 export async function getFeaturedProduct() {
   const product = await prisma.product.findFirst({
-    where: { isFeatured: true },
+    where: { isFeatured: true, isActive: true },
     include: { category: true },
   });
 
@@ -102,6 +97,7 @@ export async function getFeaturedProduct() {
  */
 export async function getAllProducts() {
   const products = await prisma.product.findMany({
+    where: { isActive: true },
     include: { category: true, variants: true },
   });
 

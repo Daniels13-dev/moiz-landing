@@ -5,10 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Star, Trash2, Heart } from "lucide-react";
-import { CatalogProduct, createProductSlug } from "./PetShopCatalog";
+import { CatalogProduct } from "@/types/product";
+import { createProductSlug } from "@/utils/slug";
 import { toggleFavorite } from "@/app/actions/favorites";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
+import { siteConfig } from "@/config/site";
 
 interface FavoritesListProps {
   initialFavorites: CatalogProduct[];
@@ -22,7 +24,7 @@ export default function FavoritesList({ initialFavorites }: FavoritesListProps) 
     // Optimistic UI update
     setFavorites((prev) => prev.filter((p) => p.id !== id));
     await toggleFavorite(id);
-    toast.success("Producto eliminado de favoritos");
+    toast.success(siteConfig.ui.favorites.removeSuccess);
   };
 
   if (favorites.length === 0) {
@@ -35,15 +37,15 @@ export default function FavoritesList({ initialFavorites }: FavoritesListProps) 
         <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-6">
           <Heart size={32} className="text-zinc-200" />
         </div>
-        <h3 className="text-2xl font-bold text-zinc-900 mb-2">Aún no tienes favoritos</h3>
+        <h3 className="text-2xl font-bold text-zinc-900 mb-2">{siteConfig.ui.favorites.title}</h3>
         <p className="text-zinc-500 mb-8 max-w-xs mx-auto">
-          Explora nuestro catálogo y guarda los productos que más te gustan.
+          {siteConfig.ui.favorites.subtitle}
         </p>
         <Link
           href="/productos"
           className="inline-flex items-center justify-center h-14 px-10 bg-[var(--moiz-green)] text-white font-black rounded-full hover:scale-105 transition-all shadow-lg shadow-[var(--moiz-green)]/20 uppercase text-xs tracking-widest"
         >
-          Explorar Productos
+          {siteConfig.ui.favorites.explore}
         </Link>
       </motion.div>
     );

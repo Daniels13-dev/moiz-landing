@@ -1,6 +1,7 @@
 "use client";
 
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { siteConfig } from "@/config/site";
 
 const MOIZ_GREEN = "#6a8e2a";
 const MOIZ_DARK = "#2a2a2a";
@@ -180,7 +181,37 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function InvoicePDF({ invoice, order }: { invoice: any; order: any }) {
+interface InvoiceData {
+  invoiceNumber: string | number;
+  createdAt: string | Date;
+  customerName: string;
+  customerIdType: string;
+  customerNit: string;
+  customerAddress: string;
+  customerCity: string;
+  customerState: string;
+  customerPhone: string;
+  subtotal: number;
+  discount?: number | null;
+  total: number;
+}
+
+interface OrderData {
+  orderNumber: string | number;
+  items: {
+    productName: string | null;
+    quantity: number;
+    price: number;
+  }[];
+}
+
+export default function InvoicePDF({
+  invoice,
+  order,
+}: {
+  invoice: InvoiceData;
+  order: OrderData;
+}) {
   const displayInvoiceId = `FMZ-${invoice.invoiceNumber}`;
   const displayOrderId = `MZ-${order.orderNumber}`;
   const date = new Date(invoice.createdAt).toLocaleDateString("es-CO", {
@@ -204,17 +235,17 @@ export default function InvoicePDF({ invoice, order }: { invoice: any; order: an
             </View>
 
             <View style={styles.invoiceBadgeSection}>
-              <Text style={styles.invoiceLabel}>Factura de Venta</Text>
+              <Text style={styles.invoiceLabel}>{siteConfig.ui.invoice.title}</Text>
               <Text style={styles.invoiceNumber}>{displayInvoiceId}</Text>
               <View style={styles.statusBadge}>
-                <Text style={styles.statusText}>Pagado</Text>
+                <Text style={styles.statusText}>{siteConfig.ui.invoice.paid}</Text>
               </View>
             </View>
           </View>
 
           <View style={styles.infoGrid}>
             <View style={styles.infoBox}>
-              <Text style={styles.infoTitle}>Cliente</Text>
+              <Text style={styles.infoTitle}>{siteConfig.ui.invoice.customer}</Text>
               <Text style={styles.cellTextBold}>{invoice.customerName}</Text>
               <Text style={styles.infoText}>
                 {invoice.customerIdType}: {invoice.customerNit}
@@ -226,25 +257,27 @@ export default function InvoicePDF({ invoice, order }: { invoice: any; order: an
               <Text style={styles.infoText}>{invoice.customerPhone}</Text>
             </View>
             <View style={styles.infoBox}>
-              <Text style={styles.infoTitle}>Detalles del Documento</Text>
-              <Text style={styles.infoText}>Fecha: {date}</Text>
-              <Text style={styles.infoText}>Número de Pedido: {displayOrderId}</Text>
-              <Text style={styles.infoText}>Forma de Pago: Electrónico / Efectivo</Text>
-              <Text style={styles.infoText}>Moneda: COP</Text>
+              <Text style={styles.infoTitle}>{siteConfig.ui.invoice.docDetails}</Text>
+              <Text style={styles.infoText}>{siteConfig.ui.invoice.date}: {date}</Text>
+              <Text style={styles.infoText}>{siteConfig.ui.invoice.orderNumber}: {displayOrderId}</Text>
+              <Text style={styles.infoText}>{siteConfig.ui.invoice.paymentMethod}: {siteConfig.ui.invoice.paymentValue}</Text>
+              <Text style={styles.infoText}>{siteConfig.ui.invoice.currency}: COP</Text>
             </View>
           </View>
 
           <View style={styles.table}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.tableHeaderText, styles.colProd]}>Descripción del Producto</Text>
-              <Text style={[styles.tableHeaderText, styles.colQty]}>Cant.</Text>
-              <Text style={[styles.tableHeaderText, styles.colPrice]}>V. Unitario</Text>
-              <Text style={[styles.tableHeaderText, styles.colTotal]}>V. Total</Text>
+              <Text style={[styles.tableHeaderText, styles.colProd]}>{siteConfig.ui.invoice.description}</Text>
+              <Text style={[styles.tableHeaderText, styles.colQty]}>{siteConfig.ui.invoice.qty}</Text>
+              <Text style={[styles.tableHeaderText, styles.colPrice]}>{siteConfig.ui.invoice.unitPrice}</Text>
+              <Text style={[styles.tableHeaderText, styles.colTotal]}>{siteConfig.ui.invoice.totalPrice}</Text>
             </View>
 
-            {order.items.map((item: any, i: number) => (
+            {order.items.map((item, i) => (
               <View key={i} style={styles.tableRow}>
-                <Text style={[styles.cellText, styles.colProd]}>{item.productName}</Text>
+                <Text style={[styles.cellText, styles.colProd]}>
+                  {item.productName || siteConfig.ui.invoice.product}
+                </Text>
                 <Text style={[styles.cellText, styles.colQty]}>{item.quantity}</Text>
                 <Text style={[styles.cellText, styles.colPrice]}>
                   $ {item.price.toLocaleString("es-CO")}
@@ -259,17 +292,17 @@ export default function InvoicePDF({ invoice, order }: { invoice: any; order: an
           <View style={[styles.footerSection, { justifyContent: "flex-end" }]}>
             <View style={styles.totalsArea}>
               <View style={styles.totalLine}>
-                <Text style={styles.totalLabel}>Subtotal</Text>
+                <Text style={styles.totalLabel}>{siteConfig.ui.invoice.subtotal}</Text>
                 <Text style={styles.totalValue}>$ {invoice.subtotal.toLocaleString("es-CO")}</Text>
               </View>
               <View style={styles.totalLine}>
-                <Text style={styles.totalLabel}>Descuento</Text>
+                <Text style={styles.totalLabel}>{siteConfig.ui.invoice.discount}</Text>
                 <Text style={styles.totalValue}>
                   $ {(invoice.discount || 0).toLocaleString("es-CO")}
                 </Text>
               </View>
               <View style={styles.grandTotalLine}>
-                <Text style={styles.grandTotalLabel}>TOTAL</Text>
+                <Text style={styles.grandTotalLabel}>{siteConfig.ui.invoice.total}</Text>
                 <Text style={styles.grandTotalValue}>
                   $ {invoice.total.toLocaleString("es-CO")}
                 </Text>
@@ -280,12 +313,12 @@ export default function InvoicePDF({ invoice, order }: { invoice: any; order: an
 
         <View style={styles.legalFooter} fixed>
           <View style={styles.footerDivider} />
-          <Text style={styles.thanksText}>¡Gracias por tu compra!</Text>
+          <Text style={styles.thanksText}>{siteConfig.ui.invoice.thanks}</Text>
           <Text style={styles.contactText}>
             www.moizpets.com | Manizales, Colombia | WhatsApp: +57 321 8515161
           </Text>
           <Text style={[styles.contactText, { marginTop: 4, fontSize: 7 }]}>
-            Generado electrónicamente por Möiz
+            {siteConfig.ui.invoice.generatedBy}
           </Text>
         </View>
       </Page>
