@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import type { UseFormRegisterReturn, Resolver } from "react-hook-form";
+import type { Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -10,7 +10,6 @@ import {
   MapPin,
   CreditCard,
   ChevronRight,
-  CheckCircle2,
   Building,
   LogIn,
   CreditCard as CardIcon,
@@ -18,11 +17,13 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import type { ReactNode } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-
 import type { User } from "@supabase/supabase-js";
+
+// Sub-components
+import { InputGroup, PaymentOption, StepHeader, CheckboxGroup } from "./CheckoutSteps";
+import BillingForm from "./BillingForm";
 
 const checkoutSchema = z.object({
   customerName: z.string().min(2, "El nombre es obligatorio"),
@@ -171,14 +172,7 @@ export default function CheckoutModal({
 
               {/* Seccion: Datos de Envio */}
               <div className="space-y-8">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[var(--moiz-green)]/10 text-[var(--moiz-green)] rounded-lg flex items-center justify-center">
-                    <MapPin size={18} />
-                  </div>
-                  <h3 className="text-xl font-black text-zinc-900 tracking-tight">
-                    Datos de Envío
-                  </h3>
-                </div>
+                <StepHeader icon={MapPin} title="Datos de Envío" />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <InputGroup
@@ -233,31 +227,15 @@ export default function CheckoutModal({
                   />
                 </div>
 
-                <label className="flex items-center gap-3 cursor-pointer group">
-                  <div className="relative flex items-center">
-                    <input type="checkbox" {...register("saveInfo")} className="peer sr-only" />
-                    <div className="w-6 h-6 border-2 border-zinc-200 rounded-lg peer-checked:bg-[var(--moiz-green)] peer-checked:border-[var(--moiz-green)] transition-all"></div>
-                    <CheckCircle2
-                      size={16}
-                      className="absolute left-1 text-white opacity-0 peer-checked:opacity-100 transition-opacity"
-                    />
-                  </div>
-                  <span className="text-sm font-bold text-zinc-600 group-hover:text-zinc-900 transition-colors">
-                    Guardar mi información y consultar más rápidamente la proxima vez
-                  </span>
-                </label>
+                <CheckboxGroup
+                  label="Guardar mi información para la próxima vez"
+                  register={register("saveInfo")}
+                />
               </div>
 
               {/* Seccion: Opciones de Pago */}
               <div className="space-y-8">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[var(--moiz-green)]/10 text-[var(--moiz-green)] rounded-lg flex items-center justify-center">
-                    <CreditCard size={18} />
-                  </div>
-                  <h3 className="text-xl font-black text-zinc-900 tracking-tight">
-                    Opciones de Pago
-                  </h3>
-                </div>
+                <StepHeader icon={CreditCard} title="Opciones de Pago" />
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <PaymentOption
@@ -286,14 +264,7 @@ export default function CheckoutModal({
 
               {/* Seccion: Facturacion */}
               <div className="space-y-8">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[var(--moiz-green)]/10 text-[var(--moiz-green)] rounded-lg flex items-center justify-center">
-                    <Building size={18} />
-                  </div>
-                  <h3 className="text-xl font-black text-zinc-900 tracking-tight">
-                    Dirección de Facturación
-                  </h3>
-                </div>
+                <StepHeader icon={Building} title="Dirección de Facturación" />
 
                 <div className="space-y-4">
                   <button
@@ -336,67 +307,7 @@ export default function CheckoutModal({
                 </div>
 
                 <AnimatePresence>
-                  {billingDifferent && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="pt-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-zinc-100 mt-2">
-                        <InputGroup
-                          label="Nombre"
-                          register={register("billingName")}
-                          error={errors.billingName}
-                          placeholder="Ej. Juan"
-                        />
-                        <InputGroup
-                          label="Apellidos"
-                          register={register("billingLastName")}
-                          error={errors.billingLastName}
-                          placeholder="Ej. Pérez"
-                        />
-                        <InputGroup
-                          label="Cédula o NIT"
-                          register={register("billingNit")}
-                          error={errors.billingNit}
-                          placeholder="123456789"
-                        />
-                        <InputGroup
-                          label="Teléfono"
-                          register={register("billingPhone")}
-                          error={errors.billingPhone}
-                          placeholder="321 000 0000"
-                        />
-                        <div className="md:col-span-2">
-                          <InputGroup
-                            label="Dirección"
-                            register={register("billingAddress")}
-                            error={errors.billingAddress}
-                            placeholder="Calle 123 #45-67"
-                          />
-                        </div>
-                        <InputGroup
-                          label="Casa, Apto, Bloque (Opcional)"
-                          register={register("billingDetails")}
-                          error={errors.billingDetails}
-                          placeholder="Apto 502"
-                        />
-                        <InputGroup
-                          label="Ciudad"
-                          register={register("billingCity")}
-                          error={errors.billingCity}
-                          placeholder="Ej. Bogotá"
-                        />
-                        <InputGroup
-                          label="Departamento"
-                          register={register("billingState")}
-                          error={errors.billingState}
-                          placeholder="Ej. Cundinamarca"
-                        />
-                      </div>
-                    </motion.div>
-                  )}
+                  {billingDifferent && <BillingForm register={register} errors={errors} />}
                 </AnimatePresence>
               </div>
 
@@ -427,68 +338,5 @@ export default function CheckoutModal({
         </>
       )}
     </AnimatePresence>
-  );
-}
-
-function InputGroup({
-  label,
-  register,
-  error,
-  placeholder,
-  type = "text",
-}: {
-  label: string;
-  register: UseFormRegisterReturn;
-  error?: { message?: string } | undefined;
-  placeholder?: string;
-  type?: string;
-}) {
-  return (
-    <div className="space-y-2">
-      <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-1">
-        {label}
-      </label>
-      <input
-        {...register}
-        type={type}
-        placeholder={placeholder}
-        className={`w-full px-6 py-4 bg-zinc-50 border rounded-2xl outline-none transition-all font-bold text-zinc-900 placeholder:text-zinc-300 focus:ring-2 focus:ring-[var(--moiz-green)]/20 ${error ? "border-red-500" : "border-zinc-100"}`}
-      />
-      {error && <p className="text-red-500 text-[10px] font-bold px-1">{error.message}</p>}
-    </div>
-  );
-}
-
-function PaymentOption({
-  active,
-  onClick,
-  icon,
-  label,
-  description,
-}: {
-  active: boolean;
-  onClick: () => void;
-  icon: ReactNode;
-  label: string;
-  description?: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`p-6 border rounded-[2rem] flex flex-col gap-3 text-left transition-all ${active ? "border-[var(--moiz-green)] bg-[var(--moiz-green)]/5 scale-[1.02]" : "border-zinc-100 bg-zinc-50 opacity-60 hover:opacity-100"}`}
-    >
-      <div
-        className={`w-10 h-10 rounded-xl flex items-center justify-center ${active ? "bg-[var(--moiz-green)] text-white" : "bg-zinc-200 text-zinc-500"}`}
-      >
-        {icon}
-      </div>
-      <div>
-        <p className="font-black text-zinc-900 leading-none mb-1">{label}</p>
-        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-          {description}
-        </p>
-      </div>
-    </button>
   );
 }

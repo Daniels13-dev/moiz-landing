@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Save, ChevronDown, User } from "lucide-react";
+import { Save, ChevronDown } from "lucide-react";
 import { countries } from "@/config/constants";
+import { siteConfig } from "@/config/site";
 
 interface PersonalInfoTabProps {
   personalInfo: {
@@ -12,7 +13,13 @@ interface PersonalInfoTabProps {
     idNumber: string;
     idType: string;
   };
-  setPersonalInfo: (info: any) => void;
+  setPersonalInfo: (info: {
+    fullName: string;
+    phone: string;
+    phoneCountry: string;
+    idNumber: string;
+    idType: string;
+  }) => void;
   email: string;
   loading: boolean;
   handleUpdateProfile: () => void;
@@ -34,8 +41,8 @@ export default function PersonalInfoTab({
       className="space-y-8"
     >
       <div>
-        <h2 className="text-2xl font-black text-zinc-900 mb-2">Información Personal</h2>
-        <p className="text-zinc-500">Estos datos se usarán para tus pedidos y contacto.</p>
+        <h2 className="text-2xl font-black text-zinc-900 mb-2">{siteConfig.ui.profile.personalInfo}</h2>
+        <p className="text-zinc-500">{siteConfig.ui.profile.personalInfoDesc}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6">

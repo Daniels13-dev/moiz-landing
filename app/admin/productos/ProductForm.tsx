@@ -5,6 +5,7 @@ import { Plus, ChevronDown, Loader2, Save } from "lucide-react";
 import { createProduct } from "../actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import ImageUpload from "@/components/ui/ImageUpload";
 
 interface Category {
   id: string;
@@ -75,7 +76,7 @@ export default function ProductForm({ categories }: ProductFormProps) {
             <input
               name="price"
               type="number"
-              step="0.01"
+              step="any"
               placeholder="99.000"
               required
               className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[var(--moiz-green)]/20 focus:border-[var(--moiz-green)] transition-all font-medium"
@@ -88,7 +89,7 @@ export default function ProductForm({ categories }: ProductFormProps) {
             <input
               name="oldPrice"
               type="number"
-              step="0.01"
+              step="any"
               placeholder="120.000"
               className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[var(--moiz-green)]/20 focus:border-[var(--moiz-green)] transition-all font-medium"
             />
@@ -136,16 +137,9 @@ export default function ProductForm({ categories }: ProductFormProps) {
 
         <div className="space-y-2">
           <label className="text-xs font-black uppercase tracking-widest text-zinc-400 pl-1">
-            URL de Imagen
+            Imagen del Producto
           </label>
-          <input
-            name="image"
-            type="text"
-            placeholder="/products/image.png"
-            defaultValue="/products/arena4kg-transparent.png"
-            required
-            className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[var(--moiz-green)]/20 focus:border-[var(--moiz-green)] transition-all font-medium"
-          />
+          <ImageUpload name="image" required />
         </div>
 
         <div className="flex gap-4">

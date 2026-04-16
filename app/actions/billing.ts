@@ -20,17 +20,16 @@ export async function getInvoicesReport(startDate?: string, endDate?: string) {
     throw new Error("No autorizado");
   }
 
-  const where: any = {};
+  const where: { createdAt?: { gte?: Date; lte?: Date } } = {};
   if (startDate || endDate) {
-    where.createdAt = {};
+    const createdAt: { gte?: Date; lte?: Date } = {};
     if (startDate) {
-      // Create date at start of day in server/local time
-      where.createdAt.gte = new Date(`${startDate}T00:00:00`);
+      createdAt.gte = new Date(`${startDate}T00:00:00`);
     }
     if (endDate) {
-      // Create date at end of day in server/local time
-      where.createdAt.lte = new Date(`${endDate}T23:59:59`);
+      createdAt.lte = new Date(`${endDate}T23:59:59`);
     }
+    where.createdAt = createdAt;
   }
 
   const invoices = await prisma.invoice.findMany({

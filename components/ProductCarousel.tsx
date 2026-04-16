@@ -8,7 +8,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { Minus, Plus, ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
 
-import { CatalogProduct } from "./PetShopCatalog";
+import { CatalogProduct } from "@/types/product";
+
+import { siteConfig } from "@/config/site";
 
 interface ProductCarouselProps {
   products: CatalogProduct[];
@@ -58,7 +60,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
         <div className="lg:col-span-5 flex flex-col justify-center h-full relative order-2 lg:order-1 pt-10 lg:pt-0">
           <div className="inline-flex items-center gap-2 text-[var(--moiz-green)] font-extrabold tracking-[0.2em] text-xs uppercase mb-6 border border-[var(--moiz-green)]/30 w-max px-3 py-1 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--moiz-green)] animate-pulse" />
-            Selección Destacada
+            {siteConfig.ui.featuredSelection}
           </div>
 
           <div className="relative">
@@ -134,7 +136,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
                         className="group flex items-center justify-center gap-3 px-8 py-4 bg-[var(--moiz-green)] text-zinc-950 rounded-full font-black text-sm uppercase tracking-widest shadow-xl shadow-[var(--moiz-green)]/20 hover:scale-105 active:scale-95 transition-all"
                       >
                         <ShoppingBag size={20} />
-                        Agregar
+                        {siteConfig.ui.addToCart}
                       </button>
                     )}
                   </div>

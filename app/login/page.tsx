@@ -4,6 +4,7 @@ import Link from "next/link";
 import { login, signInWithGoogle } from "../auth/actions";
 import { LogIn, Mail, Lock, AlertCircle, Loader2, ArrowLeft } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
+import { siteConfig } from "@/config/site";
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +32,7 @@ export default function LoginPage() {
             className="flex items-center gap-2 text-zinc-400 hover:text-[var(--moiz-green)] font-bold text-sm transition-colors group"
           >
             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            Volver al Inicio
+            {siteConfig.ui.login.back}
           </Link>
         </div>
 
@@ -41,17 +42,17 @@ export default function LoginPage() {
               <LogIn size={32} />
             </div>
             <h1 className="text-4xl font-black text-zinc-900 tracking-tighter mb-2">
-              ¡Holi de nuevo!
+              {siteConfig.ui.login.title}
             </h1>
             <p className="text-zinc-500 font-semibold md:text-base text-sm tracking-tight">
-              Bienvenido a la comunidad Möiz.
+              {siteConfig.ui.login.subtitle}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex flex-col gap-5">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-500 pl-4">Correo Electrónico</label>
+                <label className="text-xs font-bold text-zinc-500 pl-4">{siteConfig.ui.login.email}</label>
                 <div className="relative group">
                   <Mail
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[var(--moiz-green)] transition-colors"
@@ -68,7 +69,7 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-500 pl-4">Contraseña</label>
+                <label className="text-xs font-bold text-zinc-500 pl-4">{siteConfig.ui.login.password}</label>
                 <div className="relative group">
                   <Lock
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[var(--moiz-green)] transition-colors"
@@ -98,14 +99,14 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-[var(--moiz-green)] text-white py-3 rounded-full font-bold shadow-[0_8px_20px_rgba(106,142,42,0.25)] hover:shadow-[0_12px_25px_rgba(106,142,42,0.4)] hover:-translate-y-0.5 active:scale-95 transition-all text-sm flex items-center justify-center gap-3 disabled:opacity-50 disabled:scale-100 disabled:translate-y-0"
             >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : "Entrar Ahora"}
+              {loading ? <Loader2 className="animate-spin" size={20} /> : siteConfig.ui.login.cta}
             </button>
           </form>
 
           <div className="mt-8 mb-8 flex items-center gap-4">
             <div className="h-px flex-1 bg-zinc-100" />
             <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-              O continúa con
+              {siteConfig.ui.login.orContinue}
             </span>
             <div className="h-px flex-1 bg-zinc-100" />
           </div>
@@ -116,17 +117,17 @@ export default function LoginPage() {
             className="w-full bg-white border border-zinc-200 py-3 rounded-full font-bold text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300 shadow-[0_4px_10px_rgba(0,0,0,0.03)] hover:-translate-y-0.5 active:scale-95 transition-all flex items-center justify-center gap-3 text-sm"
           >
             <FaGoogle size={18} className="text-[#4285F4]" />
-            Ingresar con Google
+            {siteConfig.ui.login.google}
           </button>
 
           <div className="mt-8 text-center">
             <p className="text-zinc-500 font-medium text-sm">
-              ¿No tienes una cuenta?{" "}
+              {siteConfig.ui.login.noAccount}
               <Link
                 href="/registro"
                 className="text-[var(--moiz-green)] hover:underline font-bold ml-1"
               >
-                Regístrate gratis
+                {siteConfig.ui.login.register}
               </Link>
             </p>
           </div>

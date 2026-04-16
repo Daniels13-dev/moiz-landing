@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { parseLocalizedFloat, parseInteger, parseCheckbox } from "@/utils/parsers";
 
 // --- CATEGORIES ---
 
@@ -60,39 +61,42 @@ export async function updateCategory(id: string, name: string) {
 export async function createProduct(formData: FormData) {
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
-  const price = parseFloat(formData.get("price") as string);
-  const oldPrice = formData.get("oldPrice") ? parseFloat(formData.get("oldPrice") as string) : null;
+  const price = parseLocalizedFloat(formData.get("price") as string) || 0;
+  const oldPrice = parseLocalizedFloat(formData.get("oldPrice") as string);
   const image = formData.get("image") as string;
   const categoryId = formData.get("categoryId") as string;
   const petType = (formData.get("petType") as string) || "";
   const productType = (formData.get("productType") as string) || "";
-  const isFeatured = formData.get("isFeatured") === "on";
-  const isNew = formData.get("isNew") === "on";
-  const allowSubscription = formData.get("allowSubscription") === "on";
-  const stock = parseInt(formData.get("stock") as string) || 0;
+  const isFeatured = parseCheckbox(formData.get("isFeatured"));
+  const isNew = parseCheckbox(formData.get("isNew"));
+  const allowSubscription = parseCheckbox(formData.get("allowSubscription"));
+  const stock = parseInteger(formData.get("stock") as string);
+  // Default isActive to false so new products are hidden until explicitly activated
+  const isActive = formData.get("isActive") !== null ? parseCheckbox(formData.get("isActive")) : false;
 
   if (!name || !price || !categoryId) {
     return { error: "Faltan campos obligatorios" };
   }
 
   try {
-    await prisma.product.create({
-      data: {
-        name,
-        description,
-        price,
-        oldPrice,
-        image,
-        category: { connect: { id: categoryId } },
-        petType,
-        productType,
-        isFeatured,
-        isNew,
-        allowSubscription,
-        stock,
-        rating: 5.0,
-      },
-    });
+    const productData = {
+      name,
+      description,
+      price,
+      oldPrice,
+      image,
+      isActive,
+      category: { connect: { id: categoryId } },
+      petType,
+      productType,
+      isFeatured,
+      isNew,
+      allowSubscription,
+      stock,
+      rating: 5.0,
+    };
+
+    await prisma.product.create({ data: productData });
     revalidatePath("/admin/productos");
     revalidatePath("/productos");
     revalidatePath("/");
@@ -105,9 +109,22 @@ export async function createProduct(formData: FormData) {
 
 export async function deleteProduct(id: string) {
   try {
-    await prisma.product.delete({
-      where: { id },
-    });
+    // Check if product has order history — if so, block deletion
+    const orderItemCount = await prisma.orderItem.count({ where: { productId: id } });
+    if (orderItemCount > 0) {
+      return {
+        error: `Este producto tiene ${orderItemCount} pedido(s) asociado(s) y no puede eliminarse. Desactívalo para que no aparezca en el catálogo.`,
+        hasOrders: true,
+      };
+    }
+
+    // Safe to delete — clean up non-cascade relations first
+    await prisma.$transaction([
+      prisma.subscriptionReminder.deleteMany({ where: { productId: id } }),
+      prisma.subscription.deleteMany({ where: { productId: id } }),
+      prisma.product.delete({ where: { id } }),
+    ]);
+
     revalidatePath("/admin/productos");
     revalidatePath("/productos");
     revalidatePath("/");
@@ -121,39 +138,40 @@ export async function deleteProduct(id: string) {
 export async function updateProduct(id: string, formData: FormData) {
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
-  const price = parseFloat(formData.get("price") as string);
-  const oldPrice = formData.get("oldPrice") ? parseFloat(formData.get("oldPrice") as string) : null;
+  const price = parseLocalizedFloat(formData.get("price") as string) || 0;
+  const oldPrice = parseLocalizedFloat(formData.get("oldPrice") as string);
   const image = formData.get("image") as string;
   const categoryId = formData.get("categoryId") as string;
   const petType = (formData.get("petType") as string) || "";
   const productType = (formData.get("productType") as string) || "";
-  const isFeatured = formData.get("isFeatured") === "on";
-  const isNew = formData.get("isNew") === "on";
-  const allowSubscription = formData.get("allowSubscription") === "on";
-  const stock = parseInt(formData.get("stock") as string) || 0;
+  const isFeatured = parseCheckbox(formData.get("isFeatured"));
+  const isNew = parseCheckbox(formData.get("isNew"));
+  const allowSubscription = parseCheckbox(formData.get("allowSubscription"));
+  const stock = parseInteger(formData.get("stock") as string);
+  const isActive = parseCheckbox(formData.get("isActive"));
 
   if (!name || !price || !categoryId) {
     return { error: "Faltan campos obligatorios" };
   }
 
   try {
-    await prisma.product.update({
-      where: { id },
-      data: {
-        name,
-        description,
-        price,
-        oldPrice,
-        image,
-        category: { connect: { id: categoryId } },
-        petType,
-        productType,
-        isFeatured,
-        isNew,
-        allowSubscription,
-        stock,
-      },
-    });
+    const productData = {
+      name,
+      description,
+      price,
+      oldPrice,
+      image,
+      isActive,
+      category: { connect: { id: categoryId } },
+      petType,
+      productType,
+      isFeatured,
+      isNew,
+      allowSubscription,
+      stock,
+    };
+
+    await prisma.product.update({ where: { id }, data: productData });
     revalidatePath("/admin/productos");
     revalidatePath("/productos");
     revalidatePath("/");
@@ -164,14 +182,28 @@ export async function updateProduct(id: string, formData: FormData) {
   }
 }
 
+export async function toggleProductActive(id: string, active: boolean) {
+  try {
+    await prisma.product.update({ where: { id }, data: { isActive: active } });
+    revalidatePath("/admin/productos");
+    revalidatePath("/productos");
+    revalidatePath("/");
+    return { success: true };
+  } catch (_error) {
+    console.error("Toggle product active error:", _error);
+    return { error: "Error al actualizar el estado del producto" };
+  }
+}
+
 // --- VARIANTS ---
 
 export async function createVariant(productId: string, formData: FormData) {
   const name = formData.get("name") as string;
-  const color = formData.get("color") as string;
-  const image = formData.get("image") as string;
-  const stock = parseInt(formData.get("stock") as string) || 0;
-  const price = formData.get("price") ? parseFloat(formData.get("price") as string) : null;
+  const color = (formData.get("color") as string) || null;
+  const image = (formData.get("image") as string) || null;
+  const size = (formData.get("size") as string) || null;
+  const stock = parseInteger(formData.get("stock") as string);
+  const price = parseLocalizedFloat(formData.get("price") as string);
 
   if (!name) return { error: "El nombre de la variante es obligatorio" };
 
@@ -182,6 +214,7 @@ export async function createVariant(productId: string, formData: FormData) {
         name,
         color,
         image,
+        size,
         stock,
         price,
       },
@@ -192,6 +225,44 @@ export async function createVariant(productId: string, formData: FormData) {
   } catch (_error) {
     console.error("Create variant error:", _error);
     return { error: "Error al crear la variante" };
+  }
+}
+
+/**
+ * Crea múltiples variantes de talla para un mismo estampado/color en una sola operación.
+ * Recibe: name, image, price (opcional), y una lista de tallas con su stock individual.
+ * Ejemplo: Estampado "Mariposas" en tallas S(10), M(8), L(5) → 3 variantes creadas.
+ */
+export async function createVariantBatch(
+  productId: string,
+  data: {
+    name: string;
+    image: string | null;
+    color: string | null;
+    sizes: Array<{ size: string; stock: number; price: number | null }>;
+  },
+) {
+  if (!data.name) return { error: "El nombre del estampado es obligatorio" };
+  if (data.sizes.length === 0) return { error: "Selecciona al menos una talla" };
+
+  try {
+    await prisma.productVariant.createMany({
+      data: data.sizes.map(({ size, stock, price }) => ({
+        productId,
+        name: data.name,
+        image: data.image,
+        color: data.color,
+        price: price, // Now using individual price per size
+        size,
+        stock,
+      })),
+    });
+    revalidatePath("/admin/productos");
+    revalidatePath(`/productos/${productId}`);
+    return { success: true, count: data.sizes.length };
+  } catch (_error) {
+    console.error("Batch variant error:", _error);
+    return { error: "Error al crear las variantes" };
   }
 }
 
@@ -211,10 +282,11 @@ export async function deleteVariant(id: string, productId: string) {
 
 export async function updateVariant(id: string, productId: string, formData: FormData) {
   const name = formData.get("name") as string;
-  const color = formData.get("color") as string;
-  const image = formData.get("image") as string;
-  const stock = parseInt(formData.get("stock") as string) || 0;
-  const price = formData.get("price") ? parseFloat(formData.get("price") as string) : null;
+  const color = (formData.get("color") as string) || null;
+  const image = (formData.get("image") as string) || null;
+  const size = (formData.get("size") as string) || null;
+  const stock = parseInteger(formData.get("stock") as string);
+  const price = parseLocalizedFloat(formData.get("price") as string);
 
   try {
     await prisma.productVariant.update({
@@ -223,6 +295,7 @@ export async function updateVariant(id: string, productId: string, formData: For
         name,
         color,
         image,
+        size,
         stock,
         price,
       },

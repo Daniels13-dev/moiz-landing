@@ -4,8 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Plus, ChevronRight } from "lucide-react";
-import { CatalogProduct, createProductSlug } from "../PetShopCatalog";
+import { CatalogProduct } from "@/types/product";
+import { createProductSlug } from "@/utils/slug";
 import { useCart } from "@/context/CartContext";
+import { siteConfig } from "@/config/site";
 
 interface RelatedProductsSectionProps {
   relatedProducts: CatalogProduct[];
@@ -25,17 +27,17 @@ export default function RelatedProductsSection({
       <div className="flex items-end justify-between mb-12">
         <div>
           <h2 className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tighter mb-2">
-            Completa el <span className="text-[var(--moiz-green)]">kit</span>
+            {siteConfig.ui.related.title} <span className="text-[var(--moiz-green)]">{siteConfig.ui.related.titleAccent}</span>
           </h2>
           <p className="text-zinc-500 font-medium text-lg">
-            Productos que combinan perfecto con tu selección.
+            {siteConfig.ui.related.subtitle}
           </p>
         </div>
         <Link
           href={`/productos?categoria=${encodeURIComponent(category)}`}
           className="hidden md:flex items-center gap-2 font-bold text-[var(--moiz-green)] hover:underline"
         >
-          Ver más {category} <ChevronRight size={18} />
+          {siteConfig.ui.order.viewMore} {category} <ChevronRight size={18} />
         </Link>
       </div>
 

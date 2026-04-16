@@ -20,6 +20,7 @@ import {
   Info,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { siteConfig } from "@/config/site";
 
 export default function CarritoPage() {
   const router = useRouter();
@@ -75,7 +76,7 @@ export default function CarritoPage() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-4xl md:text-6xl font-black text-zinc-900 tracking-tighter">
-              Tu Carrito
+              {siteConfig.ui.cart.title}
             </h1>
             <p className="text-zinc-500 font-medium text-sm">
               {totalItems} {totalItems === 1 ? "producto" : "productos"}
@@ -85,7 +86,7 @@ export default function CarritoPage() {
             <button
               onClick={clearCart}
               className="text-zinc-400 hover:text-red-500 transition-colors p-2"
-              title="Vaciar carrito"
+              title={siteConfig.ui.cart.clearCart}
             >
               <Trash2 size={20} />
             </button>
@@ -96,7 +97,7 @@ export default function CarritoPage() {
           <div className="lg:col-span-8">
             <div className="md:bg-white md:p-10 md:rounded-[3rem] md:shadow-2xl md:border md:border-zinc-100 min-h-full flex flex-col">
               <h2 className="hidden md:block text-3xl font-black mb-10 tracking-tight text-zinc-900">
-                Productos Seleccionados
+                {siteConfig.ui.cart.selectedProducts}
               </h2>
               <div className="flex flex-col gap-4 md:gap-6">
                 <AnimatePresence mode="popLayout">
@@ -150,14 +151,9 @@ export default function CarritoPage() {
                                           <p className="font-black uppercase tracking-widest text-[var(--moiz-green)] border-b border-white/10 pb-2">
                                             Permanencia de 3 Meses
                                           </p>
-                                          <p>
-                                            • Compromiso mínimo de <b>3 entregas</b>.
-                                          </p>
-                                          <p>
-                                            • <b>Sin cobros anticipados:</b> Pago mensual por
-                                            entrega.
-                                          </p>
-                                          <p>• Cancelación disponible después del tercer mes.</p>
+                                          <p>• {siteConfig.ui.cart.subscriptionNotice.commitment}</p>
+                                          <p>• <b>Sin cobros anticipados:</b> {siteConfig.ui.cart.subscriptionNotice.noPrepayment}</p>
+                                          <p>• {siteConfig.ui.cart.subscriptionNotice.cancellation}</p>
                                         </div>
                                         <div className="absolute top-full left-4 border-[8px] border-transparent border-t-zinc-900" />
                                       </motion.div>
@@ -217,7 +213,7 @@ export default function CarritoPage() {
                         <ShoppingBag size={48} />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-black text-zinc-900 mb-2">Carrito Vacío</h3>
+                        <h3 className="text-2xl font-black text-zinc-900 mb-2">{siteConfig.ui.cart.empty}</h3>
                         <p className="text-zinc-500 max-w-xs mx-auto mb-8 text-sm">
                           Agrega productos a tu carrito para verlos aquí.
                         </p>
@@ -240,11 +236,11 @@ export default function CarritoPage() {
             <div className="bg-zinc-900 rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden">
               <div className="absolute top-[-10%] right-[-10%] w-32 h-32 bg-[var(--moiz-green)]/20 blur-[50px] rounded-full" />
 
-              <h2 className="text-3xl font-black mb-10 tracking-tight">Resumen</h2>
+              <h2 className="text-3xl font-black mb-10 tracking-tight">{siteConfig.ui.cart.summary}</h2>
 
               <div className="space-y-6 pb-8 border-b border-white/10 mb-8">
                 <div className="flex justify-between text-white/60 font-medium">
-                  <span>Productos ({totalItems})</span>
+                  <span>{siteConfig.ui.cart.products} ({totalItems})</span>
                   <span>${totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span>
                 </div>
 
@@ -265,11 +261,11 @@ export default function CarritoPage() {
                 )}
 
                 <div className="flex justify-between items-center text-sm font-medium">
-                  <span className="text-white/60">Envío</span>
+                  <span className="text-white/60">{siteConfig.ui.order.shipping}</span>
                   {totalPrice >= 400000 ? (
-                    <span className="text-[var(--moiz-green)] font-black">¡Gratis!</span>
+                    <span className="text-[var(--moiz-green)] font-black">{siteConfig.ui.cart.free}</span>
                   ) : (
-                    <span className="text-white/30 italic text-[11px]">Calculado por zona</span>
+                    <span className="text-white/30 italic text-[11px]">{siteConfig.ui.cart.calculatedByZone}</span>
                   )}
                 </div>
               </div>
@@ -283,7 +279,7 @@ export default function CarritoPage() {
                   <div className="flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl group transition-all">
                     <div className="flex flex-col">
                       <span className="text-[10px] text-white/40 uppercase font-black tracking-widest mb-1">
-                        Cupón Activo
+                        {siteConfig.ui.cart.activeCoupon}
                       </span>
                       <span className="text-[var(--moiz-green)] font-black uppercase text-sm">
                         {appliedCoupon.code}
@@ -292,7 +288,7 @@ export default function CarritoPage() {
                     <button
                       onClick={removeCoupon}
                       className="p-2 text-white/20 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
-                      title="Quitar cupón"
+                      title={siteConfig.ui.cart.removeCoupon}
                     >
                       <X size={18} />
                     </button>
@@ -314,7 +310,7 @@ export default function CarritoPage() {
                       disabled={isValidating || !couponInput || cart.length === 0}
                       className="bg-zinc-800 hover:bg-zinc-700 text-white px-6 rounded-2xl font-black text-xs uppercase transition-all disabled:opacity-50"
                     >
-                      {isValidating ? "..." : "Aplicar"}
+                      {isValidating ? "..." : siteConfig.ui.cart.apply}
                     </button>
                   </div>
                 )}
@@ -323,14 +319,14 @@ export default function CarritoPage() {
               {/* Progress Bar de Envío Gratis */}
               <div className="mb-10 bg-white/5 p-4 rounded-2xl border border-white/10">
                 <div className="flex justify-between text-xs font-bold mb-3">
-                  <span className="text-white/70 tracking-wider uppercase">Envío Gratis</span>
+                  <span className="text-white/70 tracking-wider uppercase">{siteConfig.ui.badges.freeShipping}</span>
                   {totalPrice >= 400000 ? (
                     <span className="text-[var(--moiz-green)] flex items-center gap-1">
-                      ¡Desbloqueado! 🎉
+                      {siteConfig.ui.cart.unlockShipping}
                     </span>
                   ) : (
                     <span className="text-white/50">
-                      Faltan $
+                      {siteConfig.ui.cart.missingForShipping}
                       {(400000 - totalPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                     </span>
                   )}
@@ -353,7 +349,7 @@ export default function CarritoPage() {
 
               <div className="flex flex-col gap-2 mb-10">
                 <span className="text-white/40 font-bold uppercase tracking-[0.2em] text-[10px]">
-                  Total del pedido
+                  {siteConfig.ui.cart.orderTotal}
                 </span>
                 <span className="text-3xl font-black text-white">
                   ${finalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
@@ -365,7 +361,7 @@ export default function CarritoPage() {
                 disabled={cart.length === 0}
                 className="w-full py-4 bg-[var(--moiz-green)] text-zinc-950 rounded-full font-black text-lg shadow-[0_15px_40px_rgba(106,142,42,0.3)] hover:shadow-[0_20px_50px_rgba(106,142,42,0.6)] transition-all duration-300 hover:-translate-y-1 active:scale-95 disabled:opacity-50 disabled:pointer-events-none group flex items-center justify-center gap-3"
               >
-                Ir a pagar <CreditCard size={20} />
+                {siteConfig.ui.cart.checkout} <CreditCard size={20} />
               </button>
             </div>
           </div>
