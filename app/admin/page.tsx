@@ -104,6 +104,24 @@ export default function AdminPage() {
             <ChevronRight className="text-zinc-300 group-hover:text-[var(--moiz-green)] translate-x-0 group-hover:translate-x-2 transition-all" />
           </div>
         </Link>
+
+        <Link
+          href="/admin/testimonios"
+          className="group p-10 bg-white border border-zinc-100 rounded-[3rem] hover:border-[var(--moiz-green)] transition-all shadow-sm hover:shadow-xl hover:shadow-[var(--moiz-green)]/10"
+        >
+          <div className="w-16 h-16 bg-zinc-50 text-zinc-900 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[var(--moiz-green)] group-hover:text-white transition-colors">
+            <Tag size={32} className="rotate-45" />
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-3xl font-black text-zinc-900 mb-2">Testimonios</h2>
+              <p className="text-zinc-500 font-medium">
+                Gestión de reseñas y pruebas sociales reales.
+              </p>
+            </div>
+            <ChevronRight className="text-zinc-300 group-hover:text-[var(--moiz-green)] translate-x-0 group-hover:translate-x-2 transition-all" />
+          </div>
+        </Link>
       </div>
     </div>
   );

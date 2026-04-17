@@ -121,7 +121,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
                             {activeQuantity}
                           </span>
                           <button
-                            onClick={() => addToCart(activeProduct)}
+                            onClick={(e) => addToCart(activeProduct, null, false, "", { x: e.clientX, y: e.clientY })}
                             className="flex items-center justify-center w-10 h-10 bg-[var(--moiz-green)] text-zinc-900 rounded-full hover:scale-105 active:scale-95 transition-all"
                           >
                             <Plus size={18} strokeWidth={3} />
@@ -132,7 +132,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
 
                     {activeQuantity === 0 && (
                       <button
-                        onClick={() => addToCart(activeProduct)}
+                        onClick={(e) => addToCart(activeProduct, null, false, "", { x: e.clientX, y: e.clientY })}
                         className="group flex items-center justify-center gap-3 px-8 py-4 bg-[var(--moiz-green)] text-zinc-950 rounded-full font-black text-sm uppercase tracking-widest shadow-xl shadow-[var(--moiz-green)]/20 hover:scale-105 active:scale-95 transition-all"
                       >
                         <ShoppingBag size={20} />

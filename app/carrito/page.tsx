@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { siteConfig } from "@/config/site";
+import CartCrossSelling from "@/components/CartCrossSelling";
 
 export default function CarritoPage() {
   const router = useRouter();
@@ -228,6 +229,8 @@ export default function CarritoPage() {
                   )}
                 </AnimatePresence>
               </div>
+
+              <CartCrossSelling />
             </div>
           </div>
 

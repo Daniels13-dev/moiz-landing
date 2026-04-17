@@ -25,12 +25,11 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
   const [selectedPet, setSelectedPet] = useState<string>("Ambos");
   const [selectedCategory, setSelectedCategory] = useState<string>(urlCategory || "Todos");
 
-  // Compile unique categories from DB to ensure navigation pills always exist
+  // Compile unique categories from the active products list
   const categories = useMemo(() => {
-    const defaultCats = ["Todos", "Alimento", "Higiene", "Juguetes", "Snacks", "Accesorios"];
     const dbCats = initialProducts.map((p) => p.category);
-    // Merge and remove duplicates
-    return Array.from(new Set([...defaultCats, ...dbCats]));
+    // Merge only existing categories from active products and add "Todos" first
+    return ["Todos", ...Array.from(new Set(dbCats))];
   }, [initialProducts]);
 
   const [prevUrlCategory, setPrevUrlCategory] = useState(urlCategory);
@@ -118,26 +117,28 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
           <div className="hidden lg:block w-1.5 h-1.5 rounded-full bg-zinc-300" />
 
           {/* Categories - Pill Navigation */}
-          <div className="flex gap-3 overflow-x-auto pb-4 lg:pb-0 scrollbar-hide px-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`relative whitespace-nowrap px-6 py-3.5 rounded-full text-sm font-black uppercase tracking-wider transition-all duration-500 overflow-hidden ${
-                  selectedCategory === cat
-                    ? "text-white scale-105"
-                    : "text-zinc-500 bg-zinc-100/50 hover:bg-zinc-100 hover:text-zinc-900 border border-transparent"
-                }`}
-              >
-                {selectedCategory === cat && (
-                  <motion.div
-                    layoutId="cat-bg"
-                    className="absolute inset-0 bg-gradient-to-r from-[var(--moiz-green)] to-[#86A93C] z-0"
-                  />
-                )}
-                <span className="relative z-10">{cat}</span>
-              </button>
-            ))}
+          <div className="relative">
+            <div className="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-1">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`relative flex items-center justify-center h-10 whitespace-nowrap px-6 rounded-full text-sm font-black uppercase tracking-wider transition-all duration-500 overflow-hidden ${
+                    selectedCategory === cat
+                      ? "text-white scale-105"
+                      : "text-zinc-500 bg-zinc-100/50 hover:bg-zinc-100 hover:text-zinc-900 border border-transparent"
+                  }`}
+                >
+                  {selectedCategory === cat && (
+                    <motion.div
+                      layoutId="cat-bg"
+                      className="absolute inset-0 bg-gradient-to-r from-[var(--moiz-green)] to-[#86A93C] z-0"
+                    />
+                  )}
+                  <span className="relative z-10">{cat}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -224,7 +225,7 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            addToCart(product);
+                            addToCart(product, null, false, "", { x: e.clientX, y: e.clientY });
                           }}
                           className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--moiz-green)] text-white hover:scale-105 active:scale-95 transition-all shadow-md shadow-[var(--moiz-green)]/20"
                         >
@@ -236,7 +237,7 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          addToCart(product);
+                          addToCart(product, null, false, "", { x: e.clientX, y: e.clientY });
                         }}
                         className="btn-moiz w-full bg-zinc-900 text-white cursor-pointer pointer-events-auto"
                       >

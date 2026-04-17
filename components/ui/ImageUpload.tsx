@@ -9,6 +9,8 @@ interface ImageUploadProps {
   defaultValue?: string;
   required?: boolean;
   onUrlChange?: (url: string) => void;
+  skipRemoveBackground?: boolean;
+  folder?: string;
 }
 
 type Phase = "idle" | "uploading" | "processing" | "done" | "error";
@@ -18,6 +20,8 @@ export default function ImageUpload({
   defaultValue = "",
   required,
   onUrlChange,
+  skipRemoveBackground = false,
+  folder = "moiz/products",
 }: ImageUploadProps) {
   // previewUrl  = what the user sees (local temp URL or final Cloudinary URL)
   // cloudinaryUrl = value stored in the hidden input → sent to the form/DB
@@ -48,6 +52,7 @@ export default function ImageUpload({
     try {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("folder", folder + "/temp");
 
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       const data = await res.json();
@@ -55,7 +60,7 @@ export default function ImageUpload({
       if (!res.ok) throw new Error(data.error || "Error al guardar");
 
       filename = data.filename;
-      setPreviewUrl(data.tempUrl); // Show image immediately from local path
+      setPreviewUrl(data.tempUrl); // Ahora es una URL de Cloudinary (temp)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al subir la imagen");
       setPhase("error");
@@ -70,7 +75,11 @@ export default function ImageUpload({
       const res = await fetch("/api/upload/process", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ filename }),
+        body: JSON.stringify({ 
+          filename, 
+          skipRemoveBackground,
+          targetFolder: folder
+        }),
       });
 
       const data = await res.json();
@@ -81,7 +90,7 @@ export default function ImageUpload({
         throw new Error(data.error || "Error al procesar");
       }
 
-      const finalUrl = data.url || data.tempUrl;
+      const finalUrl = (!skipRemoveBackground && data.transparentUrl) ? data.transparentUrl : (data.url || data.tempUrl);
       setPreviewUrl(finalUrl);
       setCloudinaryUrl(finalUrl);
       onUrlChange?.(finalUrl);
@@ -125,7 +134,7 @@ export default function ImageUpload({
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center gap-2 rounded-2xl">
               <Loader2 size={28} className="animate-spin text-white" />
               <span className="text-white text-xs font-black uppercase tracking-widest">
-                {phase === "uploading" ? "Guardando..." : "Quitando fondo..."}
+                {phase === "uploading" ? "Guardando..." : skipRemoveBackground ? "Procesando..." : "Quitando fondo..."}
               </span>
             </div>
           )}
@@ -176,7 +185,7 @@ export default function ImageUpload({
           <>
             <Sparkles size={16} className="text-[var(--moiz-green)] animate-pulse" />
             <span className="text-xs font-black uppercase tracking-widest text-[var(--moiz-green)]">
-              Quitando fondo · Subiendo a nube...
+              {skipRemoveBackground ? "Optimizando · Subiendo a nube..." : "Quitando fondo · Subiendo a nube..."}
             </span>
           </>
         )}

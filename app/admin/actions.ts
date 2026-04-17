@@ -56,6 +56,19 @@ export async function updateCategory(id: string, name: string) {
   }
 }
 
+export async function toggleCategoryActive(id: string, active: boolean) {
+  try {
+    await prisma.category.update({ where: { id }, data: { isActive: active } });
+    revalidatePath("/admin/categorias");
+    revalidatePath("/productos");
+    revalidatePath("/");
+    return { success: true };
+  } catch (_error) {
+    console.error("Toggle category active error:", _error);
+    return { error: "Error al actualizar el estado de la categoría" };
+  }
+}
+
 // --- PRODUCTS ---
 
 export async function createProduct(formData: FormData) {

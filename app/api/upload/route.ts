@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as fs from "fs";
-import * as path from "path";
-import { randomUUID } from "crypto";
-
-const PRODUCTS_DIR = path.join(process.cwd(), "public", "products");
+import cloudinary from "@/lib/cloudinary";
 
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
+    const folder = (formData.get("folder") as string) || "moiz/products/temp";
 
     if (!file) {
       return NextResponse.json({ error: "No se recibió ningún archivo" }, { status: 400 });
@@ -18,25 +15,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Solo se permiten imágenes" }, { status: 400 });
     }
 
-    // Ensure /public/products/ exists
-    if (!fs.existsSync(PRODUCTS_DIR)) {
-      fs.mkdirSync(PRODUCTS_DIR, { recursive: true });
-    }
-
-    // Save with unique name, preserving extension
-    const ext = path.extname(file.name) || ".png";
-    const filename = `${randomUUID()}${ext}`;
-    const localPath = path.join(PRODUCTS_DIR, filename);
-
+    // Convert file to buffer for Cloudinary
     const buffer = Buffer.from(await file.arrayBuffer());
-    fs.writeFileSync(localPath, buffer);
 
-    // Return immediately with the local URL so the client can show the image
-    const tempUrl = `/products/${filename}`;
+    // Upload directly to Cloudinary using upload_stream (no local disk needed)
+    const result = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          folder, // Use specified folder
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error || !result) return reject(error);
+          resolve(result);
+        }
+      ).end(buffer);
+    }) as any;
 
-    return NextResponse.json({ tempUrl, filename });
+    // Return the Cloudinary URL as the temp URL
+    // filename is still used by the process step as public_id
+    return NextResponse.json({ 
+      tempUrl: result.secure_url, 
+      filename: result.public_id, // We'll pass the Cloudinary public_id as filename
+      isCloudinary: true 
+    });
   } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ error: "Error al guardar la imagen" }, { status: 500 });
+    console.error("Vercel Upload error:", error);
+    return NextResponse.json({ error: "Error al subir a la nube" }, { status: 500 });
   }
 }
