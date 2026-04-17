@@ -19,22 +19,24 @@ export function PaymentOption({
     <div
       role="button"
       onClick={onClick}
-      className={`p-8 border-2 rounded-[2.5rem] flex flex-col gap-4 text-left transition-all cursor-pointer ${
+      className={`p-4 md:p-6 border-2 rounded-[2rem] flex items-center gap-4 text-left transition-all cursor-pointer ${
         active
           ? "border-[var(--moiz-green)] bg-white shadow-2xl shadow-[var(--moiz-green)]/10"
           : "border-zinc-50 bg-zinc-50/30 opacity-60 hover:opacity-100 hover:shadow-xl hover:bg-white"
       }`}
     >
       <div
-        className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
+        className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors flex-shrink-0 ${
           active ? "bg-[var(--moiz-green)] text-zinc-950" : "bg-zinc-100 text-zinc-400"
         }`}
       >
         {icon}
       </div>
-      <div>
-        <p className="font-black text-zinc-900 text-lg leading-none mb-1">{label}</p>
-        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">
+      <div className="min-w-0 flex-1">
+        <p className="font-black text-zinc-900 text-base md:text-lg leading-tight mb-1">
+          {label}
+        </p>
+        <p className="text-xs font-black text-zinc-400 uppercase tracking-widest leading-tight">
           {description}
         </p>
       </div>
@@ -96,7 +98,7 @@ export function ShippingOption({
     <div
       role="button"
       onClick={!disabled ? onClick : undefined}
-      className={`w-full p-8 border-2 rounded-[2.5rem] flex flex-col gap-4 text-left transition-all ${
+      className={`w-full p-4 md:p-6 border-2 rounded-[2rem] flex items-center gap-4 text-left transition-all ${
         active
           ? "border-[var(--moiz-green)] bg-white shadow-2xl shadow-[var(--moiz-green)]/10 cursor-default"
           : disabled
@@ -105,15 +107,17 @@ export function ShippingOption({
       }`}
     >
       <div
-        className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
+        className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors flex-shrink-0 ${
           active ? "bg-[var(--moiz-green)] text-zinc-950" : "bg-zinc-100 text-zinc-400"
         }`}
       >
         {icon}
       </div>
-      <div>
-        <p className="font-black text-zinc-900 text-lg leading-none mb-1">{label}</p>
-        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-tight">
+      <div className="min-w-0 flex-1">
+        <p className="font-black text-zinc-900 text-base md:text-lg leading-tight mb-1">
+          {label}
+        </p>
+        <p className="text-xs font-black text-zinc-400 uppercase tracking-widest leading-tight">
           {description}
         </p>
       </div>

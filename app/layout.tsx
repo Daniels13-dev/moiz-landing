@@ -82,6 +82,7 @@ export const metadata: Metadata = {
 import { CartProvider } from "@/context/CartContext";
 import SmoothScroll from "@/components/SmoothScroll";
 import TopBanner from "@/components/TopBanner";
+import GlobalFlyToCart from "@/components/GlobalFlyToCart";
 
 export default function RootLayout({
   children,
@@ -127,7 +128,10 @@ export default function RootLayout({
       >
         <TopBanner />
         <SmoothScroll>
-          <CartProvider>{children}</CartProvider>
+          <CartProvider>
+            {children}
+            <GlobalFlyToCart />
+          </CartProvider>
         </SmoothScroll>
 
         {/* Notificaciones Toaster Popups */}

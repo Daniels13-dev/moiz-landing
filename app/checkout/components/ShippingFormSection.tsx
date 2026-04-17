@@ -48,6 +48,15 @@ export default function ShippingFormSection({
           error={errors.customerLastName}
           placeholder="Ej. Pérez"
         />
+        <div className="md:col-span-2">
+          <InputGroup
+            label="Correo Electrónico"
+            register={register("customerEmail")}
+            error={errors.customerEmail}
+            placeholder="ejemplo@correo.com"
+            type="email"
+          />
+        </div>
 
         <SelectInputGrid
           label="Cédula o NIT"

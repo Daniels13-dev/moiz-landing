@@ -48,6 +48,7 @@ interface CartContextType {
     selectedVariant?: CartProductVariant | null,
     isSubscription?: boolean,
     subscriptionInterval?: string,
+    coords?: { x: number; y: number }
   ) => void;
   removeFromCart: (cartItemId: string) => void;
   updateQuantity: (cartItemId: string, delta: number) => void;
@@ -59,6 +60,13 @@ interface CartContextType {
   discountAmount: number;
   finalPrice: number;
   appliedCoupon: AppliedCoupon | null;
+  lastAddedItem: {
+    id: string;
+    image: string;
+    x: number;
+    y: number;
+  } | null;
+  setLastAddedItem: (item: { id: string; image: string; x: number; y: number } | null) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -87,6 +95,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return null;
     }
   });
+
+  const [lastAddedItem, setLastAddedItem] = useState<{
+    id: string;
+    image: string;
+    x: number;
+    y: number;
+  } | null>(null);
 
   const router = useRouter();
 
@@ -120,6 +135,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     selectedVariant?: CartProductVariant | null,
     isSubscription: boolean = false,
     subscriptionInterval: string = "Cada mes",
+    coords?: { x: number; y: number },
   ) => {
     let numericPrice =
       typeof product.price === "number"
@@ -142,6 +158,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     if (isSubscription) {
       finalName += " - Suscripción";
+    }
+
+    if (coords) {
+      setLastAddedItem({
+        id: product.id,
+        image: finalImage,
+        x: coords.x,
+        y: coords.y,
+      });
     }
 
     setCart((prevCart) => {
@@ -268,6 +293,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         discountAmount,
         finalPrice,
         appliedCoupon,
+        lastAddedItem,
+        setLastAddedItem,
       }}
     >
       {children}
@@ -291,6 +318,8 @@ export const useCart = () => {
       discountAmount: 0,
       finalPrice: 0,
       appliedCoupon: null,
+      lastAddedItem: null,
+      setLastAddedItem: () => {},
     } as CartContextType;
   }
 

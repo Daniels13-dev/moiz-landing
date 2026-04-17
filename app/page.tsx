@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import WhatsappButton from "@/components/WhatsappButton";
 import FAQ from "@/components/FAQ";
 import Newsletter from "@/components/Newsletter";
+import TrustSeals from "@/components/TrustSeals";
 
 export default async function Home() {
   const [allProducts, categoriesDb] = await Promise.all([getAllProducts(), getAllCategories()]);
@@ -21,6 +22,7 @@ export default async function Home() {
       <Navbar />
 
       <Hero />
+      <TrustSeals />
 
       <ProductCarousel products={featuredProducts} />
 

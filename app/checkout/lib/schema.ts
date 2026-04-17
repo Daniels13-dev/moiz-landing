@@ -3,6 +3,7 @@ import * as z from "zod";
 export const checkoutSchema = z.object({
   customerName: z.string().min(2, "El nombre es obligatorio"),
   customerLastName: z.string().min(2, "El apellido es obligatorio"),
+  customerEmail: z.string().email("Correo electrónico no válido"),
   customerNit: z.string().min(5, "Cédula o NIT no válido"),
   customerIdType: z.string().default("CC"),
   customerAddress: z.string().min(5, "Dirección no válida"),
@@ -13,7 +14,7 @@ export const checkoutSchema = z.object({
   customerPhoneCountry: z.string().default("+57"),
   saveInfo: z.boolean().default(false),
   shippingMethod: z.enum(["estandar", "domicilio"]).default("estandar"),
-  paymentMethod: z.enum(["efectivo", "transferencia", "tarjeta"]).default("efectivo"),
+  paymentMethod: z.enum(["efectivo", "transferencia", "tarjeta", "epayco"]).default("efectivo"),
   billingDifferent: z.boolean().default(false),
   billingName: z.string().optional(),
   billingLastName: z.string().optional(),

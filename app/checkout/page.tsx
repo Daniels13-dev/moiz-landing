@@ -23,6 +23,8 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { countries, COLOMBIA_REGIONS } from "@/config/constants";
+import { startPaymentFlow } from "@/services/payments";
+import { PaymentInitData, PaymentGateway } from "@/types/payment";
 
 // Lib
 import { checkoutSchema, type CheckoutFormValues } from "./lib/schema";
@@ -73,6 +75,7 @@ export default function CheckoutPage() {
     defaultValues: {
       customerName: "",
       customerLastName: "",
+      customerEmail: "",
       customerNit: "",
       customerIdType: "CC",
       customerAddress: "",
@@ -81,7 +84,7 @@ export default function CheckoutPage() {
       customerPhone: "",
       customerPhoneCountry: "+57",
       customerDetails: "",
-      paymentMethod: "efectivo",
+      paymentMethod: "tarjeta",
       billingDifferent: false,
       saveInfo: false,
       billingName: "",
@@ -114,6 +117,9 @@ export default function CheckoutPage() {
             setValue("customerName", names[0] || "");
             setValue("customerLastName", names.slice(1).join(" ") || "");
           }
+          if (profile.email) setValue("customerEmail", profile.email);
+          else if (user.email) setValue("customerEmail", user.email);
+          
           if (profile.phone) setValue("customerPhone", profile.phone);
           if (profile.idNumber) setValue("customerNit", profile.idNumber);
 
@@ -240,10 +246,40 @@ export default function CheckoutPage() {
       message += `Ciudad: ${formData.customerCity}, ${formData.customerState}\n`;
       message += `\n*MÉTODO DE PAGO:* ${formData.paymentMethod.toUpperCase()}`;
 
+      // --- Payment Gateway Logic ---
+      const redirectUrl = `${window.location.origin}/pedidos/MZ-${result.orderNumber}`;
+      
+      const paymentData: PaymentInitData = {
+        amountInCents: Math.round(finalPrice * 100),
+        currency: "COP",
+        reference: displayId,
+        customerEmail: formData.customerEmail,
+        customerFullName: `${formData.customerName} ${formData.customerLastName}`,
+        customerPhone: formData.customerPhone,
+        redirectUrl: redirectUrl
+      };
+
+      const gatewayMap: Record<string, PaymentGateway> = {
+        "tarjeta": "WOMPI",
+        "epayco": "EPAYCO",
+        "efectivo": "CASH_ON_DELIVERY",
+        "transferencia": "CASH_ON_DELIVERY"
+      };
+
+      try {
+        await startPaymentFlow(gatewayMap[formData.paymentMethod] || "CASH_ON_DELIVERY", paymentData);
+      } catch (err) {
+        console.error("Payment Flow Error:", err);
+        toast.error("Error al iniciar la pasarela de pago");
+      }
+
       const encodedMessage = encodeURIComponent(message);
       const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
 
-      window.open(whatsappUrl, "_blank");
+      // Abrir WhatsApp solo para métodos manuales o como respaldo
+      if (formData.paymentMethod === "efectivo" || formData.paymentMethod === "transferencia") {
+        window.open(whatsappUrl, "_blank");
+      }
 
       if (!user) {
         setRecentCart([...cart]);
@@ -260,7 +296,7 @@ export default function CheckoutPage() {
         const orderUrl = `/pedidos/MZ-${result.orderNumber}`;
         toast.success("¡Pedido creado con éxito!");
         clearCart();
-        window.location.assign(orderUrl);
+        // window.location.assign(orderUrl); // El flujo de pago manejará la redirección
         return;
       }
     } else {
@@ -367,7 +403,7 @@ export default function CheckoutPage() {
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <PaymentOption
                     active={paymentMethod === "efectivo"}
                     onClick={() => setValue("paymentMethod", "efectivo")}
@@ -386,8 +422,15 @@ export default function CheckoutPage() {
                     active={paymentMethod === "tarjeta"}
                     onClick={() => setValue("paymentMethod", "tarjeta")}
                     icon={<CreditCardIcon size={24} />}
-                    label="Tarjeta"
-                    description="Visa / Mastercard"
+                    label="Wompi"
+                    description="Tarjetas y PSE"
+                  />
+                  <PaymentOption
+                    active={paymentMethod === "epayco"}
+                    onClick={() => setValue("paymentMethod", "epayco")}
+                    icon={<CreditCardIcon size={24} className="text-blue-500" />}
+                    label="ePayco"
+                    description="Otros medios"
                   />
                 </div>
               </div>

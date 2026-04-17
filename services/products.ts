@@ -82,7 +82,11 @@ export function formatProduct(product: unknown): ProductData {
  */
 export async function getFeaturedProduct() {
   const product = await prisma.product.findFirst({
-    where: { isFeatured: true, isActive: true },
+    where: { 
+      isFeatured: true, 
+      isActive: true,
+      category: { isActive: true }
+    },
     include: { category: true },
   });
 
@@ -97,7 +101,10 @@ export async function getFeaturedProduct() {
  */
 export async function getAllProducts() {
   const products = await prisma.product.findMany({
-    where: { isActive: true },
+    where: { 
+      isActive: true,
+      category: { isActive: true }
+    },
     include: { category: true, variants: true },
   });
 
@@ -134,6 +141,7 @@ export async function getProductBySlug(slug: string) {
  */
 export async function getAllCategories() {
   return await prisma.category.findMany({
+    where: { isActive: true },
     select: {
       id: true,
       name: true,

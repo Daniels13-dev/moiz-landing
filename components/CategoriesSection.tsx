@@ -125,7 +125,11 @@ export default function CategoriesSection({ dbCategories }: { dbCategories?: Cat
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[250px] grid-flow-dense gap-4 md:gap-6">
+        <div className={`grid gap-4 md:gap-6 ${
+          dbCategories.length <= 3 
+            ? `grid-cols-1 md:grid-cols-${dbCategories.length}` 
+            : "grid-cols-1 md:grid-cols-4 auto-rows-[250px] grid-flow-dense"
+        }`}>
           {dbCategories.map((dbCat, index) => {
             const mappedStyle = styleMap[dbCat.name.toLowerCase()] || fallbackStyle;
             const Icon = mappedStyle.icon;
@@ -139,38 +143,38 @@ export default function CategoriesSection({ dbCategories }: { dbCategories?: Cat
             let titleSize = "text-xl";
             const layoutClasses = "flex-col items-center justify-center text-center";
 
-            // Bento Core Layout Engine
-            if (index === 0) {
-              bentoClasses = "md:col-span-2 md:row-span-2"; // 1st is always huge
-              iconWrapperSize = "w-32 h-32 mb-8";
-              titleSize = "text-3xl md:text-4xl";
-            } else if (index === 1) {
-              bentoClasses = "md:col-span-2 md:row-span-1"; // 2nd is always horizontal but perfectly centered internally
-              iconWrapperSize = "w-20 h-20 mb-4";
-              titleSize = "text-2xl";
-            } else if (index === 2 || index === 3) {
-              bentoClasses = "md:col-span-1 md:row-span-1"; // 3rd and 4th are regular squares
+            // If we have few items, use a simple balanced grid
+            if (total <= 3) {
+              bentoClasses = "h-[300px]";
+              iconWrapperSize = "w-24 h-24 mb-6";
+              titleSize = "text-2xl md:text-3xl";
             } else {
-              // Beyond 4: Create wide cards, but still perfectly centered
-              bentoClasses = "md:col-span-2 md:row-span-1";
-              iconWrapperSize = "w-20 h-20 mb-4";
-              titleSize = "text-2xl";
-            }
-
-            // Fix empty holes for odd-item counts by dynamically stretching the last item
-            if (total === 5 && isLast) {
-              // If there are exactly 5, the last one should span all 4 columns instead of just 2
-              bentoClasses = "md:col-span-4 md:row-span-1";
-              iconWrapperSize = "w-20 h-20 mb-4";
-            } else if (total > 5 && isLast) {
-              const remainingSpace = (total - 4) % 2;
-              if (remainingSpace !== 0) {
-                bentoClasses = "md:col-span-4 md:row-span-1";
+              // Bento Core Layout Engine (Only for 4+ items)
+              if (index === 0) {
+                bentoClasses = "md:col-span-2 md:row-span-2"; // 1st is always huge
+                iconWrapperSize = "w-32 h-32 mb-8";
+                titleSize = "text-3xl md:text-4xl";
+              } else if (index === 1) {
+                bentoClasses = "md:col-span-2 md:row-span-1"; // 2nd is always horizontal
                 iconWrapperSize = "w-20 h-20 mb-4";
+                titleSize = "text-2xl";
+              } else if (index === 2 || index === 3) {
+                bentoClasses = "md:col-span-1 md:row-span-1"; // 3rd and 4th are regular squares
+              } else {
+                bentoClasses = "md:col-span-2 md:row-span-1";
+                iconWrapperSize = "w-20 h-20 mb-4";
+                titleSize = "text-2xl";
               }
-            } else if (total === 3 && isLast) {
-              bentoClasses = "md:col-span-4 md:row-span-1";
-              iconWrapperSize = "w-20 h-20 mb-4";
+
+              // Fix empty holes for odd-item counts by dynamically stretching the last item
+              if (total === 5 && isLast) {
+                bentoClasses = "md:col-span-4 md:row-span-1";
+              } else if (total > 5 && isLast) {
+                const remainingSpace = (total - 4) % 2;
+                if (remainingSpace !== 0) {
+                  bentoClasses = "md:col-span-4 md:row-span-1";
+                }
+              }
             }
 
             return (

@@ -5,6 +5,7 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
+    const folder = (formData.get("folder") as string) || "moiz/products/temp";
 
     if (!file) {
       return NextResponse.json({ error: "No se recibió ningún archivo" }, { status: 400 });
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
     const result = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         {
-          folder: "moiz/products/temp", // Temporary folder
+          folder, // Use specified folder
           resource_type: "image",
         },
         (error, result) => {

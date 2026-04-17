@@ -30,7 +30,12 @@ export async function updateSession(request: NextRequest) {
   // Do not run on static files or specific routes
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser();
+
+  if (error && !error.message.includes("Auth session missing!")) {
+    console.warn("Middleware Auth Error:", error.message);
+  }
 
   // --- PRIVATE ROUTES PROTECTION ---
   // If the user tries to access /admin and is not logged in, redirect to /login

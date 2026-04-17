@@ -7,6 +7,7 @@ import CategoryForm from "./CategoryForm";
 interface CategoryWithCount {
   id: string;
   name: string;
+  isActive: boolean;
   _count: {
     products: number;
   };
@@ -45,6 +46,7 @@ export default async function AdminCategorias() {
               category={{
                 id: cat.id,
                 name: cat.name,
+                isActive: cat.isActive,
                 _count: { products: cat._count.products },
               }}
             />

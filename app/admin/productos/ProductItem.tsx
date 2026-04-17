@@ -108,6 +108,28 @@ export default function ProductItem({ product }: ProductItemProps) {
                 {product.variants.length} Colores
               </span>
             )}
+            {(() => {
+              const totalStock = product.variants?.reduce((sum, v) => sum + v.stock, 0) || 0;
+              if (totalStock === 0) {
+                return (
+                  <span className="bg-red-50 text-[10px] font-black uppercase tracking-widest text-red-500 px-3 py-1 rounded-full border border-red-100">
+                    Agotado
+                  </span>
+                );
+              }
+              if (totalStock < 5) {
+                return (
+                  <span className="bg-amber-50 text-[10px] font-black uppercase tracking-widest text-amber-500 px-3 py-1 rounded-full border border-amber-100 flex items-center gap-1">
+                    <AlertTriangle size={10} /> Stock Bajo ({totalStock})
+                  </span>
+                );
+              }
+              return (
+                <span className="bg-green-50 text-[10px] font-black uppercase tracking-widest text-green-500 px-3 py-1 rounded-full border border-green-100">
+                  Stock: {totalStock}
+                </span>
+              );
+            })()}
           </div>
           <h3 className="text-xl font-black text-zinc-900">{product.name}</h3>
           <p className="text-zinc-400 text-sm font-medium line-clamp-1">{product.description}</p>

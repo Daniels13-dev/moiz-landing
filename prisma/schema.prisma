@@ -9,9 +9,23 @@ datasource db {
 model Category {
   id        String    @id @default(cuid())
   name      String    @unique
+  isActive  Boolean   @default(true)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   products  Product[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  name      String
+  rating    Int      @default(5)
+  text      String
+  image     String?  // URL of the customer photo
+  city      String?
+  date      String?  // Optional: "Feb 2026"
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Product {
