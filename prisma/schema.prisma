@@ -54,6 +54,8 @@ model Product {
   reminders     SubscriptionReminder[]
 
   @@index([categoryId])
+  @@index([isActive, isFeatured])
+  @@index([isActive, categoryId])
 }
 
 model ProductVariant {
@@ -95,9 +97,10 @@ model Order {
   createdAt              DateTime             @default(now())
   currency               String               @default("COP")
   customerAddress        String?
+  customerEmail          String?
   updatedAt              DateTime             @updatedAt
   userId                 String?
-  orderNumber            Int                  @unique @default(autoincrement())
+  orderNumber            Int                  @unique
   shippingMethod         String               @default("estandar")
   customerCity           String?
   customerState          String?
@@ -176,6 +179,7 @@ model Profile {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   role          String         @default("USER")
+  cartNeedsClear Boolean        @default(false)
   phone         String?
   idNumber      String?
   idType        String?
@@ -268,4 +272,19 @@ model SubscriptionReminder {
   @@index([userId])
   @@index([productId])
   @@index([subscriptionId])
+}
+
+model PaymentLog {
+  id                   String   @id @default(cuid())
+  orderId              String?
+  provider             String   // e.g., "WOMPI", "TRANSFERENCIA"
+  transactionReference String   // e.g., "MZ-123456"
+  signature            String?
+  payload              Json?    // Datos enviados a la pasarela
+  response             Json?    // Respuesta de la pasarela (si aplica)
+  status               String?
+  createdAt            DateTime @default(now())
+
+  @@index([transactionReference])
+  @@index([orderId])
 }

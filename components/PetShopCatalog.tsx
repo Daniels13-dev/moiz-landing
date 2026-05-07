@@ -13,9 +13,10 @@ import { createProductSlug } from "@/utils/slug";
 
 interface PetShopCatalogProps {
   initialProducts: CatalogProduct[];
+  initialCategoryName?: string;
 }
 
-export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps) {
+export default function PetShopCatalog({ initialProducts, initialCategoryName }: PetShopCatalogProps) {
   const { cart, addToCart, updateQuantity } = useCart();
   const searchParams = useSearchParams();
   const urlCategory = searchParams.get("categoria");
@@ -23,7 +24,7 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPet, setSelectedPet] = useState<string>("Ambos");
-  const [selectedCategory, setSelectedCategory] = useState<string>(urlCategory || "Todos");
+  const [selectedCategory, setSelectedCategory] = useState<string>(urlCategory || initialCategoryName || "Todos");
 
   // Compile unique categories from the active products list
   const categories = useMemo(() => {
@@ -60,6 +61,11 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
       const matchesCategory =
         selectedCategory === "Todos" ? true : product.category === selectedCategory;
 
+      const hasStock = 
+        (product.stock !== undefined && product.stock > 0) || 
+        (product.variants && product.variants.some(v => v.stock > 0));
+
+      // We show all products that match search/category/pet, even if out of stock
       return matchesSearch && matchesPet && matchesCategory;
     });
   }, [searchQuery, selectedPet, selectedCategory, initialProducts]);
@@ -158,16 +164,25 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10"
         >
           <AnimatePresence mode="popLayout">
-            {filteredProducts.map((product) => (
-              <motion.div
-                layout
-                key={product.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="relative group flex flex-col h-full bg-white rounded-[2rem] border border-zinc-100 hover:border-zinc-200 hover:shadow-2xl hover:shadow-zinc-200/50 transition-all duration-500 overflow-hidden"
-              >
+            {filteredProducts.map((product, index) => {
+              const isOutOfStock = 
+                (product.stock !== undefined && product.stock <= 0) || 
+                (product.variants && product.variants.length > 0 && product.variants.every(v => v.stock <= 0));
+
+              return (
+                <motion.div
+                  layout
+                  key={product.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  className={`relative group flex flex-col h-full bg-white rounded-[2rem] border border-zinc-100 transition-all duration-500 overflow-hidden ${
+                    isOutOfStock 
+                      ? "opacity-80 grayscale-[0.5]" 
+                      : "hover:border-zinc-200 hover:shadow-2xl hover:shadow-zinc-200/50"
+                  }`}
+                >
                 {/* Clickable Area for Detail Page */}
                 <Link
                   href={`/productos/${createProductSlug(product.name)}`}
@@ -182,19 +197,24 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
                       Nuevo
                     </span>
                   )}
-                  {product.oldPrice && (
+                  {product.oldPrice && !isOutOfStock && (
                     <span className="absolute top-4 right-4 z-20 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
                       Oferta
+                    </span>
+                  )}
+                  {isOutOfStock && (
+                    <span className="absolute top-4 right-4 z-20 bg-zinc-400 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
+                      Agotado
                     </span>
                   )}
 
                   <motion.div whileHover={{ scale: 1.1 }} className="relative w-full h-full">
                     <Image
-                      src={product.image}
+                      src={product.image || "/images/placeholder-product.png"}
                       alt={product.name}
                       fill
                       className="object-contain drop-shadow-xl"
-                      priority
+                      priority={index < 4}
                     />
                   </motion.div>
 
@@ -206,7 +226,14 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
                         : "translate-y-full group-hover:translate-y-0"
                     }`}
                   >
-                    {getProductQuantity(product.id) > 0 ? (
+                    {isOutOfStock ? (
+                      <button
+                        disabled
+                        className="w-full py-4 bg-zinc-100 text-zinc-400 rounded-full font-black text-sm uppercase tracking-widest cursor-not-allowed border border-zinc-200"
+                      >
+                        Sin Stock
+                      </button>
+                    ) : getProductQuantity(product.id) > 0 ? (
                       <div className="bg-white border border-zinc-200 shadow-xl rounded-full flex items-center justify-center p-1 gap-3 w-max mx-auto pointer-events-auto">
                         <button
                           onClick={(e) => {
@@ -287,9 +314,10 @@ export default function PetShopCatalog({ initialProducts }: PetShopCatalogProps)
                       </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                  </div>
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
         </motion.div>
       ) : (

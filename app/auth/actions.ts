@@ -43,7 +43,8 @@ export async function login(formData: FormData) {
       });
 
       // Case-insensitive role check
-      if (profile?.role?.toUpperCase() === "ADMIN") {
+      const role = profile?.role?.toUpperCase();
+      if (role === "ADMIN" || role === "SUPERADMIN") {
         destination = "/admin";
       }
     } catch (e) {

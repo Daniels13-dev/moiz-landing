@@ -8,38 +8,50 @@ export function PaymentOption({
   icon,
   label,
   description,
+  details,
 }: {
   active: boolean;
   onClick: () => void;
   icon: ReactNode;
   label: string;
   description?: string;
+  details?: ReactNode;
 }) {
   return (
     <div
       role="button"
       onClick={onClick}
-      className={`p-4 md:p-6 border-2 rounded-[2rem] flex items-center gap-4 text-left transition-all cursor-pointer ${
+      className={`border-2 rounded-[2rem] flex flex-col md:flex-row transition-all cursor-pointer overflow-hidden ${
         active
           ? "border-[var(--moiz-green)] bg-white shadow-2xl shadow-[var(--moiz-green)]/10"
           : "border-zinc-50 bg-zinc-50/30 opacity-60 hover:opacity-100 hover:shadow-xl hover:bg-white"
       }`}
     >
-      <div
-        className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors flex-shrink-0 ${
-          active ? "bg-[var(--moiz-green)] text-zinc-950" : "bg-zinc-100 text-zinc-400"
-        }`}
-      >
-        {icon}
+      <div className={`p-4 md:p-8 flex items-center gap-5 text-left transition-all ${active && details ? "md:border-r border-zinc-100 md:min-w-[280px]" : "w-full"}`}>
+        <div
+          className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors flex-shrink-0 ${
+            active ? "bg-[var(--moiz-green)] text-zinc-950" : "bg-zinc-100 text-zinc-400"
+          }`}
+        >
+          {icon}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-black text-zinc-900 text-lg md:text-xl tracking-tight leading-tight mb-1">
+            {label}
+          </p>
+          <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-tight">
+            {description}
+          </p>
+        </div>
       </div>
-      <div className="min-w-0 flex-1">
-        <p className="font-black text-zinc-900 text-base md:text-lg leading-tight mb-1">
-          {label}
-        </p>
-        <p className="text-xs font-black text-zinc-400 uppercase tracking-widest leading-tight">
-          {description}
-        </p>
-      </div>
+
+      {active && details && (
+        <div className="flex-1 p-6 md:p-8 bg-zinc-50/30 animate-in fade-in slide-in-from-left-4 duration-500 flex items-center">
+          <div className="w-full">
+            {details}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

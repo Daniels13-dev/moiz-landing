@@ -3,7 +3,8 @@
 import { MapPin, Info, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { InputGroup, SelectInputGrid, SelectGroup } from "@/components/ui/FormInput";
-import { countries, idTypes, COLOMBIA_REGIONS } from "@/config/constants";
+import { countries, idTypes } from "@/config/constants";
+import { COLOMBIA_REGIONS } from "@/config/colombia-data";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { CheckoutFormValues } from "../lib/schema";
 
@@ -70,7 +71,17 @@ export default function ShippingFormSection({
         <SelectInputGrid
           label="Teléfono"
           selectRegister={register("customerPhoneCountry")}
-          inputRegister={register("customerPhone")}
+          inputRegister={{
+            ...register("customerPhone"),
+            onChange: async (e) => {
+              const value = e.target.value.replace(/\D/g, "");
+              const formatted = value
+                .replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3")
+                .trim();
+              e.target.value = formatted.slice(0, 12);
+              return await register("customerPhone").onChange(e);
+            },
+          }}
           options={countries.map((c) => ({
             label: `${c.flag} ${c.code}`,
             value: c.code,

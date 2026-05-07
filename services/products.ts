@@ -16,6 +16,7 @@ export interface ProductData {
   rating: number;
   category: string;
   petType: string;
+  stock: number;
   isFeatured?: boolean;
   isNew?: boolean;
   allowSubscription?: boolean;
@@ -42,6 +43,7 @@ interface RawProduct {
   desc?: string;
   category?: string;
   petType?: string;
+  stock?: number;
   isFeatured?: boolean;
   isNew?: boolean;
   allowSubscription?: boolean;
@@ -71,6 +73,7 @@ export function formatProduct(product: unknown): ProductData {
     description: p.description || p.desc || "",
     category: p.category || "General",
     petType: p.petType || "Gato",
+    stock: p.stock ?? 0,
     isFeatured: Boolean(p.isFeatured),
     isNew: Boolean(p.isNew),
     allowSubscription: Boolean(p.allowSubscription),
@@ -87,13 +90,36 @@ export async function getFeaturedProduct() {
       isActive: true,
       category: { isActive: true }
     },
-    include: { category: true },
+    include: { category: true, variants: true },
   });
 
   return formatProduct({
     ...product,
     category: product?.category?.name,
   });
+}
+
+/**
+ * Obtiene los productos destacados limitados (para Home).
+ */
+export async function getFeaturedProducts(limit = 5) {
+  const products = await prisma.product.findMany({
+    where: { 
+      isActive: true,
+      isFeatured: true,
+      category: { isActive: true }
+    },
+    include: { category: true, variants: true },
+    take: limit,
+    orderBy: { createdAt: 'desc' }
+  });
+
+  return products.map((p) =>
+    formatProduct({
+      ...p,
+      category: p.category?.name,
+    }),
+  );
 }
 
 /**

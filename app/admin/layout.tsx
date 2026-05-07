@@ -2,7 +2,6 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
-import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { logout } from "@/app/auth/actions";
 import { LogOut, Home, Clock } from "lucide-react";
@@ -13,19 +12,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     data: { user },
   } = await supabase.auth.getUser();
 
+  // El proxy ya valida que solo ADMIN y SUPERADMIN llegan aquí.
+  // Solo verificamos que haya sesión activa como capa mínima de seguridad.
   if (!user) {
     redirect("/login");
   }
 
-  // Robust server-side role check bypassing any RLS using Prisma
-  const profile = await prisma.profile.findUnique({
-    where: { id: user.id },
-    select: { role: true },
-  });
-
-  if (profile?.role?.toUpperCase() !== "ADMIN") {
-    redirect("/");
-  }
 
   return (
     <div className="bg-[#FAF9F6] min-h-screen">

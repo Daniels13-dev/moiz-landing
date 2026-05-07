@@ -51,7 +51,7 @@ export default function AdminOrderTable({ orders: initialOrders }: AdminOrderTab
       {/* Filters */}
       <div className="flex items-center gap-4 bg-white p-6 rounded-[2.5rem] border border-zinc-100 overflow-x-auto whitespace-nowrap no-scrollbar">
         <Filter size={18} className="text-zinc-400 mr-2 flex-shrink-0" />
-        {["all", "pendiente", "pagado", "enviado", "entregado", "cancelado"].map((s) => (
+        {["all", "pendiente", "pagada", "enviado", "entregado", "cancelado", "rechazada"].map((s) => (
           <button
             key={s}
             onClick={() => setFilter(s)}
@@ -148,10 +148,11 @@ export default function AdminOrderTable({ orders: initialOrders }: AdminOrderTab
                     className="appearance-none bg-zinc-50 border border-zinc-100 text-zinc-900 text-xs font-black uppercase tracking-widest rounded-full pl-4 pr-10 py-2.5 focus:ring-2 focus:ring-[var(--moiz-green)] outline-none transition-all cursor-pointer hover:bg-zinc-100"
                   >
                     <option value="pendiente">Pendiente</option>
-                    <option value="pagado">Pagado</option>
+                    <option value="pagada">Pagado</option>
                     <option value="enviado">Enviado</option>
                     <option value="entregado">Entregado</option>
                     <option value="cancelado">Cancelado</option>
+                    <option value="rechazada">Rechazada</option>
                   </select>
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400 group-hover/select:text-zinc-600 transition-colors">
                     <ChevronDown size={16} />

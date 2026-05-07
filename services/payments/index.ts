@@ -20,7 +20,7 @@ export const startPaymentFlow = async (
   }
 
   if (gateway === "WOMPI") {
-    const loaded = await loadWompiScript();
+    const loaded = await loadWompiScript(WOMPI_PUBLIC_KEY);
     if (loaded) {
       initWompiCheckout(data, WOMPI_PUBLIC_KEY);
     } else {

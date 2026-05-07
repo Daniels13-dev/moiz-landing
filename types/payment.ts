@@ -8,6 +8,7 @@ export interface PaymentInitData {
   customerFullName: string;
   customerPhone?: string;
   redirectUrl: string;
+  signature?: string;
 }
 
 export interface PaymentConfig {

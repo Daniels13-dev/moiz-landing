@@ -23,7 +23,7 @@ export default function RelatedProductsSection({
   if (relatedProducts.length === 0) return null;
 
   return (
-    <div className="border-t border-zinc-200 pt-24">
+    <div id="related-products" className="border-t border-zinc-200 pt-24 scroll-mt-24">
       <div className="flex items-end justify-between mb-12">
         <div>
           <h2 className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tighter mb-2">
@@ -34,7 +34,7 @@ export default function RelatedProductsSection({
           </p>
         </div>
         <Link
-          href={`/productos?categoria=${encodeURIComponent(category)}`}
+          href={`/productos/categoria/${category.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
           className="hidden md:flex items-center gap-2 font-bold text-[var(--moiz-green)] hover:underline"
         >
           {siteConfig.ui.order.viewMore} {category} <ChevronRight size={18} />

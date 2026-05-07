@@ -24,7 +24,7 @@ export const initEpaycoCheckout = (data: PaymentInitData, publicKey: string, isP
       country: "co",
       lang: "es",
       external: "false",
-      confirmation: `${window.location.origin}/api/payments/epayco-webhook`,
+      confirmation: `${window.location.origin}/api/webhooks/epayco`,
       response: data.redirectUrl,
       // Attributes for customer
       email_billing: data.customerEmail,
