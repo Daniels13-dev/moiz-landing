@@ -1,0 +1,290 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  name      String
+  rating    Int      @default(5)
+  text      String
+  image     String?  // URL of the customer photo
+  city      String?
+  date      String?  // Optional: "Feb 2026"
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id            String         @id @default(cuid())
+  name          String
+  description   String
+  price         Float
+  oldPrice      Float?
+  image         String
+  categoryId    String
+  petType       String
+  productType   String
+  rating        Float          @default(5.0)
+  stock         Int            @default(0)
+  isFeatured    Boolean        @default(false)
+  isNew             Boolean        @default(false)
+  allowSubscription Boolean        @default(false)
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  favorites     Favorite[]
+  orderItems    OrderItem[]
+  category      Category       @relation(fields: [categoryId], references: [id])
+  variants      ProductVariant[]
+  subscriptions Subscription[]
+  reminders     SubscriptionReminder[]
+
+  @@index([categoryId])
+  @@index([isActive, isFeatured])
+  @@index([isActive, categoryId])
+}
+
+model ProductVariant {
+  id           String      @id @default(cuid())
+  productId    String
+  product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name         String      // Ej: "Mariposas" (nombre del estampado/color)
+  color        String?     // Hexadecimal o null si es estampado con imagen
+  image        String?     // Imagen del estampado — si existe, se muestra en vez del color sólido
+  size         String?     // Talla opcional: "S", "M", "L", "XL", etc.
+  stock        Int         @default(0)
+  price        Float?      // Precio opcional si varía por talla/color
+  orderItems   OrderItem[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([productId])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+}
+
+model Order {
+  id                     String               @id @default(cuid())
+  customerName           String
+  customerPhone          String
+  totalAmount            Float
+  status                 String               @default("pendiente")
+  createdAt              DateTime             @default(now())
+  currency               String               @default("COP")
+  customerAddress        String?
+  customerEmail          String?
+  updatedAt              DateTime             @updatedAt
+  userId                 String?
+  orderNumber            Int                  @unique
+  shippingMethod         String               @default("estandar")
+  customerCity           String?
+  customerState          String?
+  customerIdentification String?
+  profile                Profile?             @relation(fields: [userId], references: [id])
+  items                  OrderItem[]
+  history                OrderStatusHistory[]
+  stock                  Int?                 @default(1)
+
+  // Billing Details (Stored at order time for invoicing)
+  billingDifferent     Boolean              @default(false)
+  billingName          String?
+  billingNit           String?
+  billingIdType        String?
+  billingAddress       String?
+  billingCity          String?
+  billingState         String?
+  billingPhone         String?
+  billingPhoneCountry  String?
+
+  invoice              Invoice?
+
+  @@index([userId])
+}
+
+model Invoice {
+  id               String   @id @default(cuid())
+  orderId          String   @unique
+  invoiceNumber    Int      @unique @default(autoincrement())
+  
+  // Tax details at time of generation
+  customerName     String
+  customerNit      String
+  customerIdType   String
+  customerAddress  String
+  customerCity     String
+  customerState    String
+  customerPhone    String
+  
+  // Amounts
+  subtotal         Float
+  discount         Float
+  total            Float
+  
+  createdAt        DateTime @default(now())
+  order            Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  productId   String
+  variantId   String? 
+  quantity    Int
+  price       Float
+  productName String?
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product @relation(fields: [productId], references: [id])
+  variant     ProductVariant? @relation(fields: [variantId], references: [id])
+}
+
+model OrderStatusHistory {
+  id        String   @id @default(cuid())
+  orderId   String
+  status    String
+  changedAt DateTime @default(now())
+  comment   String?
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Profile {
+  id            String         @id
+  email         String         @unique
+  fullName      String?
+  avatarUrl     String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  role          String         @default("USER")
+  cartNeedsClear Boolean        @default(false)
+  phone         String?
+  idNumber      String?
+  idType        String?
+  phoneCountry  String?
+  addresses     Address[]
+  favorites     Favorite[]
+  orders        Order[]
+  subscriptions Subscription[]
+  subscriptionReminders SubscriptionReminder[]
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  profileId String
+  type      String
+  fullName  String
+  phone     String
+  street    String
+  city      String
+  state     String
+  country   String   @default("Colombia")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  idNumber  String?
+  idType    String?
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model NewsletterSubscription {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Coupon {
+  id                 String    @id @default(cuid())
+  code               String    @unique
+  discountPercentage Float
+  isActive           Boolean   @default(true)
+  maxUses            Int?
+  usedCount          Int       @default(0)
+  expiryDate         DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([code])
+}
+
+model Subscription {
+  id              String    @id @default(cuid())
+  userId          String
+  productId       String
+  status          String    @default("activa")
+  frequencyDays   Int       @default(30)
+  lockedPrice     Float
+  quantity        Int       @default(1)
+  deliveryCount   Int       @default(0)
+  nextBillingDate DateTime
+  lastBillingDate DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  product         Product   @relation(fields: [productId], references: [id])
+  user            Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reminders       SubscriptionReminder[]
+
+  @@index([userId])
+  @@index([productId])
+}
+
+model SubscriptionReminder {
+  id             String       @id @default(cuid())
+  userId         String
+  productId      String
+  subscriptionId String?
+  reminderDate   DateTime
+  status         String       @default("pendiente") // pendiente, completado
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  
+  user           Profile      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product        Product      @relation(fields: [productId], references: [id])
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([productId])
+  @@index([subscriptionId])
+}
+
+model PaymentLog {
+  id                   String   @id @default(cuid())
+  orderId              String?
+  provider             String   // e.g., "WOMPI", "TRANSFERENCIA"
+  transactionReference String   // e.g., "MZ-123456"
+  signature            String?
+  payload              Json?    // Datos enviados a la pasarela
+  response             Json?    // Respuesta de la pasarela (si aplica)
+  status               String?
+  createdAt            DateTime @default(now())
+
+  @@index([transactionReference])
+  @@index([orderId])
+}

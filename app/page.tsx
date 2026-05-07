@@ -1,19 +1,40 @@
-export default function Home() {
+import { getFeaturedProducts, getAllCategories } from "@/services/products";
+
+export const revalidate = 3600;
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
+import ProductCarousel from "@/components/ProductCarousel";
+import CategoriesSection from "@/components/CategoriesSection";
+import ProductReviews from "@/components/ProductReviews";
+import Footer from "@/components/Footer";
+import WhatsappButton from "@/components/WhatsappButton";
+import FAQ from "@/components/FAQ";
+import Newsletter from "@/components/Newsletter";
+import TrustSeals from "@/components/TrustSeals";
+
+export default async function Home() {
+  const [featuredProducts, categoriesDb] = await Promise.all([getFeaturedProducts(5), getAllCategories()]);
+
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-10">
-      
-      <h1 className="text-5xl font-bold">
-        Möiz 🐶
-      </h1>
+    <main>
+      <Navbar />
 
-      <p className="text-xl mt-4 text-gray-600">
-        Todo para tu mascota en un solo lugar
-      </p>
+      <Hero />
+      <TrustSeals />
 
-      <button className="mt-6 px-6 py-3 bg-black text-white rounded-xl">
-        Comprar ahora
-      </button>
+      <ProductCarousel products={featuredProducts} />
 
+      <CategoriesSection dbCategories={categoriesDb} />
+
+      <ProductReviews />
+
+      <FAQ />
+
+      <Newsletter />
+
+      <Footer />
+
+      <WhatsappButton />
     </main>
-  )
+  );
 }

@@ -1,0 +1,68 @@
+Prisma keys: [
+  '_originalClient',
+  '_runtimeDataModel',
+  '_requestHandler',
+  '_connectionPromise',
+  '_disconnectionPromise',
+  '_engineConfig',
+  '_accelerateEngineConfig',
+  '_clientVersion',
+  '_errorFormat',
+  '_tracingHelper',
+  '_previewFeatures',
+  '_activeProvider',
+  '_globalOmit',
+  '_extensions',
+  '_engine',
+  '_appliedParent',
+  '_createPrismaPromise',
+  '$extends',
+  'constructor',
+  '$on',
+  '$connect',
+  '$disconnect',
+  '$executeRawInternal',
+  '$executeRaw',
+  '$executeRawUnsafe',
+  '$runCommandRaw',
+  '$queryRawInternal',
+  '$queryRaw',
+  '$queryRawTyped',
+  '$queryRawUnsafe',
+  '_transactionWithArray',
+  '_transactionWithCallback',
+  '_createItxClient',
+  '$transaction',
+  '_request',
+  '_executeRequest',
+  '_hasPreviewFlag',
+  'category',
+  'review',
+  'product',
+  'productVariant',
+  'favorite',
+  'order',
+  'invoice',
+  'orderItem',
+  'orderStatusHistory',
+  'profile',
+  'address',
+  'newsletterSubscription',
+  'coupon',
+  'subscription',
+  'subscriptionReminder',
+  '$parent'
+]
+Error accessing prisma.review: Error: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+    at /Users/danielsanchez/Desktop/Moiz/moiz-landing/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async PrismaPgAdapter.performIO (/Users/danielsanchez/Desktop/Moiz/moiz-landing/node_modules/@prisma/adapter-pg/dist/index.js:654:22)
+    at async PrismaPgAdapter.queryRaw (/Users/danielsanchez/Desktop/Moiz/moiz-landing/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+    at async e.interpretNode (/Users/danielsanchez/Desktop/Moiz/moiz-landing/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+    at async e.interpretNode (/Users/danielsanchez/Desktop/Moiz/moiz-landing/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:213:41)
+    at async e.interpretNode (/Users/danielsanchez/Desktop/Moiz/moiz-landing/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+    at async e.run (/Users/danielsanchez/Desktop/Moiz/moiz-landing/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+    at async e.execute (/Users/danielsanchez/Desktop/Moiz/moiz-landing/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+    at async jt.request (/Users/danielsanchez/Desktop/Moiz/moiz-landing/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22) {
+  clientVersion: '7.7.0'
+}

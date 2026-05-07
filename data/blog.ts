@@ -1,0 +1,127 @@
+export interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  image: string;
+  category: "Sostenibilidad" | "Cuidado Felino" | "Salud" | "Curiosidades";
+  date: string;
+  readTime: string;
+}
+
+export const blogPosts: BlogPost[] = [
+  {
+    slug: "como-quitar-olor-orina-gato",
+    title: "Cómo quitar el olor a orina de gato de tu casa definitivamente",
+    excerpt:
+      "El olor a amoníaco puede arruinar cualquier espacio. Descubre por qué sucede, cómo limpiarlo y el secreto para que no vuelva a oler nunca más.",
+    category: "Cuidado Felino",
+    date: "2024-05-15",
+    readTime: "6 min",
+    image:
+      "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&q=80&w=800",
+    content: `# El verdadero motivo por el que tu casa huele a gato (y cómo solucionarlo)
+
+El olor a orina de gato es uno de los olores más persistentes y difíciles de eliminar en el hogar. Esto no se debe a que tu gato sea "sucio", sino a la alta concentración de amoníaco y proteínas en su orina, que cristalizan y se aferran a las superficies.
+
+Si estás cansado de gastar dinero en aromatizantes que solo disfrazan el olor temporalmente, estás en el lugar correcto.
+
+## Pasos comprobados para eliminar el olor existente
+
+1. **Evita el cloro o amoníaco:** Nunca limpies la orina de gato con cloro. La orina de gato ya contiene amoníaco, y mezclarlo con limpiadores tradicionales puede empeorar el olor o crear gases tóxicos.
+2. **Usa limpiadores enzimáticos:** Las enzimas rompen los cristales de ácido úrico (los verdaderos culpables del olor). Aplícalo generosamente sobre la mancha, déjalo actuar por 15 minutos y seca con toallas de papel.
+3. **Bicarbonato de sodio como absorbente:** Una vez seco, espolvorea bicarbonato sobre el área afectada para que absorba cualquier olor residual.
+
+### La solución definitiva: Ataca el problema de raíz
+
+Limpiar los accidentes está bien, pero **el 90% del olor en un hogar proviene directamente del arenero**. Si usas arena de bentonita barata o sílice, estas no neutralizan el amoníaco, solo lo absorben hasta saturarse.
+
+Para eliminar el olor de forma permanente de tu hogar, el cambio más inteligente que puedes hacer es transicionar a **arena de origen vegetal**.
+
+> "El maíz tiene una propiedad molecular única: sus microporos atrapan el amoníaco al instante y evitan que el olor se volatilice en el aire."
+
+Al utilizar una arena ecológica de maíz, no solo aglomeras la orina en segundos, sino que bloqueas el olor a nivel molecular. Un arenero limpio con la arena correcta significa una casa que huele a casa, no a gato.`,
+  },
+  {
+    slug: "por-que-cambiar-arena-biodegradable",
+    title: "Por qué cambiar a arena biodegradable salvará la salud de tu gato",
+    excerpt:
+      "La arena de maíz no solo es mejor para el planeta, sino que previene enfermedades respiratorias en tu michi.",
+    category: "Sostenibilidad",
+    date: "2024-04-09",
+    readTime: "5 min",
+    image:
+      "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=800",
+    content: `# El cambio que tu gato y el planeta necesitan
+
+La mayoría de las arenas convencionales utilizan bentonita de sodio, un mineral que, aunque efectivo para aglomerar, genera un polvo fino. Este polvo, al ser inhalado diariamente, puede provocar asma felina y alergias tanto en gatos como en sus dueños.
+
+> "La salud de tu mascota comienza por su entorno. Elegir materiales libres de químicos es el primer paso para una vida larga y saludable." - Equipo de Bienestar Möiz
+
+## Beneficios de la Arena de Maíz
+
+1. **Cero Polvo:** Al ser una fibra vegetal tratada, no genera nubes de polvo tóxicas al ser excavada. Protege los pulmones de tu michi.
+2. **Biodegradable y Compostable:** A diferencia de la arcilla, el maíz regresa a la tierra. Puedes desecharla por el inodoro o usarla para tu jardín.
+3. **Control de Olor Orgánico:** Las partículas de maíz atrapan el amoníaco de forma natural, sin fragancias artificiales que irritan el olfato del gato.
+
+### ¿Cómo hacer el cambio correctamente?
+
+El olfato de un gato es 14 veces más sensible que el humano. No lo hagas de golpe para evitar rechazos:
+
+*   **Semana 1:** 75% arena vieja, 25% Möiz.
+*   **Semana 2:** 50% arena vieja, 50% Möiz.
+*   **Semana 3:** 100% Möiz.
+
+¡Tu gato te lo agradecerá con ronroneos y tú con un hogar más limpio!`,
+  },
+  {
+    slug: "comparativa-bentonita-vs-maiz",
+    title: "Bentonita vs Sílice vs Maíz: La verdad sobre lo que pisa tu gato",
+    excerpt:
+      "Analizamos los 3 materiales más comunes del mercado. Spoiler: El maíz gana en casi todo.",
+    category: "Cuidado Felino",
+    date: "2024-04-05",
+    readTime: "8 min",
+    image:
+      "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=800",
+    content: `# La batalla de las arenas: ¿Qué es lo mejor para tu michi?
+
+Elegir la arena adecuada parece una tarea simple hasta que te enfrentas a las góndolas llenas de opciones químicas y minerales. La mayoría de nosotros crecimos usando bentonita o sílice, asumiendo que eran las únicas opciones. Sin embargo, la ciencia del bienestar animal ha avanzado hacia soluciones más humanas y sostenibles.
+
+## El problema invisible de la Bentonita y el Sílice
+
+La bentonita es un mineral extraído de minas que, aunque aglomera bien, libera un polvo de silicio que se pega a las patas y, lo que es peor, a los pulmones. El sílice, por otro lado, es un material sintético que no se biodegrada y puede ser áspero para las almohadillas sensibles de los gatos.
+
+> "No deberías tener que elegir entre un hogar limpio y la salud de tu gato. La innovación en fibras vegetales como el maíz nos permite tener ambos sin compromisos."
+
+A continuación, presentamos un **desglose técnico detallado** de por qué la transición hacia materiales orgánicos está redefiniendo los estándares de higiene en los hogares modernos:`,
+  },
+  {
+    slug: "beneficios-snacks-naturales-perros",
+    title: "Snacks naturales: El secreto para un perro feliz y sano",
+    excerpt:
+      "Descubre por qué los premios procesados pueden estar afectando la energía de tu mascota y cómo los snacks 100% naturales son la mejor opción.",
+    category: "Salud",
+    date: "2024-04-12",
+    readTime: "4 min",
+    image:
+      "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=800",
+    content: `# Por qué deberías elegir snacks naturales para tu mejor amigo
+
+A todos nos gusta consentir a nuestros perros con un premio después de un buen paseo o simplemente porque nos miran con esos ojos irresistibles. Sin embargo, no todos los snacks son iguales. La mayoría de los productos comerciales están cargados de harinas refinadas, colorantes artificiales y conservantes que pueden provocar inflamación y problemas digestivos a largo plazo.
+
+## Los beneficios de lo natural
+
+Elegir premios deshidratados o snacks 100% naturales (como los que encuentras en Möiz) ofrece ventajas inmediatas:
+
+1.  **Mejor Digestión:** Al no contener químicos ni rellenos innecesarios, el sistema digestivo de tu perro procesa los nutrientes de forma eficiente.
+2.  **Dientes más Limpios:** Muchos snacks naturales, al ser masticados, ayudan a remover el sarro de forma mecánica sin necesidad de ingredientes abrasivos.
+3.  **Energía Constante:** Sin subidones de azúcar por carbohidratos simples, tu mascota mantendrá un nivel de energía más estable durante el día.
+
+### ¿Qué buscar en un buen snack?
+
+La regla de oro es simple: **Lee la etiqueta.** Si tiene más de tres ingredientes o nombres que no puedes pronunciar, probablemente no sea la mejor opción. Busca un solo ingrediente (ej. Pollo, Hígado, Cordero) que haya sido deshidratado lentamente para conservar sus propiedades.
+
+Recuerda que el snack es un complemento, no un sustituto de su comida, pero elegir uno de calidad es la mejor forma de decirles "te quiero".`,
+  },
+];
