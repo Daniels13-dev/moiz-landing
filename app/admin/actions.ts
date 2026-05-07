@@ -12,12 +12,12 @@ import { SubscriptionService } from "@/services/subscription-service";
 
 export async function createCategory(formData: FormData) {
   const name = formData.get("name") as string;
-  if (!name) return { error: "El nombre es obligatorio" };
+  if (!name) return { success: false, error: "El nombre es obligatorio" } as const;
 
   try {
     await CategoryService.create(name);
     revalidatePath("/admin/categorias");
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "createCategory");
   }
@@ -27,20 +27,20 @@ export async function deleteCategory(id: string) {
   try {
     await CategoryService.delete(id);
     revalidatePath("/admin/categorias");
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "deleteCategory");
   }
 }
 
 export async function updateCategory(id: string, name: string) {
-  if (!name) return { error: "El nombre es obligatorio" };
+  if (!name) return { success: false, error: "El nombre es obligatorio" } as const;
   try {
     await CategoryService.update(id, name);
     revalidatePath("/admin/categorias");
     revalidatePath("/productos");
     revalidatePath("/");
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "updateCategory");
   }
@@ -52,7 +52,7 @@ export async function toggleCategoryActive(id: string, active: boolean) {
     revalidatePath("/admin/categorias");
     revalidatePath("/productos");
     revalidatePath("/");
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "toggleCategoryActive");
   }
@@ -78,13 +78,13 @@ export async function createProduct(formData: FormData) {
       isActive: formData.get("isActive") !== null ? parseCheckbox(formData.get("isActive")) : false,
     };
 
-    if (!data.name || !data.price) return { error: "Faltan campos obligatorios" };
+    if (!data.name || !data.price) return { success: false, error: "Faltan campos obligatorios" } as const;
 
     await ProductService.create(data);
     revalidatePath("/admin/productos");
     revalidatePath("/productos");
     revalidatePath("/");
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "createProduct");
   }
@@ -96,7 +96,7 @@ export async function deleteProduct(id: string) {
     revalidatePath("/admin/productos");
     revalidatePath("/productos");
     revalidatePath("/");
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "deleteProduct");
   }
@@ -124,7 +124,7 @@ export async function updateProduct(id: string, formData: FormData) {
     revalidatePath("/admin/productos");
     revalidatePath("/productos");
     revalidatePath("/");
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "updateProduct");
   }
@@ -136,7 +136,7 @@ export async function toggleProductActive(id: string, active: boolean) {
     revalidatePath("/admin/productos");
     revalidatePath("/productos");
     revalidatePath("/");
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "toggleProductActive");
   }
@@ -155,12 +155,12 @@ export async function createVariant(productId: string, formData: FormData) {
       price: parseLocalizedFloat(formData.get("price") as string),
     };
 
-    if (!data.name) return { error: "El nombre es obligatorio" };
+    if (!data.name) return { success: false, error: "El nombre es obligatorio" } as const;
 
     await ProductService.createVariant(productId, data);
     revalidatePath("/admin/productos");
     revalidatePath(`/productos/${productId}`);
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "createVariant");
   }
@@ -171,7 +171,7 @@ export async function createVariantBatch(productId: string, data: any) {
     await ProductService.createVariantBatch(productId, data);
     revalidatePath("/admin/productos");
     revalidatePath(`/productos/${productId}`);
-    return { success: true, count: data.sizes.length };
+    return { success: true, count: data.sizes.length } as const;
   } catch (error) {
     return handleActionError(error, "createVariantBatch");
   }
@@ -182,7 +182,7 @@ export async function deleteVariant(id: string, productId: string) {
     await ProductService.deleteVariant(id);
     revalidatePath("/admin/productos");
     revalidatePath(`/productos/${productId}`);
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "deleteVariant");
   }
@@ -202,7 +202,7 @@ export async function updateVariant(id: string, productId: string, formData: For
     await ProductService.updateVariant(id, data);
     revalidatePath("/admin/productos");
     revalidatePath(`/productos/${productId}`);
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "updateVariant");
   }
@@ -214,7 +214,7 @@ export async function updateUserRole(id: string, role: string) {
   try {
     await prisma.profile.update({ where: { id }, data: { role } });
     revalidatePath("/admin/usuarios");
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "updateUserRole");
   }
@@ -227,7 +227,7 @@ export async function completeSubscriptionReminder(reminderId: string) {
     await SubscriptionService.completeReminder(reminderId);
     revalidatePath("/admin/suscripciones");
     revalidatePath("/suscripciones");
-    return { success: true };
+    return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "completeSubscriptionReminder");
   }

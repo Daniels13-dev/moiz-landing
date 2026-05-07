@@ -9,13 +9,14 @@ export function handleActionError(error: any, context: string = "Action") {
   if (error instanceof z.ZodError) {
     const firstError = error.issues[0];
     return { 
+      success: false,
       error: `Dato inválido: ${firstError.path.join(".")} - ${firstError.message}` 
-    };
+    } as const;
   }
 
   if (error instanceof Error) {
-    return { error: error.message };
+    return { success: false, error: error.message } as const;
   }
 
-  return { error: "Ocurrió un error inesperado. Por favor intenta de nuevo." };
+  return { success: false, error: "Ocurrió un error inesperado. Por favor intenta de nuevo." } as const;
 }

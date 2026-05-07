@@ -78,7 +78,7 @@ export async function createOrder(data: any) {
       orderNumber: order.orderNumber,
       wompiSignature,
       isDuplicate
-    };
+    } as const;
   } catch (error: any) {
     return handleActionError(error, "createOrder");
   }
@@ -91,7 +91,7 @@ export async function createOrder(data: any) {
 export async function getOrderPaymentData(orderNumberDisplay: string) {
   try {
     const orderNumber = OrderUtils.parseOrderNumber(orderNumberDisplay);
-    if (orderNumber === null) return { error: "Referencia inválida" };
+    if (orderNumber === null) return { success: false, error: "Referencia inválida" } as const;
 
     const order = await prisma.order.findUnique({
       where: { orderNumber },
@@ -104,7 +104,7 @@ export async function getOrderPaymentData(orderNumberDisplay: string) {
       },
     });
 
-    if (!order) return { error: "Pedido no encontrado" };
+    if (!order) return { success: false, error: "Pedido no encontrado" } as const;
 
     const integritySecret = process.env.WOMPI_INTEGRITY_SECRET;
     let signature = null;
@@ -125,9 +125,9 @@ export async function getOrderPaymentData(orderNumberDisplay: string) {
       customerName: order.customerName || "",
       customerPhone: order.customerPhone || "",
       signature,
-    };
+    } as const;
   } catch (error: any) {
-    return { error: "Error al obtener datos del pedido" };
+    return { success: false, error: "Error al obtener datos del pedido" } as const;
   }
 }
 
@@ -151,7 +151,7 @@ export async function updateOrderStatus(orderId: string, newStatus: OrderStatus,
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return { error: "No autorizado" };
+    if (!user) return { success: false, error: "No autorizado" } as const;
 
     const updated = await OrderService.updateOrderStatusWithHistory(
       orderId,
@@ -163,7 +163,7 @@ export async function updateOrderStatus(orderId: string, newStatus: OrderStatus,
     revalidatePath(`/admin/pedidos/${orderId}`);
     revalidatePath("/admin");
 
-    return { success: true, order: updated };
+    return { success: true, order: updated } as const;
   } catch (error: any) {
     return handleActionError(error, "updateOrderStatus");
   }
@@ -251,7 +251,7 @@ export async function trackOrder(orderDisplay: string, nit: string) {
     const validated = trackOrderSchema.parse({ orderDisplay, nit });
     const orderNumber = OrderUtils.parseOrderNumber(validated.orderDisplay);
 
-    if (orderNumber === null) return { error: "Referencia inválida." };
+    if (orderNumber === null) return { success: false, error: "Referencia inválida." } as const;
 
     const order = await prisma.order.findFirst({
       where: { orderNumber },
@@ -261,10 +261,10 @@ export async function trackOrder(orderDisplay: string, nit: string) {
       },
     });
 
-    if (!order) return { error: "Pedido no encontrado." };
+    if (!order) return { success: false, error: "Pedido no encontrado." } as const;
 
     if (!OrderUtils.compareNit(order.customerIdentification || "", nit)) {
-      return { error: "La identificación no coincide." };
+      return { success: false, error: "La identificación no coincide." } as const;
     }
 
     // Ofuscar PII para vista pública
@@ -276,9 +276,9 @@ export async function trackOrder(orderDisplay: string, nit: string) {
         customerPhone: (order.customerPhone || "").length > 4 ? "***" + (order.customerPhone || "").slice(-4) : "***",
         customerAddress: (order.customerAddress || "").slice(0, 5) + " ***",
       },
-    };
+    } as const;
   } catch (error) {
-    return { error: "Error al consultar el pedido." };
+    return { success: false, error: "Error al consultar el pedido." } as const;
   }
 }
 
@@ -327,24 +327,24 @@ export async function getPublicInvoice(orderDisplay: string, nit: string, phoneL
 export async function sendInvoiceToCustomerEmail(orderDisplay: string, nit: string) {
   try {
     const orderNumber = OrderUtils.parseOrderNumber(orderDisplay);
-    if (orderNumber === null) return { error: "Referencia inválida" };
+    if (orderNumber === null) return { success: false, error: "Referencia inválida" } as const;
 
     const order = await prisma.order.findUnique({
       where: { orderNumber },
       include: { profile: true }
     });
 
-    if (!order) return { error: "Pedido no encontrado" };
+    if (!order) return { success: false, error: "Pedido no encontrado" } as const;
     if (!OrderUtils.compareNit(order.customerIdentification || "", nit)) {
-      return { error: "Identificación incorrecta" };
+      return { success: false, error: "Identificación incorrecta" } as const;
     }
 
     const email = order.profile?.email || order.customerEmail;
-    if (!email) return { error: "No hay correo asociado" };
+    if (!email) return { success: false, error: "No hay correo asociado" } as const;
 
     console.log(`[EMAIL SERVICE] Factura MZ-${orderNumber} enviada a: ${email}`);
-    return { success: true, message: `Enviada a ${email.split('@')[0].slice(0,3)}***@${email.split('@')[1]}` };
+    return { success: true, message: `Enviada a ${email.split('@')[0].slice(0,3)}***@${email.split('@')[1]}` } as const;
   } catch (error) {
-    return { error: "Error al enviar el correo" };
+    return { success: false, error: "Error al enviar el correo" } as const;
   }
 }

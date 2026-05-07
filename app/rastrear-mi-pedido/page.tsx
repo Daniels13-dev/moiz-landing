@@ -31,6 +31,7 @@ interface TrackedOrder {
   customerCity: string;
   customerState: string;
   customerIdentification: string;
+  customerPhone: string;
   shippingMethod: string;
   history: Array<{
     id: string;
@@ -238,10 +239,11 @@ export default function TrackOrderPage() {
                   </div>
                   <div className="flex flex-col md:flex-row items-end md:items-center gap-4">
                     {["pagado", "enviado", "entregado"].includes(order.status.toLowerCase()) && (
-                      <DownloadInvoiceButton
-                        orderNumber={OrderUtils.formatOrderNumber(order.orderNumber)}
-                        customerNit={order.customerIdentification}
-                      />
+                        <DownloadInvoiceButton
+                          orderNumber={OrderUtils.formatOrderNumber(order.orderNumber)}
+                          customerNit={order.customerIdentification}
+                          customerPhone={order.customerPhone}
+                        />
                     )}
                     <div
                       className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold ${getStatusConfig(order.status).bg} ${getStatusConfig(order.status).color}`}

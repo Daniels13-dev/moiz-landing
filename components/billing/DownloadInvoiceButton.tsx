@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { getPublicInvoice } from "@/app/actions/orders";
 import { toast } from "sonner";
-import { X, ShieldCheck } from "lucide-react";
+import { X, ShieldCheck, Loader2 } from "lucide-react";
 
 export default function DownloadInvoiceButton({
   orderNumber,
