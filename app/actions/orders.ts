@@ -342,8 +342,34 @@ export async function sendInvoiceToCustomerEmail(orderDisplay: string, nit: stri
     const email = order.profile?.email || order.customerEmail;
     if (!email) return { success: false, error: "No hay correo asociado" } as const;
 
-    console.log(`[EMAIL SERVICE] Factura MZ-${orderNumber} enviada a: ${email}`);
-    return { success: true, message: `Enviada a ${email.split('@')[0].slice(0,3)}***@${email.split('@')[1]}` } as const;
+    // Send the email
+    const { sendEmail } = await import("@/lib/email");
+    const result = await sendEmail({
+      to: email,
+      subject: `📄 Factura de tu pedido MZ-${orderNumber} - Möiz Pets`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 40px; border-radius: 32px; border: 1px solid #f4f4f5;">
+          <img src="https://res.cloudinary.com/dvyqtn7gy/image/upload/v1776223130/moiz/logo/logo.png" alt="Möiz logo" style="width: 80px; margin-bottom: 40px;" />
+          <h1 style="font-size: 28px; font-weight: 900; color: #09090b; letter-spacing: -0.05em; margin-bottom: 16px;">¡Hola, ${order.customerName.split(' ')[0]}!</h1>
+          <p style="font-size: 16px; color: #52525b; line-height: 1.6; margin-bottom: 32px;">
+            Adjuntamos el resumen de tu factura para el pedido <strong>MZ-${orderNumber}</strong>. Puedes ver el detalle completo y descargar el PDF oficial desde nuestra plataforma.
+          </p>
+          <div style="background-color: #fafafa; padding: 24px; border-radius: 16px; margin-bottom: 32px;">
+            <p style="margin: 0; font-size: 14px; color: #71717a;">Total pagado:</p>
+            <p style="margin: 4px 0 0; font-size: 24px; font-weight: 900; color: #09090b;">$${order.totalAmount.toLocaleString('es-CO')}</p>
+          </div>
+          <a href="https://moizpets.com/rastrear-mi-pedido?id=MZ-${orderNumber}&nit=${order.customerIdentification}" style="display: block; background-color: #09090b; color: #ffffff; text-decoration: none; padding: 18px; border-radius: 100px; font-weight: 700; text-align: center; font-size: 14px;">
+            Ver Pedido y Descargar Factura
+          </a>
+        </div>
+      `
+    });
+
+    if (!result.success) {
+      return { success: false, error: "Error al enviar el correo" } as const;
+    }
+
+    return { success: true, message: `Factura enviada a ${email.split('@')[0].slice(0,3)}***@${email.split('@')[1]}` } as const;
   } catch (error) {
     return { success: false, error: "Error al enviar el correo" } as const;
   }

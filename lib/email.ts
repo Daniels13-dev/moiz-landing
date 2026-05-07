@@ -24,7 +24,7 @@ export async function sendEmail({
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Möiz Pets <onboarding@resend.dev>", // Usar onboarding para pruebas hasta verificar dominio
+        from: "Möiz Pets <hola@moizpets.com>",
         to: [to],
         subject,
         html,
