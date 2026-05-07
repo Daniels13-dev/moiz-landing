@@ -1,12 +1,18 @@
 import { cn } from "@/lib/utils";
 
-export type OrderStatus = "pendiente" | "pagado" | "enviado" | "entregado" | "cancelado";
+export type OrderStatus = "pendiente" | "pagada" | "pagado" | "enviado" | "entregado" | "cancelado" | "rechazada" | "error_pago";
 
-const statusConfig = {
+const statusConfig: Record<string, { label: string; className: string; dot: string }> = {
   pendiente: {
     label: "Pendiente",
     className: "bg-amber-100 text-amber-700 border-amber-200",
     dot: "bg-amber-500",
+  },
+  // Aceptamos ambas variantes: 'pagada' (de BD/Wompi) y 'pagado' (legado UI)
+  pagada: {
+    label: "Pagado",
+    className: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    dot: "bg-emerald-500",
   },
   pagado: {
     label: "Pagado",
@@ -27,6 +33,16 @@ const statusConfig = {
     label: "Cancelado",
     className: "bg-red-100 text-red-700 border-red-200",
     dot: "bg-red-500",
+  },
+  rechazada: {
+    label: "Rechazada",
+    className: "bg-red-100 text-red-700 border-red-200",
+    dot: "bg-red-500",
+  },
+  error_pago: {
+    label: "Error de Pago",
+    className: "bg-orange-100 text-orange-700 border-orange-200",
+    dot: "bg-orange-500",
   },
 };
 

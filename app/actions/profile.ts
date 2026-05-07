@@ -3,6 +3,8 @@
 import prisma from "@/lib/prisma";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath, unstable_noStore as noStore } from "next/cache";
+import { ProfileService } from "@/services/profile-service";
+import { handleActionError } from "@/lib/action-utils";
 
 export async function getProfile() {
   noStore();
@@ -14,14 +16,7 @@ export async function getProfile() {
   if (!user) return null;
 
   try {
-    const profile = await prisma.profile.findUnique({
-      where: { id: user.id },
-      include: {
-        addresses: true,
-      },
-    });
-
-    return profile;
+    return await ProfileService.getById(user.id);
   } catch (error) {
     console.error("Error fetching profile:", error);
     return null;
@@ -43,22 +38,11 @@ export async function updateProfile(formData: {
   if (!user) return { error: "No autorizado" };
 
   try {
-    await prisma.profile.update({
-      where: { id: user.id },
-      data: {
-        fullName: formData.fullName,
-        phone: formData.phone,
-        idNumber: formData.idNumber,
-        idType: formData.idType,
-        phoneCountry: formData.phoneCountry,
-      },
-    });
-
+    await ProfileService.updateBasicInfo(user.id, formData);
     revalidatePath("/perfil");
     return { success: true };
   } catch (error) {
-    console.error("Error updating profile:", error);
-    return { error: "Error al actualizar perfil" };
+    return handleActionError(error, "updateProfile");
   }
 }
 
@@ -79,39 +63,41 @@ export async function upsertAddress(addressData: {
   if (!user) return { error: "No autorizado" };
 
   try {
-    // Check if address of this type already exists
-    const existingAddress = await prisma.address.findFirst({
-      where: {
-        profileId: user.id,
-        type: addressData.type,
-      },
+    await ProfileService.upsertAddress(user.id, {
+      ...addressData,
+      idNumber: "", // Opcional en el perfil directo
+      idType: "CC"
     });
-
-    if (existingAddress) {
-      await prisma.address.update({
-        where: { id: existingAddress.id },
-        data: {
-          fullName: addressData.fullName,
-          phone: addressData.phone,
-          street: addressData.street,
-          city: addressData.city,
-          state: addressData.state,
-        },
-      });
-    } else {
-      await prisma.address.create({
-        data: {
-          profileId: user.id,
-          ...addressData,
-          country: addressData.country || "Colombia",
-        },
-      });
-    }
 
     revalidatePath("/perfil");
     return { success: true };
   } catch (error) {
-    console.error("Error upserting address:", error);
-    return { error: "Error al guardar dirección" };
+    return handleActionError(error, "upsertAddress");
+  }
+}
+
+export async function checkAndResetCartClear() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { clear: false };
+
+  try {
+    const profile = await prisma.profile.findUnique({
+      where: { id: user.id },
+      select: { cartNeedsClear: true }
+    });
+
+    if (profile?.cartNeedsClear) {
+      // Si necesita limpiarse, lo reseteamos a false y devolvemos true al cliente
+      await prisma.profile.update({
+        where: { id: user.id },
+        data: { cartNeedsClear: false }
+      });
+      return { clear: true };
+    }
+
+    return { clear: false };
+  } catch (error) {
+    return { clear: false };
   }
 }

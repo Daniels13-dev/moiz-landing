@@ -182,7 +182,7 @@ export default function ProductReviews() {
                 }
               : {}
           }
-          className={`flex gap-8 ${displayReviews.length <= 3 ? "justify-center w-full flex-wrap" : ""}`}
+          className={`flex gap-8 will-change-transform ${displayReviews.length <= 3 ? "justify-center w-full flex-wrap" : ""}`}
           style={{ width: displayReviews.length > 3 ? "max-content" : "100%" }}
         >
           {/* Loop only if we have enough content to fill a marquee, otherwise show once */}
@@ -199,6 +199,8 @@ export default function ProductReviews() {
                     <img
                       src={r.image}
                       alt={`Foto de ${r.name}`}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                   ) : (
@@ -209,7 +211,7 @@ export default function ProductReviews() {
                     </div>
                   )}
                   {/* Rating Badge Overlay */}
-                  <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl flex items-center gap-1 shadow-xl">
+                  <div className="absolute top-6 right-6 bg-white px-4 py-2 rounded-2xl flex items-center gap-1 shadow-md border border-zinc-100">
                     <span className="font-black text-zinc-900">{r.rating}.0</span>
                     <svg
                       width="16"

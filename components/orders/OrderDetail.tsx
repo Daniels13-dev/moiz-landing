@@ -1,3 +1,5 @@
+"use client";
+
 import OrderStatusBadge from "./OrderStatusBadge";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -36,13 +38,82 @@ interface OrderDetailOrder {
 }
 
 import DownloadInvoiceButton from "@/components/billing/DownloadInvoiceButton";
+import RetryPaymentButton from "@/components/orders/RetryPaymentButton";
 
 interface OrderDetailProps {
   order: OrderDetailOrder;
   showHelp?: boolean;
 }
 
-export default function OrderDetail({ order, showHelp = true }: OrderDetailProps) {
+import { useCart } from "@/context/CartContext";
+import { useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
+import confetti from "canvas-confetti";
+
+export default function OrderDetail({ order: initialOrder, showHelp = true }: OrderDetailProps) {
+  const [order, setOrder] = useState(initialOrder);
+  const { clearCart, cart } = useCart();
+
+  useEffect(() => {
+    if (order.status.toLowerCase() === "pagada" || order.status.toLowerCase() === "pagado") {
+      const duration = 3 * 1000;
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+      const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+      const interval: any = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+        confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+      }, 250);
+    }
+  }, [order.status]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    
+    // Suscribirse a cambios en tiempo real para esta orden
+    const channel = supabase
+      .channel(`order-updates-${order.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "Order",
+          filter: `id=eq.${order.id}`,
+        },
+        (payload) => {
+          // Si el estado cambió, actualizamos el estado local
+          if (payload.new && payload.new.status !== order.status) {
+            setOrder(prev => ({ 
+              ...prev, 
+              status: payload.new.status 
+            }));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [order.id, order.status]);
+
+  useEffect(() => {
+    // Solo limpiamos si el carrito tiene algo, para evitar bucles infinitos
+    if (cart.length > 0) {
+      clearCart();
+    }
+  }, [cart.length, clearCart]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Left Column: Order Details */}
@@ -58,10 +129,16 @@ export default function OrderDetail({ order, showHelp = true }: OrderDetailProps
               </h1>
             </div>
             <div className="flex flex-col md:flex-row items-end md:items-center gap-4">
-              {["pagado", "enviado", "entregado"].includes(order.status.toLowerCase()) && (
+              {["pagada", "pagado", "enviado", "entregado"].includes(order.status.toLowerCase()) && (
                 <DownloadInvoiceButton
                   orderNumber={`MZ-${order.orderNumber}`}
                   customerNit={order.customerIdentification || ""}
+                  customerPhone={order.customerPhone || ""}
+                />
+              )}
+              {order.status === "rechazada" && (
+                <RetryPaymentButton
+                  orderNumber={`MZ-${order.orderNumber}`}
                 />
               )}
               <OrderStatusBadge status={order.status} className="text-sm px-5 py-2 self-start" />

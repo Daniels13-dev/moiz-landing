@@ -1,6 +1,6 @@
-import { getAllProducts, getAllCategories } from "@/services/products";
+import { getFeaturedProducts, getAllCategories } from "@/services/products";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ProductCarousel from "@/components/ProductCarousel";
@@ -13,9 +13,7 @@ import Newsletter from "@/components/Newsletter";
 import TrustSeals from "@/components/TrustSeals";
 
 export default async function Home() {
-  const [allProducts, categoriesDb] = await Promise.all([getAllProducts(), getAllCategories()]);
-
-  const featuredProducts = allProducts.filter((p) => p.isFeatured).slice(0, 5);
+  const [featuredProducts, categoriesDb] = await Promise.all([getFeaturedProducts(5), getAllCategories()]);
 
   return (
     <main>

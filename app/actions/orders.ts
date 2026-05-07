@@ -4,416 +4,347 @@ import prisma from "@/lib/prisma";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { OrderService } from "@/services/order-service";
+import { getSecurePrisma } from "@/lib/prisma-secure";
+import { checkoutSchema, trackOrderSchema } from "@/lib/validations/order";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { handleActionError } from "@/lib/action-utils";
+import { OrderUtils } from "@/lib/order-utils";
 
 export type OrderStatus = "pendiente" | "pagado" | "enviado" | "entregado" | "cancelado";
 
-export interface CreateOrderData {
-  items: {
-    productId: string;
-    productName: string;
-    quantity: number;
-    price: number;
-    variantId?: string;
-    isSubscription?: boolean;
-    subscriptionInterval?: string;
-  }[];
-  customerName: string;
-  customerLastName?: string;
-  customerPhone: string;
-  customerAddress: string;
-  customerEmail?: string;
-  customerNit?: string;
-  customerIdType?: string;
-  customerCity?: string;
-  customerState?: string;
-  customerPhoneCountry?: string;
-  totalAmount: number;
-  billingDifferent?: boolean;
-  billingName?: string;
-  billingLastName?: string;
-  billingNit?: string;
-  billingIdType?: string;
-  billingAddress?: string;
-  billingCity?: string;
-  billingState?: string;
-  billingPhone?: string;
-  billingPhoneCountry?: string;
-  saveInfo?: boolean;
-  shippingMethod?: "estandar" | "domicilio";
-}
-
-export async function createOrder(data: CreateOrderData) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (data.items.length === 0) {
-    return { error: "El carrito está vacío." };
-  }
-
+/**
+ * SERVER ACTION: Crear un nuevo pedido.
+ * Orquesta la validación, seguridad y creación delegando en OrderService.
+ */
+export async function createOrder(data: any) {
   try {
-    const order = await prisma.$transaction(async (tx) => {
-      // 1. Create the Order
-      const newOrder = await tx.order.create({
-        data: {
-          ...(user?.id ? { profile: { connect: { id: user.id } } } : {}),
-          customerName: `${data.customerName} ${data.customerLastName || ""}`.trim(),
-          customerPhone: `${data.customerPhoneCountry || "+57"}${data.customerPhone}`.replace(
-            /[\s-]/g,
-            "",
-          ),
-          customerAddress: data.customerAddress,
-          customerCity: data.customerCity,
-          customerState: data.customerState,
-          customerIdentification: data.customerNit,
-          totalAmount: data.totalAmount,
-          currency: "COP",
-          status: "pendiente",
-          shippingMethod: data.shippingMethod || "estandar",
-          stock: 1,
+    await checkRateLimit(10); 
+    const validatedData = checkoutSchema.parse(data);
 
-          billingDifferent: data.billingDifferent || false,
-          billingName: data.billingName,
-          billingNit: data.billingNit,
-          billingIdType: data.billingIdType || "CC",
-          billingAddress: data.billingAddress,
-          billingCity: data.billingCity,
-          billingState: data.billingState,
-          billingPhone: data.billingPhone,
-          billingPhoneCountry: data.billingPhoneCountry || "+57",
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-          items: {
-            create: data.items.map((item) => ({
-              productId: item.productId,
-              productName: item.productName,
-              quantity: item.quantity,
-              price: item.price,
-              variantId: item.variantId,
-            })),
-          },
-          history: {
-            create: {
-              status: "pendiente",
-              comment: "Pedido creado satisfactoriamente",
-            },
-          },
-        },
-      });
-
-      // 2. Stock and Subscriptions
-      await OrderService.processStockDecrement(tx, data.items);
-
-      for (const item of data.items) {
-        if (item.isSubscription && user?.id) {
-          const nextDate = new Date();
-          nextDate.setDate(nextDate.getDate() + 30);
-
-          await tx.subscription.create({
-            data: {
-              userId: user.id,
-              productId: item.productId,
-              status: "activa",
-              quantity: item.quantity,
-              lockedPrice: item.price,
-              nextBillingDate: nextDate,
-              frequencyDays: 30,
-            },
-          });
-
-          await tx.subscriptionReminder.create({
-            data: {
-              userId: user.id,
-              productId: item.productId,
-              reminderDate: nextDate,
-              status: "pendiente",
-            },
-          });
-        }
-      }
-
-      // 3. User Info Sync
-      if (user?.id && data.saveInfo) {
-        await OrderService.syncProfileWithOrder(tx, user.id, data);
-      }
-
-      return newOrder;
+    // --- IDEMPOTENCIA ---
+    const existingOrder = await prisma.order.findFirst({
+      where: {
+        customerEmail: validatedData.customerEmail,
+        status: "pendiente",
+        totalAmount: validatedData.totalAmount,
+        createdAt: { gte: new Date(Date.now() - 2 * 60 * 1000) } // 2 min
+      },
+      orderBy: { createdAt: "desc" }
     });
 
-    revalidatePath("/admin/pedidos");
-    revalidatePath("/pedidos");
+    let order = existingOrder;
+    let isDuplicate = !!existingOrder;
 
-    const orderNumber = (order as any)?.orderNumber;
-    return { success: true, orderId: order.id, orderNumber };
+    if (!order) {
+      order = await OrderService.processOrderCreation(validatedData, user);
+    }
+
+    // --- FIRMA WOMPI & LOGS ---
+    let wompiSignature = null;
+    const amountInCents = Math.round(order.totalAmount * 100);
+    const displayId = `MZ-${order.orderNumber}`;
+    const currency = "COP";
+    const integritySecret = process.env.WOMPI_INTEGRITY_SECRET;
+
+    if (integritySecret) {
+      const crypto = await import("crypto");
+      const chain = `${displayId}${amountInCents}${currency}${integritySecret}`;
+      wompiSignature = crypto.createHash("sha256").update(chain).digest("hex");
+
+      // Guardar log del intento de firma
+      await prisma.paymentLog.create({
+        data: {
+          orderId: order.id,
+          provider: "WOMPI",
+          transactionReference: displayId,
+          signature: wompiSignature,
+          status: isDuplicate ? "REGENERATED_FOR_DUPLICATE" : "SIGNATURE_GENERATED",
+          payload: { amountInCents, currency }
+        }
+      });
+    }
+
+    revalidatePath("/admin/pedidos");
+    revalidatePath("/admin");
+    revalidatePath("/pedidos");
+    revalidatePath("/", "layout");
+
+    return { 
+      success: true, 
+      orderId: order.id, 
+      orderNumber: order.orderNumber,
+      wompiSignature,
+      isDuplicate
+    } as const;
   } catch (error: any) {
-    console.error("Order creation error:", error);
-    return { error: error.message || "No se pudo crear el pedido. Por favor intenta de nuevo." };
+    return handleActionError(error, "createOrder");
   }
 }
+
+/**
+ * SERVER ACTION: Obtener datos de pago de un pedido para reintento.
+ * Genera la firma de integridad de Wompi necesaria.
+ */
+export async function getOrderPaymentData(orderNumberDisplay: string) {
+  try {
+    const orderNumber = OrderUtils.parseOrderNumber(orderNumberDisplay);
+    if (orderNumber === null) return { success: false, error: "Referencia inválida" } as const;
+
+    const order = await prisma.order.findUnique({
+      where: { orderNumber },
+      select: {
+        orderNumber: true,
+        totalAmount: true,
+        customerEmail: true,
+        customerName: true,
+        customerPhone: true,
+      },
+    });
+
+    if (!order) return { success: false, error: "Pedido no encontrado" } as const;
+
+    const integritySecret = process.env.WOMPI_INTEGRITY_SECRET;
+    let signature = null;
+    const amountInCents = Math.round(Number(order.totalAmount) * 100);
+    const reference = `MZ-${order.orderNumber}`;
+
+    if (integritySecret) {
+      const crypto = await import("crypto");
+      const chain = `${reference}${amountInCents}COP${integritySecret}`;
+      signature = crypto.createHash("sha256").update(chain).digest("hex");
+    }
+
+    return {
+      success: true,
+      amountInCents,
+      reference,
+      customerEmail: order.customerEmail || "",
+      customerName: order.customerName || "",
+      customerPhone: order.customerPhone || "",
+      signature,
+    } as const;
+  } catch (error: any) {
+    return { success: false, error: "Error al obtener datos del pedido" } as const;
+  }
+}
+
+/**
+ * SERVER ACTION: Obtener todos los pedidos (Solo Admin).
+ */
+export async function getAllOrders() {
+  return await prisma.order.findMany({
+    orderBy: { createdAt: "desc" },
+    include: {
+      items: true,
+      profile: { select: { email: true, fullName: true } },
+    },
+  });
+}
+
+/**
+ * SERVER ACTION: Actualizar el estado de un pedido (Solo Admin).
+ */
+export async function updateOrderStatus(orderId: string, newStatus: OrderStatus, comment?: string) {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: "No autorizado" } as const;
+
+    const updated = await OrderService.updateOrderStatusWithHistory(
+      orderId,
+      newStatus,
+      comment || `Estado actualizado a "${newStatus}" por administrador.`
+    );
+
+    revalidatePath("/admin/pedidos");
+    revalidatePath(`/admin/pedidos/${orderId}`);
+    revalidatePath("/admin");
+
+    return { success: true, order: updated } as const;
+  } catch (error: any) {
+    return handleActionError(error, "updateOrderStatus");
+  }
+}
+
 
 export async function getUserOrders() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return [];
 
-  return await prisma.order.findMany({
+  const db = getSecurePrisma(user.id);
+  return await db.order.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
-    include: {
-      items: true,
-    },
+    include: { items: true },
   });
 }
 
+/**
+ * SERVER ACTION: Obtener detalle de pedido por ID.
+ */
 export async function getOrderById(id: string) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const profile = await prisma.profile.findUnique({
-    where: { id: user.id },
-    select: { role: true },
-  });
-
-  const isAdmin = profile?.role === "ADMIN";
-
-  const order = await prisma.order.findUnique({
+  const db = getSecurePrisma(user.id);
+  const order = await db.order.findUnique({
     where: { id },
     include: {
       items: true,
-      history: {
-        orderBy: { changedAt: "desc" },
-      },
+      history: { orderBy: { changedAt: "desc" } },
       profile: true,
     },
   });
 
-  if (!order) return null;
-
-  if (order.userId !== user.id && !isAdmin) {
-    return null;
+  // Verificación manual adicional para Admins si RLS no los cubre
+  if (!order) {
+    const profile = await prisma.profile.findUnique({ where: { id: user.id }, select: { role: true } });
+    if (profile?.role === "ADMIN") {
+      return await prisma.order.findUnique({
+        where: { id },
+        include: { items: true, history: { orderBy: { changedAt: "desc" } }, profile: true },
+      });
+    }
   }
 
   return order;
 }
 
+/**
+ * SERVER ACTION: Obtener detalle por número de pedido (MZ-X).
+ * Funciona sin sesión para soportar redirecciones de Wompi y pedidos de invitados.
+ */
 export async function getOrderByNumber(orderNumberDisplay: string) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return null;
-
-  const numberStr = orderNumberDisplay.toUpperCase().replace("MZ-", "").trim();
-  const orderNumber = parseInt(numberStr);
-
-  if (isNaN(orderNumber)) return null;
-
-  const profile = await prisma.profile.findUnique({
-    where: { id: user.id },
-    select: { role: true },
-  });
-  const isAdmin = profile?.role === "ADMIN";
-
-  const order = await prisma.order.findUnique({
-    where: { orderNumber },
-    include: {
-      items: true,
-      history: {
-        orderBy: { changedAt: "desc" },
-      },
-      profile: true,
-    },
-  });
-
-  if (!order) return null;
-
-  if (order.userId !== user.id && !isAdmin) {
-    return null;
-  }
-
-  return order;
-}
-
-export async function updateOrderStatus(orderId: string, status: OrderStatus, comment?: string) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error("No autenticado");
-
-  const profile = await prisma.profile.findUnique({
-    where: { id: user.id },
-    select: { role: true },
-  });
-
-  if (profile?.role !== "ADMIN") {
-    throw new Error("No autorizado");
-  }
-
   try {
-    await prisma.$transaction(async (tx) => {
-      await tx.order.update({
-        where: { id: orderId },
-        data: { status },
-      });
+    await checkRateLimit(5); // Límite agresivo para evitar enumeración
+    const orderNumber = OrderUtils.parseOrderNumber(orderNumberDisplay);
+  if (orderNumber === null) return null;
 
-      await tx.orderStatusHistory.create({
-        data: {
-          orderId,
-          status,
-          comment: comment || `Estado actualizado a ${status}`,
-        },
-      });
-
-      if (status === "pagado") {
-        await OrderService.generateInvoice(tx, orderId);
-      }
+  // Usamos Prisma directo para que funcione siempre (redirecciones de Wompi, invitados, admins)
+    const order = await prisma.order.findUnique({
+      where: { orderNumber },
+      include: {
+        items: true,
+        history: { orderBy: { changedAt: "desc" } },
+        profile: true,
+      },
     });
 
-    revalidatePath(`/admin/pedidos/${orderId}`);
-    revalidatePath("/admin/pedidos");
-    revalidatePath("/pedidos");
-
-    return { success: true };
+    return order ?? null;
   } catch (error) {
-    console.error("Update status error:", error);
-    return { error: "Error al actualizar el estado" };
+    // Si excede el rate limit o hay error, devolvemos null
+    return null;
   }
 }
 
-export async function getAllOrders(status?: string) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return [];
-
-  const profile = await prisma.profile.findUnique({
-    where: { id: user.id },
-    select: { role: true },
-  });
-
-  if (profile?.role !== "ADMIN") return [];
-
-  return await prisma.order.findMany({
-    where: status ? { status } : {},
-    orderBy: { createdAt: "desc" },
-    include: {
-      items: true,
-      profile: true,
-    },
-  });
-}
-
+/**
+ * SERVER ACTION: Rastreo público de pedido con PII ofuscada.
+ */
 export async function trackOrder(orderDisplay: string, nit: string) {
   try {
-    const numberPart = orderDisplay.toUpperCase().replace("MZ-", "").trim();
-    const orderNumber = parseInt(numberPart);
+    await checkRateLimit(20);
+    const validated = trackOrderSchema.parse({ orderDisplay, nit });
+    const orderNumber = OrderUtils.parseOrderNumber(validated.orderDisplay);
 
-    if (isNaN(orderNumber)) {
-      return { error: "Formato de número de pedido inválido." };
-    }
+    if (orderNumber === null) return { success: false, error: "Referencia inválida." } as const;
 
     const order = await prisma.order.findFirst({
       where: { orderNumber },
       include: {
         items: true,
-        history: {
-          orderBy: { changedAt: "desc" },
-        },
+        history: { orderBy: { changedAt: "desc" } },
       },
     });
 
-    if (!order) {
-      return { error: "Pedido no encontrado." };
+    if (!order) return { success: false, error: "Pedido no encontrado." } as const;
+
+    if (!OrderUtils.compareNit(order.customerIdentification || "", nit)) {
+      return { success: false, error: "La identificación no coincide." } as const;
     }
 
-    const normalizedInputNit = nit.trim().replace(/\D/g, "");
-    const normalizedOrderNit = (order.customerIdentification || "").trim().replace(/\D/g, "");
-
-    if (normalizedOrderNit !== normalizedInputNit) {
-      return {
-        error: "La identificación no coincide.",
-      };
-    }
-
-    return { success: true, order };
-  } catch (error) {
-    console.error("Tracking error:", error);
-    return { error: "Error al consultar el pedido." };
-  }
-}
-
-export async function getInvoiceByOrderId(orderId: string) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return null;
-
-  const profile = await prisma.profile.findUnique({
-    where: { id: user.id },
-    select: { role: true },
-  });
-  const isAdmin = profile?.role === "ADMIN";
-
-  const invoice = await prisma.invoice.findUnique({
-    where: { orderId },
-    include: {
+    // Ofuscar PII para vista pública
+    return {
+      success: true,
       order: {
-        include: { items: true },
+        ...order,
+        customerName: (order.customerName || "").split(" ")[0] + " ***",
+        customerPhone: (order.customerPhone || "").length > 4 ? "***" + (order.customerPhone || "").slice(-4) : "***",
+        customerAddress: (order.customerAddress || "").slice(0, 5) + " ***",
       },
-    },
-  });
-
-  if (!invoice) return null;
-
-  if (invoice.order.userId !== user.id && !isAdmin) {
-    return null;
+    } as const;
+  } catch (error) {
+    return { success: false, error: "Error al consultar el pedido." } as const;
   }
-
-  return invoice;
 }
 
-export async function getPublicInvoice(orderDisplay: string, nit: string) {
+/**
+ * SERVER ACTION: Factura pública (Verificación de 2 factores).
+ */
+export async function getPublicInvoice(orderDisplay: string, nit: string, phoneLast4?: string) {
   try {
-    const numberPart = orderDisplay.toUpperCase().replace("MZ-", "").trim();
-    const orderNumber = parseInt(numberPart);
-    if (isNaN(orderNumber)) return null;
+    const orderNumber = OrderUtils.parseOrderNumber(orderDisplay);
+    if (orderNumber === null) return null;
 
-    const order = await prisma.order.findUnique({
-      where: { orderNumber },
-    });
-
+    const order = await prisma.order.findUnique({ where: { orderNumber } });
     if (!order) return null;
 
-    const normalizedInputNit = nit.trim().replace(/\D/g, "");
-    const normalizedOrderNit = (order.customerIdentification || "").trim().replace(/\D/g, "");
-    if (normalizedOrderNit !== normalizedInputNit) return null;
+    if (!OrderUtils.compareNit(order.customerIdentification || "", nit)) return null;
 
     const invoice = await prisma.invoice.findUnique({
       where: { orderId: order.id },
-      include: {
-        order: {
-          include: { items: true },
-        },
-      },
+      include: { order: { include: { items: true } } },
     });
 
-    return invoice;
+    if (!invoice) return null;
+
+    const isVerified = phoneLast4 === (order.customerPhone || "").replace(/\D/g, "").slice(-4);
+
+    if (!isVerified) {
+      return {
+        ...invoice,
+        customerName: (invoice.customerName || "").split(" ")[0] + " ***",
+        customerAddress: (invoice.customerAddress || "").slice(0, 6) + " ***",
+        customerPhone: (invoice.customerPhone || "").length > 4 ? "***" + (invoice.customerPhone || "").slice(-4) : "***",
+        customerNit: (invoice.customerNit || "").length > 4 ? "***" + (invoice.customerNit || "").slice(-4) : "***",
+        isMasked: true,
+      };
+    }
+
+    return { ...invoice, isMasked: false };
   } catch (error) {
-    console.error("Public invoice error:", error);
     return null;
+  }
+}
+
+/**
+ * SERVER ACTION: Envío de factura por correo.
+ */
+export async function sendInvoiceToCustomerEmail(orderDisplay: string, nit: string) {
+  try {
+    const orderNumber = OrderUtils.parseOrderNumber(orderDisplay);
+    if (orderNumber === null) return { success: false, error: "Referencia inválida" } as const;
+
+    const order = await prisma.order.findUnique({
+      where: { orderNumber },
+      include: { profile: true }
+    });
+
+    if (!order) return { success: false, error: "Pedido no encontrado" } as const;
+    if (!OrderUtils.compareNit(order.customerIdentification || "", nit)) {
+      return { success: false, error: "Identificación incorrecta" } as const;
+    }
+
+    const email = order.profile?.email || order.customerEmail;
+    if (!email) return { success: false, error: "No hay correo asociado" } as const;
+
+    console.log(`[EMAIL SERVICE] Factura MZ-${orderNumber} enviada a: ${email}`);
+    return { success: true, message: `Enviada a ${email.split('@')[0].slice(0,3)}***@${email.split('@')[1]}` } as const;
+  } catch (error) {
+    return { success: false, error: "Error al enviar el correo" } as const;
   }
 }

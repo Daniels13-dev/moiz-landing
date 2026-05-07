@@ -7,21 +7,17 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import {
   Trash2,
-  Plus,
-  Minus,
   ArrowRight,
   ShoppingBag,
-  X,
   CreditCard,
-  CheckCircle2,
-  Info,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import CartCrossSelling from "@/components/CartCrossSelling";
+import CartItem from "./components/CartItem";
+import CartSummary from "./components/CartSummary";
 
 export default function CarritoPage() {
   const router = useRouter();
@@ -41,7 +37,6 @@ export default function CarritoPage() {
 
   const [couponInput, setCouponInput] = useState("");
   const [isValidating, setIsValidating] = useState(false);
-  const [showSubInfo, setShowSubInfo] = useState<string | null>(null);
 
   const handleApplyCoupon = async () => {
     if (!couponInput || cart.length === 0) return;
@@ -104,105 +99,12 @@ export default function CarritoPage() {
                 <AnimatePresence mode="popLayout">
                   {cart.length > 0 ? (
                     cart.map((item) => (
-                      <motion.div
+                      <CartItem
                         key={item.id}
-                        layout
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="bg-white md:bg-zinc-50/50 p-4 md:p-6 rounded-[2rem] flex items-center gap-4 md:gap-6 border border-zinc-100 group transition-all"
-                      >
-                        <div className="w-20 md:w-24 h-20 md:h-24 bg-[#FAF9F6] md:bg-white rounded-2xl flex-shrink-0 flex items-center justify-center p-2 overflow-hidden border border-zinc-100/50">
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={100}
-                            height={100}
-                            className="object-contain"
-                          />
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-base md:text-xl font-black text-zinc-900 truncate mb-0.5">
-                            {item.name}
-                          </h3>
-                          {item.isSubscription && (
-                            <div className="flex flex-col gap-1 mb-2">
-                              <div className="flex items-center gap-2">
-                                <div className="inline-flex items-center gap-1.5 bg-[var(--moiz-green)]/10 text-[var(--moiz-green)] text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest w-fit">
-                                  Suscripción (Ahorro 5%)
-                                </div>
-                                <div className="relative">
-                                  <button
-                                    onMouseEnter={() => setShowSubInfo(item.id)}
-                                    onMouseLeave={() => setShowSubInfo(null)}
-                                    className="text-zinc-400 hover:text-[var(--moiz-green)] transition-colors"
-                                  >
-                                    <Info size={12} />
-                                  </button>
-                                  <AnimatePresence>
-                                    {showSubInfo === item.id && (
-                                      <motion.div
-                                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                                        className="absolute bottom-full left-0 mb-3 w-64 bg-zinc-900 text-white p-5 rounded-3xl shadow-2xl z-50 text-[10px] leading-relaxed font-medium pointer-events-none"
-                                      >
-                                        <div className="space-y-3">
-                                          <p className="font-black uppercase tracking-widest text-[var(--moiz-green)] border-b border-white/10 pb-2">
-                                            Permanencia de 3 Meses
-                                          </p>
-                                          <p>• {siteConfig.ui.cart.subscriptionNotice.commitment}</p>
-                                          <p>• <b>Sin cobros anticipados:</b> {siteConfig.ui.cart.subscriptionNotice.noPrepayment}</p>
-                                          <p>• {siteConfig.ui.cart.subscriptionNotice.cancellation}</p>
-                                        </div>
-                                        <div className="absolute top-full left-4 border-[8px] border-transparent border-t-zinc-900" />
-                                      </motion.div>
-                                    )}
-                                  </AnimatePresence>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-1.5 text-zinc-400 text-[10px] font-bold pl-1">
-                                <span className="w-1 h-1 bg-zinc-300 rounded-full" />
-                                {item.subscriptionInterval}
-                              </div>
-                            </div>
-                          )}
-                          <p className="text-[var(--moiz-green)] font-black text-sm md:text-lg">
-                            $
-                            {(item.price * item.quantity)
-                              .toString()
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-                          </p>
-                        </div>
-
-                        <div className="flex flex-col items-center gap-2">
-                          <button
-                            onClick={() => removeFromCart(item.id)}
-                            className="p-1 text-zinc-300 hover:text-red-500 transition-all ml-auto"
-                            aria-label="Eliminar"
-                          >
-                            <X size={16} />
-                          </button>
-                          <div className="flex items-center gap-2 bg-zinc-50 md:bg-white p-1 rounded-full border border-zinc-200">
-                            <button
-                              onClick={() => updateQuantity(item.id, -1)}
-                              className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-white text-zinc-600 hover:bg-zinc-900 hover:text-white transition-all shadow-sm"
-                            >
-                              <Minus size={12} />
-                            </button>
-                            <span className="w-4 text-center font-black text-zinc-900 text-xs md:text-base">
-                              {item.quantity}
-                            </span>
-                            <button
-                              onClick={() => updateQuantity(item.id, 1)}
-                              className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-white text-zinc-600 hover:bg-zinc-900 hover:text-white transition-all shadow-sm"
-                            >
-                              <Plus size={12} />
-                            </button>
-                          </div>
-                        </div>
-                      </motion.div>
+                        item={item}
+                        removeFromCart={removeFromCart}
+                        updateQuantity={updateQuantity}
+                      />
                     ))
                   ) : (
                     <motion.div
@@ -236,137 +138,20 @@ export default function CarritoPage() {
 
           {/* Checkout Summary Sidebar (Desktop Only) */}
           <div className="hidden lg:block lg:col-span-4 h-fit sticky top-48">
-            <div className="bg-zinc-900 rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden">
-              <div className="absolute top-[-10%] right-[-10%] w-32 h-32 bg-[var(--moiz-green)]/20 blur-[50px] rounded-full" />
-
-              <h2 className="text-3xl font-black mb-10 tracking-tight">{siteConfig.ui.cart.summary}</h2>
-
-              <div className="space-y-6 pb-8 border-b border-white/10 mb-8">
-                <div className="flex justify-between text-white/60 font-medium">
-                  <span>{siteConfig.ui.cart.products} ({totalItems})</span>
-                  <span>${totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span>
-                </div>
-
-                {appliedCoupon && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    className="flex justify-between text-[var(--moiz-green)] font-bold text-sm"
-                  >
-                    <span className="flex items-center gap-2">
-                      <CheckCircle2 size={14} /> Descuento ({appliedCoupon.code})
-                    </span>
-                    <span>
-                      -$
-                      {discountAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-                    </span>
-                  </motion.div>
-                )}
-
-                <div className="flex justify-between items-center text-sm font-medium">
-                  <span className="text-white/60">{siteConfig.ui.order.shipping}</span>
-                  {totalPrice >= 400000 ? (
-                    <span className="text-[var(--moiz-green)] font-black">{siteConfig.ui.cart.free}</span>
-                  ) : (
-                    <span className="text-white/30 italic text-[11px]">{siteConfig.ui.cart.calculatedByZone}</span>
-                  )}
-                </div>
-              </div>
-
-              {/* Coupon Section */}
-              <div className="mb-10">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-4">
-                  ¿Tienes un cupón?
-                </p>
-                {appliedCoupon ? (
-                  <div className="flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl group transition-all">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] text-white/40 uppercase font-black tracking-widest mb-1">
-                        {siteConfig.ui.cart.activeCoupon}
-                      </span>
-                      <span className="text-[var(--moiz-green)] font-black uppercase text-sm">
-                        {appliedCoupon.code}
-                      </span>
-                    </div>
-                    <button
-                      onClick={removeCoupon}
-                      className="p-2 text-white/20 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
-                      title={siteConfig.ui.cart.removeCoupon}
-                    >
-                      <X size={18} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex gap-2">
-                    <div className="relative flex-1 group">
-                      <input
-                        type="text"
-                        placeholder="CÓDIGO"
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-white font-black text-sm outline-none focus:border-[var(--moiz-green)]/40 focus:ring-4 focus:ring-[var(--moiz-green)]/5 transition-all uppercase placeholder:text-white/20"
-                        value={couponInput}
-                        onChange={(e) => setCouponInput(e.target.value)}
-                        onKeyPress={(e) => e.key === "Enter" && handleApplyCoupon()}
-                      />
-                    </div>
-                    <button
-                      onClick={handleApplyCoupon}
-                      disabled={isValidating || !couponInput || cart.length === 0}
-                      className="bg-zinc-800 hover:bg-zinc-700 text-white px-6 rounded-2xl font-black text-xs uppercase transition-all disabled:opacity-50"
-                    >
-                      {isValidating ? "..." : siteConfig.ui.cart.apply}
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Progress Bar de Envío Gratis */}
-              <div className="mb-10 bg-white/5 p-4 rounded-2xl border border-white/10">
-                <div className="flex justify-between text-xs font-bold mb-3">
-                  <span className="text-white/70 tracking-wider uppercase">{siteConfig.ui.badges.freeShipping}</span>
-                  {totalPrice >= 400000 ? (
-                    <span className="text-[var(--moiz-green)] flex items-center gap-1">
-                      {siteConfig.ui.cart.unlockShipping}
-                    </span>
-                  ) : (
-                    <span className="text-white/50">
-                      {siteConfig.ui.cart.missingForShipping}
-                      {(400000 - totalPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-                    </span>
-                  )}
-                </div>
-                <div className="w-full bg-black/40 rounded-full h-3 overflow-hidden shadow-inner">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{
-                      width: `${Math.min((totalPrice / 400000) * 100, 100)}%`,
-                    }}
-                    transition={{ duration: 1, ease: "circOut" }}
-                    className="h-full bg-gradient-to-r from-[var(--moiz-green)] to-[#E6B800] rounded-full relative"
-                  >
-                    {totalPrice >= 400000 && (
-                      <div className="absolute inset-0 bg-white/20 animate-pulse" />
-                    )}
-                  </motion.div>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2 mb-10">
-                <span className="text-white/40 font-bold uppercase tracking-[0.2em] text-[10px]">
-                  {siteConfig.ui.cart.orderTotal}
-                </span>
-                <span className="text-3xl font-black text-white">
-                  ${finalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-                </span>
-              </div>
-
-              <button
-                onClick={handleCheckoutClick}
-                disabled={cart.length === 0}
-                className="w-full py-4 bg-[var(--moiz-green)] text-zinc-950 rounded-full font-black text-lg shadow-[0_15px_40px_rgba(106,142,42,0.3)] hover:shadow-[0_20px_50px_rgba(106,142,42,0.6)] transition-all duration-300 hover:-translate-y-1 active:scale-95 disabled:opacity-50 disabled:pointer-events-none group flex items-center justify-center gap-3"
-              >
-                {siteConfig.ui.cart.checkout} <CreditCard size={20} />
-              </button>
-            </div>
+            <CartSummary
+              totalItems={totalItems}
+              totalPrice={totalPrice}
+              finalPrice={finalPrice}
+              discountAmount={discountAmount}
+              appliedCoupon={appliedCoupon}
+              removeCoupon={removeCoupon}
+              couponInput={couponInput}
+              setCouponInput={setCouponInput}
+              handleApplyCoupon={handleApplyCoupon}
+              isValidating={isValidating}
+              handleCheckoutClick={handleCheckoutClick}
+              cartLength={cart.length}
+            />
           </div>
         </div>
       </div>
@@ -386,7 +171,7 @@ export default function CarritoPage() {
                   Total
                 </span>
                 <span className="text-xl font-black">
-                  ${finalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                  ${finalPrice.toLocaleString("es-CO")}
                 </span>
               </div>
               <button

@@ -5,9 +5,8 @@ import { ProductVariant } from "@/types/product";
 interface SizeSelectorProps {
   sortedSizes: string[];
   selectedSize: string | null;
-  setSelectedSize: (size: string) => void;
+  setSelectedSize: (size: string | null) => void;
   variants: ProductVariant[];
-  onSizeChange: (size: string) => void;
 }
 
 export default function SizeSelector({
@@ -15,7 +14,6 @@ export default function SizeSelector({
   selectedSize,
   setSelectedSize,
   variants,
-  onSizeChange,
 }: SizeSelectorProps) {
   if (sortedSizes.length === 0) return null;
 
@@ -31,10 +29,7 @@ export default function SizeSelector({
           return (
             <button
               key={size}
-              onClick={() => {
-                setSelectedSize(size);
-                onSizeChange(size);
-              }}
+              onClick={() => setSelectedSize(size)}
               disabled={!hasStock}
               className={`px-5 py-2.5 rounded-xl font-black text-sm uppercase tracking-wider border-2 transition-all ${
                 selectedSize === size

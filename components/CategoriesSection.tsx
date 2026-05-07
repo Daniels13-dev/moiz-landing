@@ -179,7 +179,7 @@ export default function CategoriesSection({ dbCategories }: { dbCategories?: Cat
 
             return (
               <Link
-                href={`/productos?categoria=${encodeURIComponent(dbCat.name)}`}
+                href={`/productos/categoria/${dbCat.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
                 key={dbCat.id}
                 className={`block ${bentoClasses} w-full h-full`}
               >

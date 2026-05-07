@@ -11,6 +11,38 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: "como-quitar-olor-orina-gato",
+    title: "Cómo quitar el olor a orina de gato de tu casa definitivamente",
+    excerpt:
+      "El olor a amoníaco puede arruinar cualquier espacio. Descubre por qué sucede, cómo limpiarlo y el secreto para que no vuelva a oler nunca más.",
+    category: "Cuidado Felino",
+    date: "2024-05-15",
+    readTime: "6 min",
+    image:
+      "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&q=80&w=800",
+    content: `# El verdadero motivo por el que tu casa huele a gato (y cómo solucionarlo)
+
+El olor a orina de gato es uno de los olores más persistentes y difíciles de eliminar en el hogar. Esto no se debe a que tu gato sea "sucio", sino a la alta concentración de amoníaco y proteínas en su orina, que cristalizan y se aferran a las superficies.
+
+Si estás cansado de gastar dinero en aromatizantes que solo disfrazan el olor temporalmente, estás en el lugar correcto.
+
+## Pasos comprobados para eliminar el olor existente
+
+1. **Evita el cloro o amoníaco:** Nunca limpies la orina de gato con cloro. La orina de gato ya contiene amoníaco, y mezclarlo con limpiadores tradicionales puede empeorar el olor o crear gases tóxicos.
+2. **Usa limpiadores enzimáticos:** Las enzimas rompen los cristales de ácido úrico (los verdaderos culpables del olor). Aplícalo generosamente sobre la mancha, déjalo actuar por 15 minutos y seca con toallas de papel.
+3. **Bicarbonato de sodio como absorbente:** Una vez seco, espolvorea bicarbonato sobre el área afectada para que absorba cualquier olor residual.
+
+### La solución definitiva: Ataca el problema de raíz
+
+Limpiar los accidentes está bien, pero **el 90% del olor en un hogar proviene directamente del arenero**. Si usas arena de bentonita barata o sílice, estas no neutralizan el amoníaco, solo lo absorben hasta saturarse.
+
+Para eliminar el olor de forma permanente de tu hogar, el cambio más inteligente que puedes hacer es transicionar a **arena de origen vegetal**.
+
+> "El maíz tiene una propiedad molecular única: sus microporos atrapan el amoníaco al instante y evitan que el olor se volatilice en el aire."
+
+Al utilizar una arena ecológica de maíz, no solo aglomeras la orina en segundos, sino que bloqueas el olor a nivel molecular. Un arenero limpio con la arena correcta significa una casa que huele a casa, no a gato.`,
+  },
+  {
     slug: "por-que-cambiar-arena-biodegradable",
     title: "Por qué cambiar a arena biodegradable salvará la salud de tu gato",
     excerpt:

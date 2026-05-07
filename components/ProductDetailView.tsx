@@ -8,6 +8,7 @@ import { CatalogProduct, ProductVariant } from "@/types/product";
 import { toggleFavorite, checkIfFavorite } from "@/app/actions/favorites";
 import { toast } from "sonner";
 import { siteConfig } from "@/config/site";
+import { useProductVariants } from "@/hooks/useProductVariants";
 
 // Sub-components
 import ProductGallery from "./product-detail/ProductGallery";
@@ -39,48 +40,21 @@ export default function ProductDetailView({ product, relatedProducts }: ProductD
   const [isFavorite, setIsFavorite] = useState(false);
   const [favLoading, setFavLoading] = useState(true);
 
+  const {
+    sortedSizes,
+    hasSizes,
+    selectedSize,
+    setSelectedSize,
+    filteredVariants,
+    selectedVariant,
+    setSelectedVariant,
+    activeState
+  } = useProductVariants(product);
+
   const cartItem = cart.find((item) => item.id === product.id);
   const currentQuantity = cartItem?.quantity || 0;
   const [purchaseType, setPurchaseType] = useState<"once" | "subscription">("once");
-  const hasVariants = product.variants && product.variants.length > 0;
-
-  // Derive unique sizes from variants
-  const allSizes = hasVariants
-    ? (Array.from(new Set(product.variants!.map((v) => v.size).filter(Boolean))) as string[])
-    : [];
-  const hasSizes = allSizes.length > 0;
-
-  const LETTER_ORDER = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
-  const SPANISH_ORDER = ["P", "M", "G"];
-
-  const sortedSizes = allSizes.sort((a, b) => {
-    const isSpanish = allSizes.some((s) => s === "P" || s === "G");
-    const order = isSpanish ? SPANISH_ORDER : LETTER_ORDER;
-    const idxA = order.indexOf(a);
-    const idxB = order.indexOf(b);
-    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-    if (idxA !== -1) return -1;
-    if (idxB !== -1) return 1;
-    return 0;
-  });
-
-  const [selectedSize, setSelectedSize] = useState<string | null>(hasSizes ? sortedSizes[0] : null);
-
-  const filteredVariants = hasVariants
-    ? hasSizes && selectedSize
-      ? product.variants!.filter((v) => v.size === selectedSize)
-      : product.variants!
-    : [];
-
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
-    filteredVariants.length > 0 ? filteredVariants[0] : null,
-  );
   const [showSubInfo, setShowSubInfo] = useState(false);
-
-  const activePrice = selectedVariant?.price || product.price;
-  const activeImage = selectedVariant?.image || product.image;
-  const activeName = selectedVariant ? `${product.name} (${selectedVariant.name})` : product.name;
-  const activeStock = selectedVariant !== null ? selectedVariant.stock : (product.stock ?? 0);
 
   useEffect(() => {
     let isMounted = true;
@@ -119,13 +93,13 @@ export default function ProductDetailView({ product, relatedProducts }: ProductD
 
   return (
     <div className="min-h-screen bg-[#F9F9F8] selection:bg-[var(--moiz-green)] selection:text-white pb-24">
-      <Breadcrumbs category={product.category} />
+      <Breadcrumbs category={product.category} productName={product.name} />
 
       <div className="max-w-7xl mx-auto px-6 pt-12 md:pt-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 mb-32">
           <ProductGallery
-            activeImage={activeImage}
-            activeName={activeName}
+            activeImage={activeState.image}
+            activeName={activeState.name}
             isNew={product.isNew}
             oldPrice={product.oldPrice}
             isFavorite={isFavorite}
@@ -151,11 +125,6 @@ export default function ProductDetailView({ product, relatedProducts }: ProductD
               selectedSize={selectedSize}
               setSelectedSize={setSelectedSize}
               variants={product.variants || []}
-              onSizeChange={(size) => {
-                const sizeVariants = product.variants!.filter((v) => v.size === size);
-                const first = sizeVariants.find((v) => v.stock > 0) || sizeVariants[0];
-                setSelectedVariant(first || null);
-              }}
             />
 
             <VariantSelector
@@ -169,11 +138,33 @@ export default function ProductDetailView({ product, relatedProducts }: ProductD
               allowSubscription={!!product.allowSubscription}
               purchaseType={purchaseType}
               setPurchaseType={setPurchaseType}
-              activePrice={activePrice}
+              activePrice={activeState.price}
               oldPrice={product.oldPrice}
               showSubInfo={showSubInfo}
               setShowSubInfo={setShowSubInfo}
             />
+
+            {activeState.isOutOfStock && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-8"
+              >
+                <h3 className="text-amber-800 font-bold text-lg mb-2 flex items-center gap-2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  Producto Agotado Temporalmente
+                </h3>
+                <p className="text-amber-700 text-sm mb-4">
+                  Estamos trabajando para reabastecer este producto lo más pronto posible. ¡No te preocupes! Tenemos alternativas excelentes para ti.
+                </p>
+                <button 
+                  onClick={() => document.getElementById('related-products')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="bg-amber-100 text-amber-800 font-bold px-4 py-2 rounded-lg text-sm hover:bg-amber-200 transition-colors inline-flex items-center gap-2"
+                >
+                  Ver alternativas similares ↓
+                </button>
+              </motion.div>
+            )}
 
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-12">
               {currentQuantity > 0 ? (
@@ -189,9 +180,9 @@ export default function ProductDetailView({ product, relatedProducts }: ProductD
                   </span>
                   <button
                     onClick={() => updateQuantity(product.id, 1)}
-                    disabled={currentQuantity >= activeStock}
+                    disabled={currentQuantity >= activeState.stock}
                     className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors ${
-                      currentQuantity >= activeStock
+                      currentQuantity >= activeState.stock
                         ? "bg-zinc-100 text-zinc-300 cursor-not-allowed"
                         : "bg-[var(--moiz-green)] hover:bg-[var(--moiz-green)]/90 text-white"
                     }`}
@@ -202,15 +193,15 @@ export default function ProductDetailView({ product, relatedProducts }: ProductD
               ) : (
                 <button
                   onClick={handleAddToCart}
-                  disabled={activeStock <= 0}
+                  disabled={activeState.isOutOfStock}
                   className={`btn-moiz w-full sm:w-auto px-12 relative overflow-hidden transition-all ${
-                    activeStock <= 0
+                    activeState.isOutOfStock
                       ? "bg-zinc-200 text-zinc-400 cursor-not-allowed"
                       : "bg-zinc-900 text-white"
                   }`}
                 >
                   <AnimatePresence mode="wait">
-                    {activeStock <= 0 ? (
+                    {activeState.isOutOfStock ? (
                       <motion.div
                         key="oos"
                         initial={{ y: 20, opacity: 0 }}

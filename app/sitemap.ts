@@ -26,12 +26,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  const categoryUrls = categories.map((category) => ({
-    url: `${siteConfig.url}/productos?categoria=${encodeURIComponent(category.name)}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.6,
-  }));
+  const categoryUrls = categories.map((category) => {
+    const slug = category.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    return {
+      url: `${siteConfig.url}/productos/categoria/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    };
+  });
 
   const staticUrls = [
     {

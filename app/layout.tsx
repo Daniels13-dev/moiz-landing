@@ -29,9 +29,6 @@ export const metadata: Metadata = {
   authors: [{ name: siteConfig.fullName }],
   creator: siteConfig.fullName,
   publisher: siteConfig.fullName,
-  alternates: {
-    canonical: siteConfig.url,
-  },
   robots: {
     index: true,
     follow: true,
@@ -92,35 +89,6 @@ export default function RootLayout({
   return (
     <html lang="es-CO" suppressHydrationWarning>
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Product",
-              name: `Arena de Maíz para Gatos ${siteConfig.name}`,
-              image: siteConfig.ogImage,
-              description:
-                "Arena ecológica biodegradable hecha de maíz para gatos. Control natural de olores y aglomeración instantánea.",
-              brand: {
-                "@type": "Brand",
-                name: siteConfig.name,
-              },
-              offers: {
-                "@type": "Offer",
-                url: siteConfig.url,
-                priceCurrency: "COP",
-                price: "24000",
-                priceValidUntil: "2026-12-31",
-                availability: "https://schema.org/InStock",
-                seller: {
-                  "@type": "Organization",
-                  name: siteConfig.fullName,
-                },
-              },
-            }),
-          }}
-        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}
