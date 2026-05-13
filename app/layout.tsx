@@ -81,6 +81,8 @@ import SmoothScroll from "@/components/SmoothScroll";
 import TopBanner from "@/components/TopBanner";
 import GlobalFlyToCart from "@/components/GlobalFlyToCart";
 
+import { AuthRedirectHandler } from "@/components/auth/auth-redirect-handler";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -94,6 +96,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}
         suppressHydrationWarning
       >
+        <AuthRedirectHandler />
         <TopBanner />
         <SmoothScroll>
           <CartProvider>

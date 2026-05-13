@@ -40,11 +40,9 @@ export default async function AdminTestimoniosPage() {
 
         <Link
           href="/admin/testimonios/nuevo"
-          className="inline-flex items-center gap-3 px-10 py-5 bg-zinc-900 text-white rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-[var(--moiz-green)] hover:text-zinc-950 transition-all shadow-2xl hover:scale-105 active:scale-95"
+          className="flex items-center gap-2 px-6 py-3 bg-zinc-900 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl hover:bg-[var(--moiz-green)] hover:text-zinc-900 transition-all hover:scale-[1.02] active:scale-95"
         >
-          <div className="p-1 bg-white/10 rounded-lg">
-            <PlusCircle size={20} />
-          </div>
+          <PlusCircle size={16} strokeWidth={3} />
           Nuevo Testimonio
         </Link>
       </div>

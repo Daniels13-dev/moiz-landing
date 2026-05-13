@@ -1,11 +1,20 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 
-export async function proxy(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
+  const host = request.headers.get("host");
+
+  // Redirección de www a sin-www
+  if (host?.startsWith("www.")) {
+    const newHost = host.replace("www.", "");
+    const url = request.nextUrl.clone();
+    url.host = newHost;
+    return NextResponse.redirect(url, 301);
+  }
+
   let supabaseResponse = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
+    request,
   });
 
   const supabase = createServerClient(
@@ -54,30 +63,36 @@ export async function proxy(request: NextRequest) {
 
   // 2. Bloqueo estricto para Admin
   if (request.nextUrl.pathname.startsWith('/admin') && user) {
-    // Usamos la Service Role Key para bypasear el RLS y evitar recursión infinita en las políticas
-    const { createClient: createServiceClient } = await import("@supabase/supabase-js");
-    const adminClient = createServiceClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    try {
+      // Usamos la Service Role Key para bypasear el RLS y evitar recursión infinita en las políticas
+      const adminClient = createServiceClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      );
 
-    const { data: profile, error } = await adminClient
-      .from('Profile')
-      .select('role')
-      .eq('id', user.id)
-      .single();
+      const { data: profile, error } = await adminClient
+        .from('Profile')
+        .select('role')
+        .eq('id', user.id)
+        .single();
 
-    if (error) {
-      console.error('[proxy] Error fetching profile with service role:', error.message);
-    }
+      if (error) {
+        console.error('[proxy] Error fetching profile with service role:', error.message);
+      } else {
+        const role = profile?.role?.toUpperCase();
+        const isAdminRole = role === 'ADMIN' || role === 'SUPERADMIN';
 
-    const role = profile?.role?.toUpperCase();
-    const isAdminRole = role === 'ADMIN' || role === 'SUPERADMIN';
-
-    if (!isAdminRole) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/perfil';
-      return NextResponse.redirect(url);
+        if (!isAdminRole) {
+          const url = request.nextUrl.clone();
+          url.pathname = '/perfil';
+          return NextResponse.redirect(url);
+        }
+      }
+    } catch (err) {
+      console.error('[proxy] Critical error in admin validation:', err);
+      // En caso de error crítico en el proxy, permitimos continuar 
+      // y dejamos que el AdminLayout (servidor) valide la seguridad.
+      // Esto evita el 404 generalizado.
     }
   }
 
@@ -87,8 +102,8 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Intercepta TODAS las rutas excepto archivos estáticos, imágenes, favicon, y rutas /api (dejamos que las rutas api manejen su propia seguridad)
+     * Intercepta TODAS las rutas excepto archivos estáticos, imágenes, favicon, sitemap, robots y rutas /api
      */
-    '/((?!_next/static|_next/image|favicon.ico|api|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|api|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
