@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence } from "framer-motion";
-import { User, MapPin, CreditCard } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { User, MapPin, CreditCard, Trash2 } from "lucide-react";
 import { updateProfile, upsertAddress } from "@/app/actions/profile";
 import { toast } from "sonner";
 
