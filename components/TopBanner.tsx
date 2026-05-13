@@ -10,7 +10,9 @@ export default function TopBanner() {
   if (
     pathname?.startsWith("/admin") ||
     pathname?.startsWith("/login") ||
-    pathname?.startsWith("/registro")
+    pathname?.startsWith("/registro") ||
+    pathname?.startsWith("/restablecer-contrasena") ||
+    pathname?.startsWith("/auth/update-password")
   )
     return null;
 

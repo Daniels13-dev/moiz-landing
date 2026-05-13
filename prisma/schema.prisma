@@ -180,6 +180,7 @@ model Profile {
   updatedAt     DateTime       @updatedAt
   role          String         @default("USER")
   cartNeedsClear Boolean        @default(false)
+  isActive      Boolean        @default(true)
   phone         String?
   idNumber      String?
   idType        String?

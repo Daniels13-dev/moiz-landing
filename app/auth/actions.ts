@@ -164,19 +164,89 @@ export async function logout() {
 
 // --- RESET PASSWORD ---
 export async function resetPassword(formData: FormData) {
-  const supabase = await createClient();
   const email = formData.get("email") as string;
-  const origin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  
+  // Detectar el origen dinámicamente para que funcione en local (3001) y producción
+  const isLocal = process.env.NODE_ENV === "development";
+  const origin = isLocal 
+    ? "http://localhost:3001" 
+    : (process.env.NEXT_PUBLIC_SITE_URL || "https://moizpets.com");
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/auth/callback?next=/admin/update-password`,
-  });
+  try {
+    // 1. Generar el enlace de recuperación manualmente usando el cliente admin
+    const { createAdminClient } = await import("@/utils/supabase/admin");
+    const adminSupabase = createAdminClient();
+    
+    const { data, error: linkError } = await adminSupabase.auth.admin.generateLink({
+      type: 'recovery',
+      email: email,
+      options: {
+        redirectTo: `${origin}/auth/callback?next=/auth/update-password`,
+      }
+    });
 
-  if (error) {
-    return { error: error.message };
+    if (linkError) {
+      console.error("Error generating reset link:", linkError.message);
+      return { error: "No pudimos generar el enlace. Verifica que el correo sea correcto." };
+    }
+
+    const resetLink = data.properties?.action_link;
+
+    if (!resetLink) {
+      return { error: "Error interno al generar el enlace de recuperación." };
+    }
+
+    // 2. Enviar el correo personalizado a través de Resend
+    const { sendEmail } = await import("@/lib/email");
+    
+    const htmlContent = `
+      <div style="font-family: 'Geist', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; background-color: #ffffff; border-radius: 24px; border: 1px solid #f0f0f0;">
+        <div style="text-align: center; margin-bottom: 32px;">
+          <h1 style="color: #6a8e2a; font-size: 32px; font-weight: 900; margin: 0; letter-spacing: -1px;">Möiz</h1>
+          <p style="color: #888; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-top: 8px;">Bienestar Animal</p>
+        </div>
+        
+        <div style="margin-bottom: 32px;">
+          <h2 style="color: #111; font-size: 24px; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px;">Recupera tu acceso</h2>
+          <p style="color: #444; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+            Hola, hemos recibido una solicitud para restablecer tu contraseña en <strong>Möiz</strong>. Si no fuiste tú, puedes ignorar este correo.
+          </p>
+          
+          <div style="text-align: center; margin: 40px 0;">
+            <a href="${resetLink}" style="background-color: #6a8e2a; color: #ffffff; padding: 16px 32px; border-radius: 100px; text-decoration: none; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 10px 20px rgba(106, 142, 42, 0.2);">
+              Restablecer Contraseña
+            </a>
+          </div>
+          
+          <p style="color: #888; font-size: 14px; line-height: 1.6;">
+            Este enlace expirará en 24 horas por motivos de seguridad.
+          </p>
+        </div>
+        
+        <div style="border-top: 1px solid #f0f0f0; padding-top: 24px; text-align: center;">
+          <p style="color: #aaa; font-size: 12px;">
+            &copy; ${new Date().getFullYear()} Möiz Bienestar Animal SAS. Todos los derechos reservados.
+          </p>
+        </div>
+      </div>
+    `;
+
+    const emailResult = await sendEmail({
+      to: email,
+      subject: "Recupera tu contraseña en Möiz",
+      html: htmlContent,
+    });
+
+    if (!emailResult.success) {
+      return { error: "Error al enviar el correo. Por favor intenta más tarde." };
+    }
+
+    return { success: "Hemos enviado un correo personalizado con las instrucciones a tu cuenta." };
+
+  } catch (error) {
+    console.error("Error in resetPassword action:", error);
+    return { error: "Ocurrió un error inesperado al procesar tu solicitud." };
   }
-
-  return { success: "Instrucciones de recuperación enviadas a tu correo." };
 }
 
 // --- LOGIN WITH GOOGLE ---

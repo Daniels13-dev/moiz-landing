@@ -101,3 +101,25 @@ export async function checkAndResetCartClear() {
     return { clear: false };
   }
 }
+
+export async function deleteAccount() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return { error: "No autorizado" };
+
+  try {
+    // Marcado lógico como inactivo
+    await prisma.profile.update({
+      where: { id: user.id },
+      data: { isActive: false }
+    });
+
+    // Opcional: Cerrar sesión después de marcar como inactivo
+    await supabase.auth.signOut();
+
+    return { success: true };
+  } catch (error) {
+    return handleActionError(error, "deleteAccount");
+  }
+}

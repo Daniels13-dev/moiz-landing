@@ -83,6 +83,14 @@ export default function LoginPage() {
                     className="w-full pl-11 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-full focus:outline-none focus:ring-4 focus:ring-[var(--moiz-green)]/10 focus:border-[var(--moiz-green)] transition-all font-semibold text-sm"
                   />
                 </div>
+                <div className="flex justify-end">
+                  <Link
+                    href="/restablecer-contrasena"
+                    className="text-[10px] font-bold text-zinc-400 hover:text-[var(--moiz-green)] transition-colors uppercase tracking-widest"
+                  >
+                    {siteConfig.ui.login.forgotPassword}
+                  </Link>
+                </div>
               </div>
             </div>
 
