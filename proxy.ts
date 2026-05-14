@@ -5,12 +5,14 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 export default async function proxy(request: NextRequest) {
   const host = request.headers.get("host");
 
-  // Redirección de www a sin-www (específica para el dominio de producción)
+  // --- REDIRECCIÓN COMENTADA TEMPORALMENTE PARA EVITAR BUCLE ---
+  /*
   if (host === "www.moizpets.com") {
     const url = request.nextUrl.clone();
     url.host = "moizpets.com";
     return NextResponse.redirect(url, 301);
   }
+  */
 
   let supabaseResponse = NextResponse.next({
     request,
@@ -89,9 +91,6 @@ export default async function proxy(request: NextRequest) {
       }
     } catch (err) {
       console.error('[proxy] Critical error in admin validation:', err);
-      // En caso de error crítico en el proxy, permitimos continuar 
-      // y dejamos que el AdminLayout (servidor) valide la seguridad.
-      // Esto evita el 404 generalizado.
     }
   }
 
