@@ -1,8 +1,8 @@
 import prisma from "@/lib/prisma";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import CategoryItem from "./CategoryItem";
 import CategoryForm from "./CategoryForm";
+import CategoryList from "./CategoryList";
 
 interface CategoryWithCount {
   id: string;
@@ -38,26 +38,7 @@ export default async function AdminCategorias() {
       <div className="grid md:grid-cols-12 gap-8">
         <CategoryForm />
 
-        {/* List */}
-        <div className="md:col-span-8 space-y-3">
-          {categories.map((cat) => (
-            <CategoryItem
-              key={cat.id}
-              category={{
-                id: cat.id,
-                name: cat.name,
-                isActive: cat.isActive,
-                _count: { products: cat._count.products },
-              }}
-            />
-          ))}
-
-          {categories.length === 0 && (
-            <div className="text-center py-20 bg-white border border-dashed border-zinc-200 rounded-[3rem]">
-              <p className="text-zinc-400 font-bold">No hay categorías registradas.</p>
-            </div>
-          )}
-        </div>
+        <CategoryList initialCategories={categories} />
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { handleActionError } from "@/lib/action-utils";
 import { CategoryService } from "@/services/category-service";
 import { ProductService } from "@/services/product-service";
 import { SubscriptionService } from "@/services/subscription-service";
+import { createAdminClient } from "@/utils/supabase/admin";
 
 // --- CATEGORIES ---
 
@@ -217,6 +218,62 @@ export async function updateUserRole(id: string, role: string) {
     return { success: true } as const;
   } catch (error) {
     return handleActionError(error, "updateUserRole");
+  }
+}
+
+export async function updateUserProfile(id: string, formData: FormData) {
+  try {
+    const data = {
+      fullName: formData.get("fullName") as string,
+      email: formData.get("email") as string,
+      phone: formData.get("phone") as string,
+      role: formData.get("role") as string,
+      idNumber: formData.get("idNumber") as string,
+      idType: formData.get("idType") as string,
+    };
+
+    if (!data.email) return { success: false, error: "El email es obligatorio" } as const;
+
+    // 1. Actualizar en Supabase Auth (usando el cliente admin)
+    const adminSupabase = createAdminClient();
+    const { error: authError } = await adminSupabase.auth.admin.updateUserById(id, {
+      email: data.email,
+      // Opcional: confirmamos el email automáticamente si es necesario
+      email_confirm: true, 
+    });
+
+    if (authError) {
+      console.error("Error updating auth email:", authError.message);
+      // Podríamos decidir si fallar aquí o continuar. 
+      // Si el email ya existe en auth, fallará.
+      return { success: false, error: "Error al actualizar las credenciales: " + authError.message } as const;
+    }
+
+    // 2. Actualizar en nuestra base de datos (Prisma)
+    await prisma.profile.update({
+      where: { id },
+      data,
+    });
+
+    revalidatePath("/admin/usuarios");
+    return { success: true } as const;
+  } catch (error) {
+    return handleActionError(error, "updateUserProfile");
+  }
+}
+
+export async function adminUpdateUserPassword(userId: string, password: string) {
+  try {
+    const adminSupabase = createAdminClient();
+    const { error } = await adminSupabase.auth.admin.updateUserById(userId, {
+      password: password,
+    });
+
+    if (error) throw error;
+
+    return { success: true } as const;
+  } catch (error) {
+    return handleActionError(error, "adminUpdateUserPassword");
   }
 }
 

@@ -68,7 +68,7 @@ export default function CarritoPage() {
     <main className="bg-[#FAF9F6] min-h-screen flex flex-col selection:bg-[var(--moiz-green)] selection:text-white overflow-x-hidden">
       <Navbar />
 
-      <div className="flex-1 pt-12 md:pt-16 px-6 max-w-5xl mx-auto pb-40 md:pb-24">
+      <div className="flex-1 pt-12 md:pt-16 px-6 max-w-7xl mx-auto pb-40 md:pb-24">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-4xl md:text-6xl font-black text-zinc-900 tracking-tighter">
