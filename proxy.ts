@@ -5,11 +5,10 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 export default async function proxy(request: NextRequest) {
   const host = request.headers.get("host");
 
-  // Redirección de www a sin-www
-  if (host?.startsWith("www.")) {
-    const newHost = host.replace("www.", "");
+  // Redirección de www a sin-www (específica para el dominio de producción)
+  if (host === "www.moizpets.com") {
     const url = request.nextUrl.clone();
-    url.host = newHost;
+    url.host = "moizpets.com";
     return NextResponse.redirect(url, 301);
   }
 
